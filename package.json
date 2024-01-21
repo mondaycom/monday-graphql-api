@@ -1,0 +1,28 @@
+{
+  "name": "@mondaycom/api",
+  "version": "0.1.0",
+  "description": "monday public API (GraphQL) SDK",
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">= 16.20.0"
+  },
+  "author": "monday.com Apps Team",
+  "license": "MIT",
+  "keywords": [
+    "monday",
+    "api",
+    "graphql"
+  ],
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
