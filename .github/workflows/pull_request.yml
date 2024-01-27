@@ -1,8 +1,8 @@
 on: pull_request
 name: Pull Request
 jobs:
-  test:
-    name: Run tests
+  validate:
+    name: Run validations
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
