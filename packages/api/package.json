@@ -1,0 +1,31 @@
+{
+  "name": "@mondaycom/api",
+  "version": "1.0.0",
+  "description": "monday.com API client",
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "prettier": "prettier --write \"lib/**/*.ts\"",
+    "lint": "eslint --fix \"lib/**/*.ts\""
+  },
+  "dependencies": {
+    "graphql-request": "^6.1.0",
+    "graphql-tag": "^2.12.6"
+  },
+  "engines": {
+    "node": ">= 16.20.0"
+  },
+  "author": "monday.com Apps Team",
+  "license": "MIT",
+  "keywords": [
+    "monday",
+    "api",
+    "graphql"
+  ]
+}

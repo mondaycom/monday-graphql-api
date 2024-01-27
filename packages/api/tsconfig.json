@@ -3,12 +3,14 @@
     "lib": ["ESNext"],
     "module": "ESNext",
     "target": "ESNext",
+    "moduleResolution": "node",
     "rootDir": "./lib",
     "outDir": "./dist",
     "moduleDetection": "force",
     "strict": true,
     "declaration": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules", ".vscode/**/*", ".idea/**/*","dist", "build"],
+  "exclude": ["dist"],
+  "include": ["lib"]
 }
