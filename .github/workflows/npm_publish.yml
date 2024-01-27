@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 18.12.1
           registry-url: https://registry.npmjs.org/
-      - run: npm run ci
+      - run: npm ci
       - run: npm run build --workspaces
       - run: npm publish
         env:
