@@ -2,7 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 import { defaultVersion } from './constants';
 import { getSdk } from './generated/sdk';
 
-export class ApiClient {
+class ApiClient {
   private readonly client: GraphQLClient;
   public readonly operations: Record<string, any> = {};
 
@@ -29,3 +29,5 @@ export class ApiClient {
     return res;
   };
 }
+
+export default ApiClient;

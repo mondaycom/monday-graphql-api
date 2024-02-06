@@ -2,17 +2,19 @@
   "name": "@mondaycom/api",
   "version": "0.1.0",
   "description": "monday.com API client",
-  "main": "dist/index.js",
-  "type": "module",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "browser": "dist/umd/your-library.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc --build",
+    "build": "rollup -c",
     "prettier": "prettier --write \"lib/**/*.ts\"",
-    "lint": "eslint --fix \"lib/**/*.ts\""
+    "lint": "eslint --fix \"lib/**/*.ts\"",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
     "graphql-request": "^6.1.0",
@@ -27,5 +29,12 @@
     "monday",
     "api",
     "graphql"
-  ]
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^2.79.1",
+    "rollup-plugin-terser": "^7.0.2"
+  }
 }
