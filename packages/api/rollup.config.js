@@ -23,8 +23,10 @@ export default {
   plugins: [
     resolve(), // tells Rollup how to find external modules
     commonjs(), // converts CommonJS modules to ES6
-    typescript(), // compiles TypeScript to JavaScript
+    typescript({ tsconfig: './tsconfig.json' }), // compiles TypeScript to JavaScript
     json(),
     // production && terser(), // minify, but only in production
   ],
+
+  external: ['graphql-request', 'graphql-tag'],
 };

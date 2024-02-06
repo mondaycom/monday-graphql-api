@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "lib": ["es6", "dom"],
     "module": "ESNext",
     "target": "es5",
@@ -11,8 +12,11 @@
     "declaration": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@mondaycom/api": ["../packages/api/dist"]
+    }
   },
-  "exclude": ["dist, node_modules"],
-  "include": ["lib"]
+  "exclude": ["dist", "node_modules"],
+  "include": ["./lib/**/*"]
 }
