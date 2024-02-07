@@ -10,7 +10,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc --build",
+    "build": "rollup --config",
     "prettier": "prettier --write \"lib/**/*.ts\"",
     "lint": "eslint --fix \"lib/**/*.ts\""
   },
