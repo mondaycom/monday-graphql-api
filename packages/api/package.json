@@ -27,5 +27,8 @@
     "monday",
     "api",
     "graphql"
-  ]
+  ],
+  "devDependencies": {
+    "rollup": "^4.9.6"
+  }
 }
