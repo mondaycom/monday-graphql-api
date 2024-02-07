@@ -2,7 +2,16 @@
   "name": "@mondaycom/api-types",
   "version": "0.1.0",
   "description": "monday.com API types",
-  "types": "generated/api-types.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
     "build": "echo \"No build step\"",
     "prettier": "prettier --write \"generated/*.ts\"",

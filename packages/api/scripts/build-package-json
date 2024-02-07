@@ -1,0 +1,4 @@
+#!/bin/bash
+cat package.json | jq '. + { "type": "commonjs" }' > dist/cjs/package.json
+
+cat package.json | jq '. + { "type": "module" }' > dist/esm/package.json

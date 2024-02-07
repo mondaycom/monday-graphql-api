@@ -1,16 +1,28 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
-    "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "node",
+    "lib": ["es2020", "esnext", "es5", "es2015", "es2016"],
+    "types": ["node"],
+    "esModuleInterop": true,
     "rootDir": "./lib",
-    "outDir": "./dist",
-    "moduleDetection": "force",
+    "allowJs": true,
+    "sourceMap": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
     "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "declaration": true,
-    "skipLibCheck": true
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "lib/*": ["./lib/*"],
+      "types/*": ["./lib/types/*"],
+      "errors/*": ["./lib/errors/*"],
+      "utils/*": ["./lib/utils/*"]
+    }
   },
-  "exclude": ["dist"],
-  "include": ["lib"]
+  "exclude": ["node_modules", ".vscode/**/*", ".idea/**/*", "dist", "tests"],
+  "include": ["./lib/**/*"]
 }

@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["./lib/**/*", "./tests/**/*"],
+  "compilerOptions": {
+    "types": ["node", "jest"]
+  },
+  "exclude": ["node_modules", ".vscode/**/*", ".idea/**/*", "jest.config.js", "dist"]
+}
