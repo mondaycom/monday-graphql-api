@@ -30,6 +30,7 @@
     "graphql"
   ],
   "devDependencies": {
+    "@graphql-codegen/typescript-operations": "^4.1.2",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
