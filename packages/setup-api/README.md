@@ -26,7 +26,7 @@ your types will be ready to use (as can be seen in the generated folder)!
 This library is intended to be installed globally, allowing you to set up any project easily. To install, open your terminal and run:
 
 ```bash
-npm install -g @mondaycom/setup-api
+npm install -D @mondaycom/setup-api
 ```
 
 ## Post-Installation Steps
