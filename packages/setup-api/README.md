@@ -95,3 +95,22 @@ This plugin provides features such as syntax highlighting, documentation lookup,
 - If you encounter permission issues or errors during the setup process, ensure that you've correctly followed the post-installation steps to set execution permissions.
 
 We hope this library helps you kickstart your project with the Monday API more efficiently. Happy coding!
+
+## Example usage
+
+When using this package, you will automatically get an example query and an example mutation in your queries file.
+Here is how to use them!
+
+```typescript
+const client = new ApiClient("your_api_token"); // From the monday api sdk @mondaycom/api
+
+const queryVariables: QueryBoardsArgs = { ids: ["your_board_id"] }; // replace with your board id
+const queryData = await client.query<GetBoardsQuery>(exampleQuery, queryVariables);
+
+const mutationVariables: CreateItemMutationVariables = {
+boardId: "your_board_id", // replace with your board id
+groupId: "your_groyup_id", // replace with your group id
+itemName: "Im using my own queries!",
+};
+const mutationData = client.query<CreateItemMutation>(exampleMutation, mutationVariables);
+```
