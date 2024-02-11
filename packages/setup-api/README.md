@@ -13,27 +13,35 @@ The script gets the environment ready for graphql api development
 - Adds configuration file for the graphql extension at the root folder - graphql.config.yml - to be used with the official graphql extensions
 - Adds queries folder used to write your queries and mutations - src/queries.graphql.ts
 - Adds a script to get the latest api schema - fetch-schema.sh
-- Adds scripts to package.json to run work with your graphql api!
+- Adds scripts to package.json to run with your graphql api
 
 ## How do I work now?
 
 After everyting will be set up, you can run write your queries in the queries.graphql.ts file ->
 run 'npm run fetch:schma' ->
-your types will be ready to use (as can be seen in the generated folder)!
+your types will be ready to use (as can be seen in the generated folder)
 
 ## Installation
 
 This library is intended to be installed globally, allowing you to set up any project easily. To install, open your terminal and run:
 
+To install locally in your project:
+
 ```bash
-npm install -g @mondaycom/setup-api
+npm install -D @mondaycom/setup-api 
+```
+
+To install globally
+
+```bash
+npm install -g @mondaycom/setup-api 
 ```
 
 ## Post-Installation Steps
 
 After installing the library globally, you must grant execution permissions to the main script to ensure it can be executed properly. This is a critical step for Unix-like operating systems, such as Linux and macOS.
 
-Execute the following command in your terminal:
+Execute the following command in your terminal if you installed globally:
 
 ```bash
 chmod +x $(npm root -g)/@mondaycom/setup-api/dist/cjs/index.js
