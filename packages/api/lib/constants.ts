@@ -1,4 +1,5 @@
 export enum AvailableVersions {
+  DEPRECATED = 'deprecated',
   STABLE = 'stable',
   PREVIEW = 'preview',
 }

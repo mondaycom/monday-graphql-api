@@ -12,6 +12,7 @@ export class ApiClient {
         'Content-Type': 'application/json',
         Authorization: token.toString(),
         'API-Version': apiVersion.toString(),
+        'Api-Sdk-Version': '0.1.0',
       },
     });
 
@@ -19,11 +20,6 @@ export class ApiClient {
   }
 
   public query = async <T>(query: string, variables?: Record<string, any>) => {
-    const res = await this.client.request<T>(query, variables);
-    return res;
-  };
-
-  public mutation = async <T>(query: string, variables?: Record<string, any>) => {
     const res = await this.client.request<T>(query, variables);
     return res;
   };
