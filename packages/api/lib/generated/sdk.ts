@@ -2730,9 +2730,9 @@ export type WorldClockValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
-export type GetMeQueryVariables = Exact<{ [key: string]: never }>;
+export type _GetMeQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetMeQuery = {
+export type _GetMeQuery = {
   __typename?: 'Query';
   me?: { __typename?: 'User'; id: string; name: string; email: string } | null;
 };
@@ -2909,8 +2909,8 @@ export const UserFieldsFragmentDoc = gql`
     email
   }
 `;
-export const GetMeDocument = gql`
-  query getMe {
+export const _GetMeDocument = gql`
+  query _getMe {
     me {
       ...UserFields
     }
@@ -2990,11 +2990,11 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    getMe(variables?: GetMeQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMeQuery> {
+    _getMe(variables?: _GetMeQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<_GetMeQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<GetMeQuery>(GetMeDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
-        'getMe',
+          client.request<_GetMeQuery>(_GetMeDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
+        '_getMe',
         'query',
         variables,
       );

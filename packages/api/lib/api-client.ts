@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { AvailableVersions, defaultVersion } from './constants';
 import { Sdk, getSdk } from './generated/sdk';
-
+import pkg from '../package.json';
 export class ApiClient {
   private readonly client: GraphQLClient;
   public readonly operations: Sdk;
@@ -12,7 +12,7 @@ export class ApiClient {
         'Content-Type': 'application/json',
         Authorization: token.toString(),
         'API-Version': apiVersion.toString(),
-        'Api-Sdk-Version': '0.1.0',
+        'Api-Sdk-Version': pkg.version,
       },
     });
 
