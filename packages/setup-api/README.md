@@ -17,7 +17,7 @@ The script gets the environment ready for graphql api development
 
 ## How do I work now?
 
-After everyting will be set up, you can run write your queries in the queries.graphql.ts file ->
+After everything will be set up, you can write your queries in the `queries.graphql.ts` file ->
 run 'npm run fetch:schma' ->
 your types will be ready to use (as can be seen in the generated folder)!
 
