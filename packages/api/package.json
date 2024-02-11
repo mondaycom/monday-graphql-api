@@ -13,7 +13,8 @@
     "build": "rollup -c",
     "prettier": "prettier --write \"lib/**/*.ts\"",
     "lint": "eslint --fix \"lib/**/*.ts\"",
-    "watch": "rollup -c -w"
+    "watch": "rollup -c -w",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "graphql-request": "^6.1.0",
