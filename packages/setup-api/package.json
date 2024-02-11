@@ -6,7 +6,7 @@
   "types": "dist/cjs/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "postinstall": "chmod +x dist/cjs/index.js"
+    "postinstall": "chmod +x ./dist/cjs/index.js"
   },
   "bin": {
     "setup-api-monday": "./dist/cjs/index.js"
