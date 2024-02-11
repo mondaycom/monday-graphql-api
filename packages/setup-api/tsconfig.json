@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "lib": ["es6", "dom"],
+    "lib": ["es6"],
     "module": "ESNext",
     "target": "es5",
     "moduleResolution": "node",
     "rootDir": "./lib",
-    "outDir": "./dist",
-    "moduleDetection": "force",
+    "outDir": "./dist",    
     "strict": true,
     "declaration": true,
     "skipLibCheck": true,

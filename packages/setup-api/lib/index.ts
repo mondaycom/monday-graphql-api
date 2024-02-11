@@ -9,7 +9,6 @@ export const setupGraphQL = () => {
   const commands = [
     'npm install graphql-request',
     'npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
-    'echo "schema: src/schema.graphql" > graphql.config.yml',
   ];
 
   // Execute each command
@@ -40,6 +39,9 @@ generates:
 
   console.log('Created src folder');
 
+  fs.writeFileSync('graphql.config.yml', 'schema: src/schema.graphql');
+  console.log('created graphql.config.yml');
+
   // Define the content to write to queries.graphql.ts
   const queriesContent = `import { gql } from "graphql-request";
     export const exampleQuery = gql\`
@@ -53,8 +55,7 @@ generates:
     `;
 
   fs.writeFileSync('src/queries.graphql.ts', queriesContent);
-
-  console.log('src/queries.graphql.ts');
+  console.log('created src/queries.graphql.ts');
 
   const scriptContent = `#!/bin/bash
   curl "https://api.monday.com/v2/get_schema?format=sdl&version=stable" -o src/schema.graphql
@@ -76,7 +77,6 @@ generates:
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
   console.log('Updated package.json with new scripts');
-
   console.log('Setup complete! run `npm run fetch:gen` to fetch the schema and generate types');
 };
 
