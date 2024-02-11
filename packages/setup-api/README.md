@@ -1,11 +1,25 @@
-
-chmod +x $(npm root -g)/setup-api/dist/cjs/index.js
-
 # Monday API Setup Library
 
 ## Overview
 
 This library automates the setup of a development environment for working with the Monday API using GraphQL. It's designed to help developers quickly start projects with pre-configured tools and settings.
+
+## What does the script do?
+
+The script gets the environment ready for graphql api development
+
+- Installs the following npm packages: @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
+- Adds configuration file for codegen (used to create types for queries and mutations) at the root folder - codegen.yml
+- Adds configuration file for the graphql extension at the root folder - graphql.config.yml - to be used with the official graphql extensions
+- Adds queries folder used to write your queries and mutations - src/queries.graphql.ts
+- Adds a script to get the latest api schema - fetch-schema.sh
+- Adds scripts to package.json to run work with your graphql api!
+
+## How do I work now?
+
+After everyting will be set up, you can run write your queries in the queries.graphql.ts file ->
+run 'npm run fetch:schma' ->
+your types will be ready to use (as can be seen in the generated folder)!
 
 ## Installation
 
@@ -16,6 +30,7 @@ npm install -g @mondaycom/setup-api
 ```
 
 ## Post-Installation Steps
+
 After installing the library globally, you must grant execution permissions to the main script to ensure it can be executed properly. This is a critical step for Unix-like operating systems, such as Linux and macOS.
 
 Execute the following command in your terminal:
@@ -27,6 +42,7 @@ chmod +x $(npm root -g)/@mondaycom/setup-api/dist/cjs/index.js
 This command sets the necessary execution permissions for the library's main script, allowing it to run without encountering permission issues.
 
 ## Running the Setup
+
 With the library installed and the appropriate permissions set, you can now run the setup process in the root directory of your project. Simply execute the following command:
 
 ```bash
@@ -45,6 +61,33 @@ for now do the following to get the schema and create your first type!
 ```bash
 npm run fetch:gen 
 ```
+
+### Installing the GraphQL Extension for Visual Studio Code
+
+To enhance your development experience with GraphQL, we recommend installing the GraphQL extension for Visual Studio Code. This extension provides syntax highlighting, linting, auto-complete, and more.
+
+To install the extension, open Visual Studio Code, go to the Extensions view by clicking on the square icon on the sidebar or pressing `Ctrl+Shift+X`, and search for `GraphQL`. Find the extension by GraphQL Foundation and click `Install`.
+
+Alternatively, you can install the extension via the command line:
+
+```bash
+code --install-extension GraphQL.vscode-graphql
+```
+
+Or you can simply go to extensions and add the official graphql extensions (GraphQL: Language Feature Support, GraphQL: Syntax Highlighting)
+
+**For JetBrains IDEs:**
+
+### Installing the GraphQL Plugin for JetBrains IDEs
+
+JetBrains IDEs such as WebStorm or IntelliJ IDEA support GraphQL development through plugins. To install a GraphQL plugin, follow these steps:
+
+1. Open your IDE and go to `Preferences` > `Plugins`.
+2. Click the `Marketplace` tab and search for `GraphQL`.
+3. Find the plugin provided by JetBrains and click `Install`.
+4. Restart your IDE if prompted.
+
+This plugin provides features such as syntax highlighting, documentation lookup, and schema-aware code completion.
 
 ## What You Should Know
 

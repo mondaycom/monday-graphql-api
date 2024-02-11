@@ -22,7 +22,8 @@ export const setupGraphQL = () => {
   console.log('Packages installed');
 
   // Create codegen.yml
-  const codegenConfig = `overwrite: true
+  const codegenConfig = `
+overwrite: true
 schema: "src/schema.graphql"
 documents: "src/**/*.graphql.ts"
 generates:
@@ -35,24 +36,35 @@ generates:
 
   console.log('Codegen config created');
 
+  fs.writeFileSync('graphql.config.yml', 'schema: src/schema.graphql');
+  console.log('created graphql.config.yml');
+
   shell.mkdir('-p', 'src');
 
   console.log('Created src folder');
 
-  fs.writeFileSync('graphql.config.yml', 'schema: src/schema.graphql');
-  console.log('created graphql.config.yml');
-
   // Define the content to write to queries.graphql.ts
-  const queriesContent = `import { gql } from "graphql-request";
-    export const exampleQuery = gql\`
-      query GetBoards($ids: [ID!]) {
-        boards(ids: $ids) {
-          id
-          name
-        }
+  const queriesContent = `
+  import { gql } from "graphql-request";
+  
+  export const exampleQuery = gql\`
+    query GetBoards($ids: [ID!]) {
+      boards(ids: $ids) {
+        id
+        name
       }
-    \`;
-    `;
+    }
+  \`;
+  
+  export const exampleMutation = gql\`
+    mutation CreateItem($boardId: ID!, $groupId: String!, $itemName: String!) {
+      create_item(board_id: $boardId, group_id: $groupId, item_name: $itemName) {
+        id
+        name
+      }
+    }
+  \`;
+  `;
 
   fs.writeFileSync('src/queries.graphql.ts', queriesContent);
   console.log('created src/queries.graphql.ts');
