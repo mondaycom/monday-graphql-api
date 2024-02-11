@@ -8,7 +8,7 @@
     "prettier": "prettier --write \"generated/*.ts\"",
     "lint": "eslint --fix \"generated/*.ts\""
   },
-  "author": "monday.com Apps Team",
+  "author": "monday.com Api Team",
   "license": "MIT",
   "keywords": [
     "monday",

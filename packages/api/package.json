@@ -22,7 +22,7 @@
   "engines": {
     "node": ">= 16.20.0"
   },
-  "author": "monday.com Apps Team",
+  "author": "monday.com Api Team",
   "license": "MIT",
   "keywords": [
     "monday",
