@@ -1,7 +1,8 @@
 # Important
 
-This will explain how to use our provided operations and their types to start playing with the api
-When you'l want to write your own TYPED queries - go to @mondaycom/setup-api to get your environemt ready with examples!
+This will explain how to use our provided operations and their types to start working with the api
+All the exported types will correspond to the stable version, with no regard to the version you specify
+If you need a different version OR When you'l want to write your own TYPED queries - go to @mondaycom/setup-api to get your environemt ready with examples!
 
 ## Monday GraphQL JS SDK
 
