@@ -34,10 +34,6 @@ export class ApiClient {
   };
 
   public seamlessQuery = async <T>(query: string, variables?: Record<string, any>) => {
-    return this.seamlessRequest(query, variables);
-  };
-
-  private seamlessRequest<T>(query: string, variables?: Record<string, any>) {
     return new Promise<T>((resolve, reject) => {
       const requestId = this._generateRequestId();
       const params = { query, variables };
@@ -55,7 +51,7 @@ export class ApiClient {
         }
       });
     });
-  }
+  };
 
   private _generateRequestId = () => {
     return Math.random().toString(36).substring(2, 9);
