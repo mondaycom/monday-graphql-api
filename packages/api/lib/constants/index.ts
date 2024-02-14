@@ -5,3 +5,7 @@ export enum AvailableVersions {
 }
 
 export const defaultVersion = AvailableVersions.STABLE;
+
+export type ApiVersionType = AvailableVersions | string;
+
+export type QueryVariables = Record<string, any>;
