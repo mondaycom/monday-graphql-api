@@ -2500,7 +2500,7 @@ export enum UserKind {
 /** An object containing the API version details */
 export type Version = {
   __typename?: 'Version';
-  /** The type of the API version (unsupported / deprecated / stable / preview / dev) */
+  /** The type of the API version */
   kind: VersionKind;
   /** Version string that can be used in API-Version header */
   value: Scalars['String']['output'];

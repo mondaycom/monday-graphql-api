@@ -2503,7 +2503,7 @@ export enum UserKind {
 /** An object containing the API version details */
 export type Version = {
   __typename?: 'Version';
-  /** The type of the API version (unsupported / deprecated / stable / preview / dev) */
+  /** The type of the API version */
   kind: VersionKind;
   /** Version string that can be used in API-Version header */
   value: Scalars['String']['output'];
@@ -2730,57 +2730,57 @@ export type WorldClockValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
-export type _GetMeQueryVariables = Exact<{ [key: string]: never }>;
+export type GetMeOpQueryVariables = Exact<{ [key: string]: never }>;
 
-export type _GetMeQuery = {
+export type GetMeOpQuery = {
   __typename?: 'Query';
   me?: { __typename?: 'User'; id: string; name: string; email: string } | null;
 };
 
 export type UserFieldsFragment = { __typename?: 'User'; id: string; name: string; email: string };
 
-export type _ChangeSimpleColumnValueMutationVariables = Exact<{
+export type ChangeSimpleColumnValueOpMutationVariables = Exact<{
   boardId: Scalars['ID']['input'];
   itemId: Scalars['ID']['input'];
   columnId: Scalars['String']['input'];
   value: Scalars['String']['input'];
 }>;
 
-export type _ChangeSimpleColumnValueMutation = {
+export type ChangeSimpleColumnValueOpMutation = {
   __typename?: 'Mutation';
   change_simple_column_value?: { __typename?: 'Item'; id: string } | null;
 };
 
-export type _ChangeColumnValueMutationVariables = Exact<{
+export type ChangeColumnValueOpMutationVariables = Exact<{
   boardId: Scalars['ID']['input'];
   itemId: Scalars['ID']['input'];
   columnId: Scalars['String']['input'];
   value: Scalars['JSON']['input'];
 }>;
 
-export type _ChangeColumnValueMutation = {
+export type ChangeColumnValueOpMutation = {
   __typename?: 'Mutation';
   change_column_value?: { __typename?: 'Item'; id: string } | null;
 };
 
-export type _CreateItemMutationVariables = Exact<{
+export type CreateItemOpMutationVariables = Exact<{
   boardId: Scalars['ID']['input'];
   groupId: Scalars['String']['input'];
   itemName: Scalars['String']['input'];
 }>;
 
-export type _CreateItemMutation = {
+export type CreateItemOpMutation = {
   __typename?: 'Mutation';
   create_item?: { __typename?: 'Item'; id: string; name: string } | null;
 };
 
-export type _ChangeMultipleColumnValuesMutationVariables = Exact<{
+export type ChangeMultipleColumnValuesOpMutationVariables = Exact<{
   boardId: Scalars['ID']['input'];
   itemId: Scalars['ID']['input'];
   columnValues: Scalars['JSON']['input'];
 }>;
 
-export type _ChangeMultipleColumnValuesMutation = {
+export type ChangeMultipleColumnValuesOpMutation = {
   __typename?: 'Mutation';
   change_multiple_column_values?: {
     __typename?: 'Item';
@@ -2830,11 +2830,11 @@ export type _ChangeMultipleColumnValuesMutation = {
   } | null;
 };
 
-export type _GetBoardItemsQueryVariables = Exact<{
+export type GetBoardItemsOpQueryVariables = Exact<{
   ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
 }>;
 
-export type _GetBoardItemsQuery = {
+export type GetBoardItemsOpQuery = {
   __typename?: 'Query';
   boards?: Array<{
     __typename?: 'Board';
@@ -2890,11 +2890,11 @@ export type _GetBoardItemsQuery = {
   } | null> | null;
 };
 
-export type _GetBoardGroupsQueryVariables = Exact<{
+export type GetBoardGroupsOpQueryVariables = Exact<{
   ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
 }>;
 
-export type _GetBoardGroupsQuery = {
+export type GetBoardGroupsOpQuery = {
   __typename?: 'Query';
   boards?: Array<{
     __typename?: 'Board';
@@ -2909,38 +2909,38 @@ export const UserFieldsFragmentDoc = gql`
     email
   }
 `;
-export const _GetMeDocument = gql`
-  query _getMe {
+export const GetMeOpDocument = gql`
+  query getMeOp {
     me {
       ...UserFields
     }
   }
   ${UserFieldsFragmentDoc}
 `;
-export const _ChangeSimpleColumnValueDocument = gql`
-  mutation _ChangeSimpleColumnValue($boardId: ID!, $itemId: ID!, $columnId: String!, $value: String!) {
+export const ChangeSimpleColumnValueOpDocument = gql`
+  mutation changeSimpleColumnValueOp($boardId: ID!, $itemId: ID!, $columnId: String!, $value: String!) {
     change_simple_column_value(board_id: $boardId, item_id: $itemId, column_id: $columnId, value: $value) {
       id
     }
   }
 `;
-export const _ChangeColumnValueDocument = gql`
-  mutation _ChangeColumnValue($boardId: ID!, $itemId: ID!, $columnId: String!, $value: JSON!) {
+export const ChangeColumnValueOpDocument = gql`
+  mutation changeColumnValueOp($boardId: ID!, $itemId: ID!, $columnId: String!, $value: JSON!) {
     change_column_value(board_id: $boardId, item_id: $itemId, column_id: $columnId, value: $value) {
       id
     }
   }
 `;
-export const _CreateItemDocument = gql`
-  mutation _CreateItem($boardId: ID!, $groupId: String!, $itemName: String!) {
+export const CreateItemOpDocument = gql`
+  mutation createItemOp($boardId: ID!, $groupId: String!, $itemName: String!) {
     create_item(board_id: $boardId, group_id: $groupId, item_name: $itemName) {
       id
       name
     }
   }
 `;
-export const _ChangeMultipleColumnValuesDocument = gql`
-  mutation _ChangeMultipleColumnValues($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
+export const ChangeMultipleColumnValuesOpDocument = gql`
+  mutation changeMultipleColumnValuesOp($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
     change_multiple_column_values(board_id: $boardId, item_id: $itemId, column_values: $columnValues) {
       id
       name
@@ -2951,8 +2951,8 @@ export const _ChangeMultipleColumnValuesDocument = gql`
     }
   }
 `;
-export const _GetBoardItemsDocument = gql`
-  query _GetBoardItems($ids: [ID!]!) {
+export const GetBoardItemsOpDocument = gql`
+  query getBoardItemsOp($ids: [ID!]!) {
     boards(ids: $ids) {
       items_page {
         items {
@@ -2968,8 +2968,8 @@ export const _GetBoardItemsDocument = gql`
     }
   }
 `;
-export const _GetBoardGroupsDocument = gql`
-  query _GetBoardGroups($ids: [ID!]!) {
+export const GetBoardGroupsOpDocument = gql`
+  query getBoardGroupsOp($ids: [ID!]!) {
     boards(ids: $ids) {
       groups {
         id
@@ -2990,101 +2990,101 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    _getMe(variables?: _GetMeQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<_GetMeQuery> {
+    getMeOp(variables?: GetMeOpQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMeOpQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_GetMeQuery>(_GetMeDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
-        '_getMe',
+          client.request<GetMeOpQuery>(GetMeOpDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
+        'getMeOp',
         'query',
         variables,
       );
     },
-    _ChangeSimpleColumnValue(
-      variables: _ChangeSimpleColumnValueMutationVariables,
+    changeSimpleColumnValueOp(
+      variables: ChangeSimpleColumnValueOpMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<_ChangeSimpleColumnValueMutation> {
+    ): Promise<ChangeSimpleColumnValueOpMutation> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_ChangeSimpleColumnValueMutation>(_ChangeSimpleColumnValueDocument, variables, {
+          client.request<ChangeSimpleColumnValueOpMutation>(ChangeSimpleColumnValueOpDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        '_ChangeSimpleColumnValue',
+        'changeSimpleColumnValueOp',
         'mutation',
         variables,
       );
     },
-    _ChangeColumnValue(
-      variables: _ChangeColumnValueMutationVariables,
+    changeColumnValueOp(
+      variables: ChangeColumnValueOpMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<_ChangeColumnValueMutation> {
+    ): Promise<ChangeColumnValueOpMutation> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_ChangeColumnValueMutation>(_ChangeColumnValueDocument, variables, {
+          client.request<ChangeColumnValueOpMutation>(ChangeColumnValueOpDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        '_ChangeColumnValue',
+        'changeColumnValueOp',
         'mutation',
         variables,
       );
     },
-    _CreateItem(
-      variables: _CreateItemMutationVariables,
+    createItemOp(
+      variables: CreateItemOpMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<_CreateItemMutation> {
+    ): Promise<CreateItemOpMutation> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_CreateItemMutation>(_CreateItemDocument, variables, {
+          client.request<CreateItemOpMutation>(CreateItemOpDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        '_CreateItem',
+        'createItemOp',
         'mutation',
         variables,
       );
     },
-    _ChangeMultipleColumnValues(
-      variables: _ChangeMultipleColumnValuesMutationVariables,
+    changeMultipleColumnValuesOp(
+      variables: ChangeMultipleColumnValuesOpMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<_ChangeMultipleColumnValuesMutation> {
+    ): Promise<ChangeMultipleColumnValuesOpMutation> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_ChangeMultipleColumnValuesMutation>(_ChangeMultipleColumnValuesDocument, variables, {
+          client.request<ChangeMultipleColumnValuesOpMutation>(ChangeMultipleColumnValuesOpDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        '_ChangeMultipleColumnValues',
+        'changeMultipleColumnValuesOp',
         'mutation',
         variables,
       );
     },
-    _GetBoardItems(
-      variables: _GetBoardItemsQueryVariables,
+    getBoardItemsOp(
+      variables: GetBoardItemsOpQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<_GetBoardItemsQuery> {
+    ): Promise<GetBoardItemsOpQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_GetBoardItemsQuery>(_GetBoardItemsDocument, variables, {
+          client.request<GetBoardItemsOpQuery>(GetBoardItemsOpDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        '_GetBoardItems',
+        'getBoardItemsOp',
         'query',
         variables,
       );
     },
-    _GetBoardGroups(
-      variables: _GetBoardGroupsQueryVariables,
+    getBoardGroupsOp(
+      variables: GetBoardGroupsOpQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<_GetBoardGroupsQuery> {
+    ): Promise<GetBoardGroupsOpQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<_GetBoardGroupsQuery>(_GetBoardGroupsDocument, variables, {
+          client.request<GetBoardGroupsOpQuery>(GetBoardGroupsOpDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        '_GetBoardGroups',
+        'getBoardGroupsOp',
         'query',
         variables,
       );
