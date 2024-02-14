@@ -85,11 +85,11 @@ generates:
   packageJson.scripts = packageJson.scripts || {};
   packageJson.scripts['fetch:schema'] = 'bash fetch-schema.sh';
   packageJson.scripts['codgen'] = 'graphql-codegen';
-  packageJson.scripts['fetch:gen'] = 'npm run fetch:schema && npm run codgen';
+  packageJson.scripts['fetch:generate'] = 'npm run fetch:schema && npm run codgen';
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
   console.log('Updated package.json with new scripts');
-  console.log('Setup complete! run `npm run fetch:gen` to fetch the schema and generate types');
+  console.log('Setup complete! run `npm run fetch:generate` to fetch the schema and generate types');
 };
 
 // Check if running directly from CLI and not imported

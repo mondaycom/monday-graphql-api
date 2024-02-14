@@ -62,7 +62,7 @@ This command will initiate the library's setup process, automatically configurin
 Afterwards, there will be created 3 scripts.
 "fetch:schema" - Gets the monday api schema
 "codegen" - generates types
-"fetch:gen" - runs both
+"fetch:generate" - runs both
 
 for now do the following to get the schema and create your first type!
 
