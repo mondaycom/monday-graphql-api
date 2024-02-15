@@ -11,7 +11,7 @@ export class ApiClient {
       headers: {
         'Content-Type': 'application/json',
         Authorization: token.toString(),
-        'API-Version': apiVersion.toString(),
+        'API-Version': apiVersion,
         'Api-Sdk-Version': '0.1.0',
       },
     });
