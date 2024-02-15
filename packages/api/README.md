@@ -27,10 +27,10 @@ import { ApiClient } from '@mondaycom/api';
 const client = new ApiClient('<API-TOKEN>');
 
 // or use the operations provided by the SDK
-const me = await client.operations._getMe();
+const me = await client.operations.getMeOp();
 
 // Example how to change a text column
-const changeTextColumn = await client.operations._ChangeColumnValue({
+const changeTextColumn = await client.operations.ChangeColumnValueOp({
     boardId: "your_board_id",
     itemId: "your_item_id",
     columnId: "text",
@@ -38,7 +38,7 @@ const changeTextColumn = await client.operations._ChangeColumnValue({
 });
 
 // Example how to change a status column
-const changeStatusColumn = await client.operations._ChangeColumnValue({
+const changeStatusColumn = await client.operations.ChangeColumnValueOp({
     boardId: "your_board_id",
     itemId: "your_item_id",
     columnId: "project_status", // replace with your column id
