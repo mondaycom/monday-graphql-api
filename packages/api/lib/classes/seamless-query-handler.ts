@@ -1,5 +1,4 @@
-import { NumberLiteralType } from 'typescript';
-import { ApiVersionType, QueryVariables, defaultVersion } from '../constants';
+import { ApiVersionType, QueryVariables } from '../constants';
 
 interface ListenerCallback {
   (data: any): void;
@@ -16,14 +15,17 @@ export class SeamlessApiHandler {
   private listeners: Record<string, Set<ListenerCallback>> = {};
 
   /**
-   * @param {ApiVersionType} [apiVersion=defaultVersion] - The API version to use for requests.
+   * @param {ApiVersionType} [apiVersion=defaultVersion] - COMING SOON - NOW IT WILL ALWAYS USE 2024-04. The API version to use for requests.
    *        Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    *        Defaults to `stable` if not specified.
    */
-  constructor(apiVersion: ApiVersionType = defaultVersion) {
-    this.apiVersion = apiVersion;
-  }
+  // constructor(apiVersion: ApiVersionType = defaultVersion) {
+  //   this.apiVersion = '2024-04';
+  // }
 
+  constructor() {
+    this.apiVersion = '2024-04';
+  }
   /**
    * Performs a seamless query to the Monday API. This function is intended for use exclusively within
    * client side of a app thats deployed in Monday.com. It leverages the platform's internal messaging system to
@@ -38,7 +40,7 @@ export class SeamlessApiHandler {
    *                                       `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *                                       of key-value pairs where the value can be any type. This parameter is used to provide
    *                                       dynamic values in the query or mutation.
-   * @param {ApiVersionType} [version] - An optional API version string. If provided, this version overrides
+   * @param {ApiVersionType} [version] - COMING SOON - NOW IT WILL ALWAYS USE 2024-04. An optional API version string. If provided, this version overrides
    *                                     the class's default API version for this specific query.
    *                                     Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    * @param {number} [timeout=1000] - An optional timeout value in milliseconds for the request. The default is 10 seconds.
@@ -49,13 +51,14 @@ export class SeamlessApiHandler {
   public seamlessQuery<T>(
     query: string,
     variables?: QueryVariables,
-    version?: ApiVersionType,
+    // version?: ApiVersionType,
     timeout: number = 1000,
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const requestId = this.generateRequestId();
       const params = { query, variables };
-      const apiVersion = version || this.apiVersion;
+      // const apiVersion = version || this.apiVersion;
+      const apiVersion = this.apiVersion;
 
       window.parent.postMessage({ method: 'api', args: { params, apiVersion }, requestId }, '*');
 

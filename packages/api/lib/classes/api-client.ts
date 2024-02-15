@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { ApiVersionType, QueryVariables, defaultVersion } from '../constants';
+import { ApiVersionType, QueryVariables } from '../constants';
 import { Sdk, getSdk } from '../generated/sdk';
 
 /**
@@ -19,17 +19,31 @@ export class ApiClient {
    * the specified authentication token and API version.
    *
    * @param {string} token - The authentication token required for making API requests to Monday.com.
-   * @param {ApiVersionType} [apiVersion=defaultVersion] - The API version to use for requests.
+   * @param {ApiVersionType} [apiVersion=defaultVersion] - COMING SOON - NOW IT WILL ALWAYS USE 2024-04. The API version to use for requests.
    *        Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    *        Defaults to `stable` if not specified.
    */
-  constructor(token: string, apiVersion: ApiVersionType = defaultVersion) {
-    this.apiVersion = apiVersion;
+  // constructor(token: string, apiVersion: ApiVersionType = defaultVersion) {
+  //   this.apiVersion = apiVersion;
+  //   this.client = new GraphQLClient('https://api.monday.com/v2', {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       Authorization: token,
+  //       'API-Version': apiVersion,
+  //       'Api-Sdk-Version': '0.1.0',
+  //     },
+  //   });
+
+  //   this.operations = getSdk(this.client);
+  // }
+
+  constructor(token: string) {
+    this.apiVersion = '2024-04';
     this.client = new GraphQLClient('https://api.monday.com/v2', {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: token.toString(),
-        'API-Version': apiVersion.toString(),
+        Authorization: token,
+        'API-Version': this.apiVersion,
         'Api-Sdk-Version': '0.1.0',
       },
     });
