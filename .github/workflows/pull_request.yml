@@ -4,6 +4,9 @@ jobs:
   validate:
     name: Run validations
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ['api', 'api-types', 'setup-api']
     steps:
       - uses: actions/checkout@master
       - name: Use Node.js
@@ -14,3 +17,7 @@ jobs:
       - run: npm run prettier --workspaces
       - run: npm run lint --workspaces
       - run: npm run build --workspaces
+      - name: Install Dependencies
+        run: cd packages/${{ matrix.package }} && npm install
+      - name: Run Tests
+        run: cd packages/${{ matrix.package }} && npm test
