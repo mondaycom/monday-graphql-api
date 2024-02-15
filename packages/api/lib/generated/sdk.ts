@@ -82,6 +82,8 @@ export type AppInstall = {
   app_install_user: AppInstallUser;
   /** The app's version details */
   app_version?: Maybe<AppVersion>;
+  /** The required and approved scopes for an app install. */
+  permissions?: Maybe<AppInstallPermissions>;
   /** Installation date */
   timestamp?: Maybe<Scalars['String']['output']>;
 };
@@ -91,6 +93,15 @@ export type AppInstallAccount = {
   __typename?: 'AppInstallAccount';
   /** The app's installer account id. */
   id: Scalars['Int']['output'];
+};
+
+/** The required and approved scopes for an app install. */
+export type AppInstallPermissions = {
+  __typename?: 'AppInstallPermissions';
+  /** The scopes approved by the account admin */
+  approved_scopes: Array<Scalars['String']['output']>;
+  /** The scopes required by the latest live version */
+  required_scopes: Array<Scalars['String']['output']>;
 };
 
 /** An app installer's user details */
@@ -105,6 +116,36 @@ export type AppMonetizationStatus = {
   __typename?: 'AppMonetizationStatus';
   /** Is apps monetization is supported for the account */
   is_supported: Scalars['Boolean']['output'];
+};
+
+/** The account subscription details for the app. */
+export type AppSubscription = {
+  __typename?: 'AppSubscription';
+  /** The type of the billing period [monthly/yearly]. */
+  billing_period?: Maybe<Scalars['String']['output']>;
+  /** The number of days left until the subscription ends. */
+  days_left?: Maybe<Scalars['Int']['output']>;
+  /** Is the subscription a trial */
+  is_trial?: Maybe<Scalars['Boolean']['output']>;
+  /** The subscription plan id (on the app's side). */
+  plan_id: Scalars['String']['output'];
+  /** The pricing version of subscription plan. */
+  pricing_version?: Maybe<Scalars['Int']['output']>;
+  /** The subscription renewal date. */
+  renewal_date: Scalars['Date']['output'];
+};
+
+/** The Operations counter response for the app action. */
+export type AppSubscriptionOperationsCounter = {
+  __typename?: 'AppSubscriptionOperationsCounter';
+  /** The account subscription details for the app. */
+  app_subscription?: Maybe<AppSubscription>;
+  /** The new counter value. */
+  counter_value?: Maybe<Scalars['Int']['output']>;
+  /** Operations name. */
+  kind: Scalars['String']['output'];
+  /** Window key. */
+  period_key?: Maybe<Scalars['String']['output']>;
 };
 
 /** An app's version details. */
@@ -213,6 +254,8 @@ export type Board = {
   updated_at?: Maybe<Scalars['ISO8601DateTime']['output']>;
   /** The board's updates. */
   updates?: Maybe<Array<Maybe<Update>>>;
+  /** The Board's url */
+  url: Scalars['String']['output'];
   /** The board's views. */
   views?: Maybe<Array<Maybe<BoardView>>>;
   /** The workspace that contains this board (null for main workspace). */
@@ -1037,6 +1080,8 @@ export type Item = {
   updated_at?: Maybe<Scalars['Date']['output']>;
   /** The item's updates. */
   updates?: Maybe<Array<Maybe<Update>>>;
+  /** The item's link */
+  url: Scalars['String']['output'];
 };
 
 /** An item (table row). */
@@ -1436,6 +1481,8 @@ export type Mutation = {
   duplicate_group?: Maybe<Group>;
   /** Duplicate an item. */
   duplicate_item?: Maybe<Item>;
+  /** Increase operations counter */
+  increase_app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
   /** Like an update. */
   like_update?: Maybe<Update>;
   /** Move an item to a different board. */
@@ -1607,6 +1654,7 @@ export type MutationCreate_FolderArgs = {
 /** Update your monday.com data. */
 export type MutationCreate_GroupArgs = {
   board_id: Scalars['ID']['input'];
+  group_color?: InputMaybe<Scalars['String']['input']>;
   group_name: Scalars['String']['input'];
   position?: InputMaybe<Scalars['String']['input']>;
   position_relative_method?: InputMaybe<PositionRelative>;
@@ -1755,6 +1803,12 @@ export type MutationDuplicate_ItemArgs = {
   board_id: Scalars['ID']['input'];
   item_id?: InputMaybe<Scalars['ID']['input']>;
   with_updates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Update your monday.com data. */
+export type MutationIncrease_App_Subscription_OperationsArgs = {
+  increment_by?: InputMaybe<Scalars['Int']['input']>;
+  kind?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Update your monday.com data. */
@@ -1984,6 +2038,8 @@ export type Query = {
   complexity?: Maybe<Complexity>;
   /** Get a collection of folders. Note: This query won't return folders from closed workspaces to which you are not subscribed */
   folders?: Maybe<Array<Maybe<Folder>>>;
+  /** Get operations counter current value */
+  increase_app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
   /** Get a collection of items. */
   items?: Maybe<Array<Maybe<Item>>>;
   /** Search items by multiple columns and values. */
@@ -2012,6 +2068,7 @@ export type Query = {
 
 /** Get your data from monday.com */
 export type QueryApp_InstallsArgs = {
+  account_id?: InputMaybe<Scalars['ID']['input']>;
   app_id: Scalars['ID']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2039,6 +2096,11 @@ export type QueryFoldersArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   workspace_ids?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+};
+
+/** Get your data from monday.com */
+export type QueryIncrease_App_Subscription_OperationsArgs = {
+  kind?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Get your data from monday.com */
@@ -2503,6 +2565,8 @@ export enum UserKind {
 /** An object containing the API version details */
 export type Version = {
   __typename?: 'Version';
+  /** The display name of the API version */
+  display_name: Scalars['String']['output'];
   /** The type of the API version */
   kind: VersionKind;
   /** Version string that can be used in API-Version header */
@@ -2511,16 +2575,16 @@ export type Version = {
 
 /** All possible API version types */
 export enum VersionKind {
-  /** Previous stable version. Migrate to current stable as soon as possible. */
+  /** Current version */
+  Current = 'current',
+  /** No longer supported version. Migrate to current version as soon as possible */
   Deprecated = 'deprecated',
   /** Bleeding-edge rolling version that constantly changes */
   Dev = 'dev',
-  /** Next version to become stable. */
-  Preview = 'preview',
-  /** Current version. */
-  Stable = 'stable',
-  /** No longer supported version. Migrate to current stable as soon as possible. */
-  Unsupported = 'unsupported',
+  /** Previous version. Migrate to current version as soon as possible */
+  Maintenance = 'maintenance',
+  /** Next version */
+  ReleaseCandidate = 'release_candidate',
 }
 
 export type VoteValue = ColumnValue & {
@@ -2540,6 +2604,8 @@ export type VoteValue = ColumnValue & {
   vote_count: Scalars['Int']['output'];
   /** A list of IDs of users who voted */
   voter_ids: Array<Scalars['ID']['output']>;
+  /** A list of users who voted */
+  voters: Array<User>;
 };
 
 /** Monday webhooks */
