@@ -6,7 +6,8 @@
   "scripts": {
     "build": "echo \"No build step\"",
     "prettier": "prettier --write \"generated/*.ts\"",
-    "lint": "eslint --fix \"generated/*.ts\""
+    "lint": "eslint --fix \"generated/*.ts\"",
+    "test": ""
   },
   "author": "monday.com Api Team",
   "license": "MIT",
