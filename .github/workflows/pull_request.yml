@@ -1,15 +1,22 @@
 on: pull_request
 name: Pull Request
 jobs:
-  validate:
+  test:
     name: Run validations
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ['api', 'api-types', setup-api]
     steps:
       - uses: actions/checkout@master
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18.12.x'
+      - name: Install Dependencies
+        run: cd ${{ matrix.package }} && npm install
+      - name: Run Tests
+        run: cd ${{ matrix.package }} && npm test
       - run: npm ci
       - run: npm run prettier --workspaces
       - run: npm run lint --workspaces
