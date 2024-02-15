@@ -7,7 +7,7 @@
     "build": "echo \"No build step\"",
     "prettier": "prettier --write \"generated/*.ts\"",
     "lint": "eslint --fix \"generated/*.ts\"",
-    "test": ""
+    "test": "jest -c"
   },
   "author": "monday.com Api Team",
   "license": "MIT",
