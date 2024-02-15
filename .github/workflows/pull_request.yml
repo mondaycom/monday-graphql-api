@@ -14,9 +14,9 @@ jobs:
         with:
           node-version: '18.12.x'
       - name: Install Dependencies
-        run: cd ${{ matrix.package }} && npm install
+        run: cd packages/${{ matrix.package }} && npm install
       - name: Run Tests
-        run: cd ${{ matrix.package }} && npm test
+        run: cd packages/${{ matrix.package }} && npm test
       - run: npm ci
       - run: npm run prettier --workspaces
       - run: npm run lint --workspaces
