@@ -7,7 +7,7 @@
     "build": "echo \"No build step\"",
     "prettier": "prettier --write \"generated/*.ts\"",
     "lint": "eslint --fix \"generated/*.ts\"",
-    "test": ""
+    "test": "jest -c"
   },
   "author": "monday.com Api Team",
   "license": "MIT",
@@ -15,5 +15,11 @@
     "monday",
     "api",
     "graphql"
-  ]
+  ],
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.18",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2"
+  }
 }
