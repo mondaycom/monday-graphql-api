@@ -1,10 +1,12 @@
 export enum AvailableVersions {
   DEPRECATED = 'deprecated',
-  STABLE = 'stable',
-  PREVIEW = 'preview',
+  MAINTENANCE = 'maintenance',
+  CURRENT = 'current',
+  RELEASE_CANDIDATE = 'release_candidate',
+  DEV = 'dev',
 }
 
-export const defaultVersion = AvailableVersions.STABLE;
+export const defaultVersion = AvailableVersions.CURRENT;
 
 export type ApiVersionType = AvailableVersions | string;
 
