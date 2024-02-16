@@ -1,4 +1,4 @@
-import { ApiVersionType, QueryVariables } from '../constants';
+import { ApiVersionType, QueryVariables } from '../constants/index';
 
 interface ListenerCallback {
   (data: any): void;

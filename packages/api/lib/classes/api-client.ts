@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { ApiVersionType, QueryVariables } from '../constants';
+import { ApiVersionType, QueryVariables } from '../constants/index';
 import { Sdk, getSdk } from '../generated/sdk';
 
 /**
