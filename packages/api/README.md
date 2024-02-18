@@ -4,7 +4,7 @@ This will explain how to use our provided operations and their types to start wo
 All the exported types will correspond to the stable version, with no regard to the version you specify
 If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
 
-1. If using outside of an app, use @mondaycom/setup-api
+1. If using outside of an app, install @mondaycom/setup-api and run setup-api-monday in your app root directory
 2. If using within an app, run @mondaycom/apps-cli in your app root directory
 
 ```typescript
