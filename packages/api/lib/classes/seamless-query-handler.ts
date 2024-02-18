@@ -43,7 +43,7 @@ export class SeamlessApiHandler {
    * @param {ApiVersionType} [version] - COMING SOON - NOW IT WILL ALWAYS USE 2024-04. An optional API version string. If provided, this version overrides
    *                                     the class's default API version for this specific query.
    *                                     Can be one of the predefined versions in `AvailableVersions` or a custom version string.
-   * @param {number} [timeout=1000] - An optional timeout value in milliseconds for the request. The default is 10 seconds.
+   * @param {number} [timeout=60000] - An optional timeout value in milliseconds for the request. The default is 60 seconds.
    * @returns {Promise<T>} A promise that resolves with the query result.
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if called from within the monday.com platform and the request failed, or if the request timed out.
@@ -52,7 +52,7 @@ export class SeamlessApiHandler {
     query: string,
     variables?: QueryVariables,
     // version?: ApiVersionType,
-    timeout: number = 1000,
+    timeout: number = 60000,
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const requestId = this.generateRequestId();
