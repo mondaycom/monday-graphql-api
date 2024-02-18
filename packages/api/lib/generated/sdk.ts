@@ -82,6 +82,8 @@ export type AppInstall = {
   app_install_user: AppInstallUser;
   /** The app's version details */
   app_version?: Maybe<AppVersion>;
+  /** The required and approved scopes for an app install. */
+  permissions?: Maybe<AppInstallPermissions>;
   /** Installation date */
   timestamp?: Maybe<Scalars['String']['output']>;
 };
@@ -91,6 +93,15 @@ export type AppInstallAccount = {
   __typename?: 'AppInstallAccount';
   /** The app's installer account id. */
   id: Scalars['Int']['output'];
+};
+
+/** The required and approved scopes for an app install. */
+export type AppInstallPermissions = {
+  __typename?: 'AppInstallPermissions';
+  /** The scopes approved by the account admin */
+  approved_scopes: Array<Scalars['String']['output']>;
+  /** The scopes required by the latest live version */
+  required_scopes: Array<Scalars['String']['output']>;
 };
 
 /** An app installer's user details */
@@ -105,6 +116,36 @@ export type AppMonetizationStatus = {
   __typename?: 'AppMonetizationStatus';
   /** Is apps monetization is supported for the account */
   is_supported: Scalars['Boolean']['output'];
+};
+
+/** The account subscription details for the app. */
+export type AppSubscription = {
+  __typename?: 'AppSubscription';
+  /** The type of the billing period [monthly/yearly]. */
+  billing_period?: Maybe<Scalars['String']['output']>;
+  /** The number of days left until the subscription ends. */
+  days_left?: Maybe<Scalars['Int']['output']>;
+  /** Is the subscription a trial */
+  is_trial?: Maybe<Scalars['Boolean']['output']>;
+  /** The subscription plan id (on the app's side). */
+  plan_id: Scalars['String']['output'];
+  /** The pricing version of subscription plan. */
+  pricing_version?: Maybe<Scalars['Int']['output']>;
+  /** The subscription renewal date. */
+  renewal_date: Scalars['Date']['output'];
+};
+
+/** The Operations counter response for the app action. */
+export type AppSubscriptionOperationsCounter = {
+  __typename?: 'AppSubscriptionOperationsCounter';
+  /** The account subscription details for the app. */
+  app_subscription?: Maybe<AppSubscription>;
+  /** The new counter value. */
+  counter_value?: Maybe<Scalars['Int']['output']>;
+  /** Operations name. */
+  kind: Scalars['String']['output'];
+  /** Window key. */
+  period_key?: Maybe<Scalars['String']['output']>;
 };
 
 /** An app's version details. */
@@ -213,6 +254,8 @@ export type Board = {
   updated_at?: Maybe<Scalars['ISO8601DateTime']['output']>;
   /** The board's updates. */
   updates?: Maybe<Array<Maybe<Update>>>;
+  /** The Board's url */
+  url: Scalars['String']['output'];
   /** The board's views. */
   views?: Maybe<Array<Maybe<BoardView>>>;
   /** The workspace that contains this board (null for main workspace). */
@@ -520,6 +563,8 @@ export enum ColumnType {
   Numbers = 'numbers',
   /** Assign people to improve team work */
   People = 'people',
+  /** Assign a person to increase ownership and accountability (deprecated) */
+  Person = 'person',
   /** Call your contacts directly from monday.com */
   Phone = 'phone',
   /** Show progress by combining status columns in a battery */
@@ -1035,6 +1080,8 @@ export type Item = {
   updated_at?: Maybe<Scalars['Date']['output']>;
   /** The item's updates. */
   updates?: Maybe<Array<Maybe<Update>>>;
+  /** The item's link */
+  url: Scalars['String']['output'];
 };
 
 /** An item (table row). */
@@ -1093,11 +1140,23 @@ export type ItemsPageByColumnValuesQuery = {
 };
 
 export type ItemsQuery = {
+  /** A list of rule groups */
+  groups?: InputMaybe<Array<ItemsQueryGroup>>;
   /** A list of item IDs to fetch. Use this to fetch a specific set of items by their IDs. Max: 100 IDs */
   ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  /** The operator to use for the query rules */
+  /** The operator to use for the query rules or rule groups */
   operator?: InputMaybe<ItemsQueryOperator>;
   order_by?: InputMaybe<Array<ItemsQueryOrderBy>>;
+  /** A list of rules */
+  rules?: InputMaybe<Array<ItemsQueryRule>>;
+};
+
+export type ItemsQueryGroup = {
+  /** A list of rule groups */
+  groups?: InputMaybe<Array<ItemsQueryGroup>>;
+  /** The operator to use for the query rules or rule groups */
+  operator?: InputMaybe<ItemsQueryOperator>;
+  /** A list of rules */
   rules?: InputMaybe<Array<ItemsQueryRule>>;
 };
 
@@ -1324,6 +1383,7 @@ export type MirroredValue =
   | MirrorValue
   | NumbersValue
   | PeopleValue
+  | PersonValue
   | PhoneValue
   | ProgressValue
   | RatingValue
@@ -1433,6 +1493,8 @@ export type Mutation = {
   duplicate_group?: Maybe<Group>;
   /** Duplicate an item. */
   duplicate_item?: Maybe<Item>;
+  /** Increase operations counter */
+  increase_app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
   /** Like an update. */
   like_update?: Maybe<Update>;
   /** Move an item to a different board. */
@@ -1604,6 +1666,7 @@ export type MutationCreate_FolderArgs = {
 /** Update your monday.com data. */
 export type MutationCreate_GroupArgs = {
   board_id: Scalars['ID']['input'];
+  group_color?: InputMaybe<Scalars['String']['input']>;
   group_name: Scalars['String']['input'];
   position?: InputMaybe<Scalars['String']['input']>;
   position_relative_method?: InputMaybe<PositionRelative>;
@@ -1755,6 +1818,12 @@ export type MutationDuplicate_ItemArgs = {
 };
 
 /** Update your monday.com data. */
+export type MutationIncrease_App_Subscription_OperationsArgs = {
+  increment_by?: InputMaybe<Scalars['Int']['input']>;
+  kind?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Update your monday.com data. */
 export type MutationLike_UpdateArgs = {
   update_id?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -1893,6 +1962,23 @@ export type PeopleValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
+export type PersonValue = ColumnValue & {
+  __typename?: 'PersonValue';
+  /** The column that this value belongs to. */
+  column: Column;
+  /** The column's unique identifier. */
+  id: Scalars['ID']['output'];
+  /** The person assigned to the item. */
+  person_id?: Maybe<Scalars['ID']['output']>;
+  text?: Maybe<Scalars['String']['output']>;
+  /** The column's type. */
+  type: ColumnType;
+  /** The date when column value was last updated. */
+  updated_at?: Maybe<Scalars['Date']['output']>;
+  /** The column's raw value in JSON format. */
+  value?: Maybe<Scalars['JSON']['output']>;
+};
+
 export type PhoneValue = ColumnValue & {
   __typename?: 'PhoneValue';
   /** The column that this value belongs to. */
@@ -1964,6 +2050,8 @@ export type Query = {
   complexity?: Maybe<Complexity>;
   /** Get a collection of folders. Note: This query won't return folders from closed workspaces to which you are not subscribed */
   folders?: Maybe<Array<Maybe<Folder>>>;
+  /** Get operations counter current value */
+  increase_app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
   /** Get a collection of items. */
   items?: Maybe<Array<Maybe<Item>>>;
   /** Search items by multiple columns and values. */
@@ -1992,6 +2080,7 @@ export type Query = {
 
 /** Get your data from monday.com */
 export type QueryApp_InstallsArgs = {
+  account_id?: InputMaybe<Scalars['ID']['input']>;
   app_id: Scalars['ID']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -2019,6 +2108,11 @@ export type QueryFoldersArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   workspace_ids?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+};
+
+/** Get your data from monday.com */
+export type QueryIncrease_App_Subscription_OperationsArgs = {
+  kind?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Get your data from monday.com */
@@ -2483,7 +2577,9 @@ export enum UserKind {
 /** An object containing the API version details */
 export type Version = {
   __typename?: 'Version';
-  /** The type of the API version (unsupported / deprecated / stable / preview / dev) */
+  /** The display name of the API version */
+  display_name: Scalars['String']['output'];
+  /** The type of the API version */
   kind: VersionKind;
   /** Version string that can be used in API-Version header */
   value: Scalars['String']['output'];
@@ -2491,16 +2587,16 @@ export type Version = {
 
 /** All possible API version types */
 export enum VersionKind {
-  /** Previous stable version. Migrate to current stable as soon as possible. */
+  /** Current version */
+  Current = 'current',
+  /** No longer supported version. Migrate to current version as soon as possible */
   Deprecated = 'deprecated',
   /** Bleeding-edge rolling version that constantly changes */
   Dev = 'dev',
-  /** Next version to become stable. */
-  Preview = 'preview',
-  /** Current version. */
-  Stable = 'stable',
-  /** No longer supported version. Migrate to current stable as soon as possible. */
-  Unsupported = 'unsupported',
+  /** Previous version. Migrate to current version as soon as possible */
+  Maintenance = 'maintenance',
+  /** Next version */
+  ReleaseCandidate = 'release_candidate',
 }
 
 export type VoteValue = ColumnValue & {
@@ -2520,6 +2616,8 @@ export type VoteValue = ColumnValue & {
   vote_count: Scalars['Int']['output'];
   /** A list of IDs of users who voted */
   voter_ids: Array<Scalars['ID']['output']>;
+  /** A list of users who voted */
+  voters: Array<User>;
 };
 
 /** Monday webhooks */
@@ -2710,14 +2808,177 @@ export type WorldClockValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
-export type GetMeQueryVariables = Exact<{ [key: string]: never }>;
+export type GetMeOpQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetMeQuery = {
+export type GetMeOpQuery = {
   __typename?: 'Query';
   me?: { __typename?: 'User'; id: string; name: string; email: string } | null;
 };
 
 export type UserFieldsFragment = { __typename?: 'User'; id: string; name: string; email: string };
+
+export type ChangeSimpleColumnValueOpMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  itemId: Scalars['ID']['input'];
+  columnId: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+}>;
+
+export type ChangeSimpleColumnValueOpMutation = {
+  __typename?: 'Mutation';
+  change_simple_column_value?: { __typename?: 'Item'; id: string } | null;
+};
+
+export type ChangeColumnValueOpMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  itemId: Scalars['ID']['input'];
+  columnId: Scalars['String']['input'];
+  value: Scalars['JSON']['input'];
+}>;
+
+export type ChangeColumnValueOpMutation = {
+  __typename?: 'Mutation';
+  change_column_value?: { __typename?: 'Item'; id: string } | null;
+};
+
+export type CreateItemOpMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  groupId: Scalars['String']['input'];
+  itemName: Scalars['String']['input'];
+}>;
+
+export type CreateItemOpMutation = {
+  __typename?: 'Mutation';
+  create_item?: { __typename?: 'Item'; id: string; name: string } | null;
+};
+
+export type ChangeMultipleColumnValuesOpMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  itemId: Scalars['ID']['input'];
+  columnValues: Scalars['JSON']['input'];
+}>;
+
+export type ChangeMultipleColumnValuesOpMutation = {
+  __typename?: 'Mutation';
+  change_multiple_column_values?: {
+    __typename?: 'Item';
+    id: string;
+    name: string;
+    column_values: Array<
+      | { __typename?: 'BoardRelationValue'; id: string; value?: any | null }
+      | { __typename?: 'ButtonValue'; id: string; value?: any | null }
+      | { __typename?: 'CheckboxValue'; id: string; value?: any | null }
+      | { __typename?: 'ColorPickerValue'; id: string; value?: any | null }
+      | { __typename?: 'CountryValue'; id: string; value?: any | null }
+      | { __typename?: 'CreationLogValue'; id: string; value?: any | null }
+      | { __typename?: 'DateValue'; id: string; value?: any | null }
+      | { __typename?: 'DependencyValue'; id: string; value?: any | null }
+      | { __typename?: 'DocValue'; id: string; value?: any | null }
+      | { __typename?: 'DropdownValue'; id: string; value?: any | null }
+      | { __typename?: 'EmailValue'; id: string; value?: any | null }
+      | { __typename?: 'FileValue'; id: string; value?: any | null }
+      | { __typename?: 'FormulaValue'; id: string; value?: any | null }
+      | { __typename?: 'GroupValue'; id: string; value?: any | null }
+      | { __typename?: 'HourValue'; id: string; value?: any | null }
+      | { __typename?: 'IntegrationValue'; id: string; value?: any | null }
+      | { __typename?: 'ItemIdValue'; id: string; value?: any | null }
+      | { __typename?: 'LastUpdatedValue'; id: string; value?: any | null }
+      | { __typename?: 'LinkValue'; id: string; value?: any | null }
+      | { __typename?: 'LocationValue'; id: string; value?: any | null }
+      | { __typename?: 'LongTextValue'; id: string; value?: any | null }
+      | { __typename?: 'MirrorValue'; id: string; value?: any | null }
+      | { __typename?: 'NumbersValue'; id: string; value?: any | null }
+      | { __typename?: 'PeopleValue'; id: string; value?: any | null }
+      | { __typename?: 'PersonValue'; id: string; value?: any | null }
+      | { __typename?: 'PhoneValue'; id: string; value?: any | null }
+      | { __typename?: 'ProgressValue'; id: string; value?: any | null }
+      | { __typename?: 'RatingValue'; id: string; value?: any | null }
+      | { __typename?: 'StatusValue'; id: string; value?: any | null }
+      | { __typename?: 'SubtasksValue'; id: string; value?: any | null }
+      | { __typename?: 'TagsValue'; id: string; value?: any | null }
+      | { __typename?: 'TeamValue'; id: string; value?: any | null }
+      | { __typename?: 'TextValue'; id: string; value?: any | null }
+      | { __typename?: 'TimeTrackingValue'; id: string; value?: any | null }
+      | { __typename?: 'TimelineValue'; id: string; value?: any | null }
+      | { __typename?: 'UnsupportedValue'; id: string; value?: any | null }
+      | { __typename?: 'VoteValue'; id: string; value?: any | null }
+      | { __typename?: 'WeekValue'; id: string; value?: any | null }
+      | { __typename?: 'WorldClockValue'; id: string; value?: any | null }
+    >;
+  } | null;
+};
+
+export type GetBoardItemsOpQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+export type GetBoardItemsOpQuery = {
+  __typename?: 'Query';
+  boards?: Array<{
+    __typename?: 'Board';
+    items_page: {
+      __typename?: 'ItemsResponse';
+      items: Array<{
+        __typename?: 'Item';
+        id: string;
+        name: string;
+        column_values: Array<
+          | { __typename?: 'BoardRelationValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'ButtonValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'CheckboxValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'ColorPickerValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'CountryValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'CreationLogValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'DateValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'DependencyValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'DocValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'DropdownValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'EmailValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'FileValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'FormulaValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'GroupValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'HourValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'IntegrationValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'ItemIdValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'LastUpdatedValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'LinkValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'LocationValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'LongTextValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'MirrorValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'NumbersValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'PeopleValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'PersonValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'PhoneValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'ProgressValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'RatingValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'StatusValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'SubtasksValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'TagsValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'TeamValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'TextValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'TimeTrackingValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'TimelineValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'UnsupportedValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'VoteValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'WeekValue'; id: string; type: ColumnType; value?: any | null }
+          | { __typename?: 'WorldClockValue'; id: string; type: ColumnType; value?: any | null }
+        >;
+      }>;
+    };
+  } | null> | null;
+};
+
+export type GetBoardGroupsOpQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+export type GetBoardGroupsOpQuery = {
+  __typename?: 'Query';
+  boards?: Array<{
+    __typename?: 'Board';
+    groups?: Array<{ __typename?: 'Group'; id: string; title: string } | null> | null;
+  } | null> | null;
+};
 
 export const UserFieldsFragmentDoc = gql`
   fragment UserFields on User {
@@ -2726,13 +2987,74 @@ export const UserFieldsFragmentDoc = gql`
     email
   }
 `;
-export const GetMeDocument = gql`
-  query getMe {
+export const GetMeOpDocument = gql`
+  query getMeOp {
     me {
       ...UserFields
     }
   }
   ${UserFieldsFragmentDoc}
+`;
+export const ChangeSimpleColumnValueOpDocument = gql`
+  mutation changeSimpleColumnValueOp($boardId: ID!, $itemId: ID!, $columnId: String!, $value: String!) {
+    change_simple_column_value(board_id: $boardId, item_id: $itemId, column_id: $columnId, value: $value) {
+      id
+    }
+  }
+`;
+export const ChangeColumnValueOpDocument = gql`
+  mutation changeColumnValueOp($boardId: ID!, $itemId: ID!, $columnId: String!, $value: JSON!) {
+    change_column_value(board_id: $boardId, item_id: $itemId, column_id: $columnId, value: $value) {
+      id
+    }
+  }
+`;
+export const CreateItemOpDocument = gql`
+  mutation createItemOp($boardId: ID!, $groupId: String!, $itemName: String!) {
+    create_item(board_id: $boardId, group_id: $groupId, item_name: $itemName) {
+      id
+      name
+    }
+  }
+`;
+export const ChangeMultipleColumnValuesOpDocument = gql`
+  mutation changeMultipleColumnValuesOp($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
+    change_multiple_column_values(board_id: $boardId, item_id: $itemId, column_values: $columnValues) {
+      id
+      name
+      column_values {
+        id
+        value
+      }
+    }
+  }
+`;
+export const GetBoardItemsOpDocument = gql`
+  query getBoardItemsOp($ids: [ID!]!) {
+    boards(ids: $ids) {
+      items_page {
+        items {
+          id
+          name
+          column_values {
+            id
+            type
+            value
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetBoardGroupsOpDocument = gql`
+  query getBoardGroupsOp($ids: [ID!]!) {
+    boards(ids: $ids) {
+      groups {
+        id
+        title
+      }
+    }
+  }
 `;
 
 export type SdkFunctionWrapper = <T>(
@@ -2746,11 +3068,101 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    getMe(variables?: GetMeQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMeQuery> {
+    getMeOp(variables?: GetMeOpQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMeOpQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<GetMeQuery>(GetMeDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
-        'getMe',
+          client.request<GetMeOpQuery>(GetMeOpDocument, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
+        'getMeOp',
+        'query',
+        variables,
+      );
+    },
+    changeSimpleColumnValueOp(
+      variables: ChangeSimpleColumnValueOpMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<ChangeSimpleColumnValueOpMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ChangeSimpleColumnValueOpMutation>(ChangeSimpleColumnValueOpDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'changeSimpleColumnValueOp',
+        'mutation',
+        variables,
+      );
+    },
+    changeColumnValueOp(
+      variables: ChangeColumnValueOpMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<ChangeColumnValueOpMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ChangeColumnValueOpMutation>(ChangeColumnValueOpDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'changeColumnValueOp',
+        'mutation',
+        variables,
+      );
+    },
+    createItemOp(
+      variables: CreateItemOpMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<CreateItemOpMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateItemOpMutation>(CreateItemOpDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'createItemOp',
+        'mutation',
+        variables,
+      );
+    },
+    changeMultipleColumnValuesOp(
+      variables: ChangeMultipleColumnValuesOpMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<ChangeMultipleColumnValuesOpMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ChangeMultipleColumnValuesOpMutation>(ChangeMultipleColumnValuesOpDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'changeMultipleColumnValuesOp',
+        'mutation',
+        variables,
+      );
+    },
+    getBoardItemsOp(
+      variables: GetBoardItemsOpQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<GetBoardItemsOpQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetBoardItemsOpQuery>(GetBoardItemsOpDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'getBoardItemsOp',
+        'query',
+        variables,
+      );
+    },
+    getBoardGroupsOp(
+      variables: GetBoardGroupsOpQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<GetBoardGroupsOpQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetBoardGroupsOpQuery>(GetBoardGroupsOpDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'getBoardGroupsOp',
         'query',
         variables,
       );
