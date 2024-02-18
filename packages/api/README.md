@@ -2,8 +2,17 @@
 
 This will explain how to use our provided operations and their types to start working with the api
 All the exported types will correspond to the stable version, with no regard to the version you specify
-If you need a different version OR When you'l want to write your own TYPED queries - go to @mondaycom/setup-api to get your environemt ready with examples!
-(can also see one example here in the seamless query handler section)
+If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
+
+1. If using outside of an app, use @mondaycom/setup-api
+2. If using within an app, run @mondaycom/apps-cli in your app root directory
+
+```typescript
+mapps api:generate 
+```
+
+Both options will prepare your environemt with examples!
+(You can also find an example in the "Seamless Query Handler" section)
 
 ## Monday GraphQL JS SDK
 
