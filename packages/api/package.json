@@ -13,7 +13,9 @@
     "build": "rollup -c",
     "prettier": "prettier --write \"lib/**/*.ts\"",
     "lint": "eslint --fix \"lib/**/*.ts\"",
-    "watch": "rollup -c -w"
+    "test": "jest -c",
+    "watch": "rollup -c -w",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "graphql-request": "^6.1.0",
@@ -22,7 +24,7 @@
   "engines": {
     "node": ">= 16.20.0"
   },
-  "author": "monday.com Apps Team",
+  "author": "monday.com Api Team",
   "license": "MIT",
   "keywords": [
     "monday",
@@ -33,7 +35,13 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "rollup": "^2.79.1"
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.18",
+    "jest": "^29.7.0",
+    "rollup": "^2.79.1",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
   }
 }

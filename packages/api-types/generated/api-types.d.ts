@@ -517,6 +517,8 @@ export enum ColumnType {
   Numbers = 'numbers',
   /** Assign people to improve team work */
   People = 'people',
+  /** Assign a person to increase ownership and accountability (deprecated) */
+  Person = 'person',
   /** Call your contacts directly from monday.com */
   Phone = 'phone',
   /** Show progress by combining status columns in a battery */
@@ -1321,6 +1323,7 @@ export type MirroredValue =
   | MirrorValue
   | NumbersValue
   | PeopleValue
+  | PersonValue
   | PhoneValue
   | ProgressValue
   | RatingValue
@@ -1881,6 +1884,23 @@ export type PeopleValue = ColumnValue & {
   id: Scalars['ID']['output'];
   /** The people and teams assigned to the item. */
   persons_and_teams?: Maybe<Array<PeopleEntity>>;
+  text?: Maybe<Scalars['String']['output']>;
+  /** The column's type. */
+  type: ColumnType;
+  /** The date when column value was last updated. */
+  updated_at?: Maybe<Scalars['Date']['output']>;
+  /** The column's raw value in JSON format. */
+  value?: Maybe<Scalars['JSON']['output']>;
+};
+
+export type PersonValue = ColumnValue & {
+  __typename?: 'PersonValue';
+  /** The column that this value belongs to. */
+  column: Column;
+  /** The column's unique identifier. */
+  id: Scalars['ID']['output'];
+  /** The person assigned to the item. */
+  person_id?: Maybe<Scalars['ID']['output']>;
   text?: Maybe<Scalars['String']['output']>;
   /** The column's type. */
   type: ColumnType;

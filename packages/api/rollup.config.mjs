@@ -1,32 +1,24 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
-import json from '@rollup/plugin-json'; // Import the plugin
-
-// Determine if we are in a production environment
-// const production = !process.env.ROLLUP_WATCH;
+import terser from '@rollup/plugin-terser';
+import json from '@rollup/plugin-json';
 
 export default {
-  input: 'lib/index.ts', // Your main TypeScript entry point
+  input: 'lib/index.ts',
   output: [
     {
       file: 'dist/cjs/index.js',
-      format: 'cjs', // CommonJS, for Node, could also be 'amd', 'esm', 'iife', 'umd'
+      format: 'cjs',
       sourcemap: true,
     },
     {
       file: 'dist/esm/index.js',
-      format: 'es', // ES module, for bundlers
+      format: 'es',
       sourcemap: true,
     },
   ],
-  plugins: [
-    resolve(), // tells Rollup how to find external modules
-    commonjs(), // converts CommonJS modules to ES6
-    typescript({ tsconfig: './tsconfig.json' }), // compiles TypeScript to JavaScript
-    json(),
-    // production && terser(), // minify, but only in production
-  ],
+  plugins: [resolve(), commonjs(), typescript({ tsconfig: './tsconfig.json' }), json(), terser()],
 
   external: ['graphql-request', 'graphql-tag'],
 };

@@ -10,8 +10,8 @@ export class ApiClient {
     this.client = new GraphQLClient('https://api.monday.com/v2', {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: token.toString(),
-        'API-Version': apiVersion.toString(),
+        Authorization: token,
+        'API-Version': apiVersion,
         'Api-Sdk-Version': pkg.version,
       },
     });
