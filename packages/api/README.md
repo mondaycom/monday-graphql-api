@@ -7,10 +7,6 @@ If you need a different version OR When you'l want to write your own TYPED queri
 1. If using outside of an app, install @mondaycom/setup-api and run setup-api-monday in your app root directory
 2. If using within an app, run @mondaycom/apps-cli in your app root directory
 
-```typescript
-mapps api:generate 
-```
-
 Both options will prepare your environemt with examples!
 (You can also find an example in the "Seamless Query Handler" section)
 
