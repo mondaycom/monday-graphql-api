@@ -1,4 +1,9 @@
-# Monday GraphQL JS SDK
+# Important
+
+This will explain how to use our provided operations and their types to start working with the api
+All the exported types will correspond to the stable version, with no regard to the version you specify
+
+## Monday GraphQL JS SDK
 
 This SDK provides you with an easy way to interact with monday.com's GraphQL API.
 The SDK is supported in both Node.js and browser environments, and is using the [graphql-request client](https://www.npmjs.com/package/graphql-request) under the hood.
