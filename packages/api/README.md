@@ -1,16 +1,4 @@
-# Important
-
-This will explain how to use our provided operations and their types to start working with the api
-All the exported types will correspond to the stable version, with no regard to the version you specify
-If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
-
-1. If using outside of an app, install @mondaycom/setup-api and run setup-api-monday in your app root directory
-2. If using within an app, run @mondaycom/apps-cli in your app root directory
-
-Both options will prepare your environemt with examples!
-(You can also find an example in the "Seamless Query Handler" section)
-
-## Monday GraphQL JS SDK
+# Monday GraphQL JS SDK
 
 This SDK provides you with an easy way to interact with monday.com's GraphQL API.
 The SDK is supported in both Node.js and browser environments, and is using the [graphql-request client](https://www.npmjs.com/package/graphql-request) under the hood.
