@@ -31,24 +31,6 @@ To install locally in your project:
 npm install -D @mondaycom/setup-api 
 ```
 
-To install globally
-
-```bash
-npm install -g @mondaycom/setup-api 
-```
-
-## Post-Installation Steps
-
-After installing the library globally, you must grant execution permissions to the main script to ensure it can be executed properly. This is a critical step for Unix-like operating systems, such as Linux and macOS.
-
-Execute the following command in your terminal if you installed globally:
-
-```bash
-chmod +x $(npm root -g)/@mondaycom/setup-api/dist/cjs/index.js
-```
-
-This command sets the necessary execution permissions for the library's main script, allowing it to run without encountering permission issues.
-
 ## Running the Setup
 
 With the library installed and the appropriate permissions set, you can now run the setup process in the root directory of your project. Simply execute the following command:
@@ -62,7 +44,7 @@ This command will initiate the library's setup process, automatically configurin
 Afterwards, there will be created 3 scripts.
 "fetch:schema" - Gets the monday api schema
 "codegen" - generates types
-"fetch:gen" - runs both
+"fetch:generate" - runs both
 
 for now do the following to get the schema and create your first type!
 
@@ -70,7 +52,9 @@ for now do the following to get the schema and create your first type!
 npm run fetch:gen 
 ```
 
-### Installing the GraphQL Extension for Visual Studio Code
+## Installing the GraphQL Extension for your IDE
+
+### Visual Studio Code
 
 To enhance your development experience with GraphQL, we recommend installing the GraphQL extension for Visual Studio Code. This extension provides syntax highlighting, linting, auto-complete, and more.
 
@@ -84,9 +68,7 @@ code --install-extension GraphQL.vscode-graphql
 
 Or you can simply go to extensions and add the official graphql extensions (GraphQL: Language Feature Support, GraphQL: Syntax Highlighting)
 
-**For JetBrains IDEs:**
-
-### Installing the GraphQL Plugin for JetBrains IDEs
+### JetBrains IDEs
 
 JetBrains IDEs such as WebStorm or IntelliJ IDEA support GraphQL development through plugins. To install a GraphQL plugin, follow these steps:
 

@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { ApiVersionType, QueryVariables } from '../constants/index';
 import { Sdk, getSdk } from '../generated/sdk';
+import pkg from '../../package.json';
 
 /**
  * The `ApiClient` class provides a structured way to interact with the Monday.com API,
@@ -44,7 +45,7 @@ export class ApiClient {
         'Content-Type': 'application/json',
         Authorization: token,
         'API-Version': this.apiVersion,
-        'Api-Sdk-Version': '0.1.0',
+        'Api-Sdk-Version': pkg.version,
       },
     });
 
