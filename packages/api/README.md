@@ -29,7 +29,7 @@ const client = new ApiClient('<API-TOKEN>');
 const me = await client.operations.getMeOp();
 
 // Example how to change a text column
-const changeTextColumn = await client.operations.ChangeColumnValueOp({
+const changeTextColumn = await client.operations.changeColumnValueOp({
     boardId: "your_board_id",
     itemId: "your_item_id",
     columnId: "text",
@@ -37,7 +37,7 @@ const changeTextColumn = await client.operations.ChangeColumnValueOp({
 });
 
 // Example how to change a status column
-const changeStatusColumn = await client.operations.ChangeColumnValueOp({
+const changeStatusColumn = await client.operations.changeColumnValueOp({
     boardId: "your_board_id",
     itemId: "your_item_id",
     columnId: "project_status", // replace with your column id
