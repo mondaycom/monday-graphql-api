@@ -104,3 +104,9 @@ itemName: "Im using my own queries!",
 };
 const mutationData = client.query<CreateItemMutation>(exampleMutation, mutationVariables);
 ```
+
+## Further configuration
+
+you can also add advanced options for you work environment, for example you can add configuration
+to add react hooks out of your queries (@graphql-codegen/typescript-react-query). simply install the config that best suits you manually Or
+run npm i --save-dev @graphql-codegen/cli and then run graphql-codegen init and choose config that better suits you!
