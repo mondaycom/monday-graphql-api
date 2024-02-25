@@ -23,25 +23,21 @@ your types will be ready to use (as can be seen in the generated folder)
 
 ## Installation
 
-This library is intended to be installed globally, allowing you to set up any project easily. To install, open your terminal and run:
-
-To install locally in your project:
+Run this command on the **root** of your project
 
 ```bash
 npx @mondaydotcomorg/setup-api 
 ```
 
-## Running the Setup
-
-With the library installed and the appropriate permissions set, you can now run the setup process in the root directory of your project. Simply execute the following command:
+If you prefer to install in locally or globally, you can. afterwards run the setup process in the **root** directory of your project. Simply execute the following command:
 
 ```bash
 setup-api-monday
 ```
 
-This command will initiate the library's setup process, automatically configuring your project environment for development with the Monday API and GraphQL.
+## Using the newly created scripts
 
-Afterwards, there will be created 3 scripts.
+After installatiom, you will have 3 new scripts:
 "fetch:schema" - Gets the monday api schema
 "codegen" - generates types
 "fetch:generate" - runs both
