@@ -1,7 +1,12 @@
 # Important
 
 This will explain how to use our provided operations and their types to start working with the api
-All the exported types will correspond to the stable version, with no regard to the version you specify
+For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify
+
+If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
+
+1. If you aren't a monday app developer, use @mondaycom/setup-api
+2. If you are a monday app developer, use @mondaycom/apps-cli in your app root directory, and choose the api:generate option
 
 ## Monday GraphQL JS SDK
 
@@ -26,10 +31,10 @@ import { ApiClient } from '@mondaycom/api';
 const client = new ApiClient('<API-TOKEN>');
 
 // or use the operations provided by the SDK
-const me = await client.operations._getMe();
+const me = await client.operations.getMeOp();
 
 // Example how to change a text column
-const changeTextColumn = await client.operations._ChangeColumnValue({
+const changeTextColumn = await client.operations.changeColumnValueOp({
     boardId: "your_board_id",
     itemId: "your_item_id",
     columnId: "text",
@@ -37,7 +42,7 @@ const changeTextColumn = await client.operations._ChangeColumnValue({
 });
 
 // Example how to change a status column
-const changeStatusColumn = await client.operations._ChangeColumnValue({
+const changeStatusColumn = await client.operations.changeColumnValueOp({
     boardId: "your_board_id",
     itemId: "your_item_id",
     columnId: "project_status", // replace with your column id

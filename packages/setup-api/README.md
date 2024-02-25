@@ -28,7 +28,7 @@ This library is intended to be installed globally, allowing you to set up any pr
 To install locally in your project:
 
 ```bash
-npm install -D @mondaycom/setup-api 
+npx @mondaycom/setup-api 
 ```
 
 ## Running the Setup
