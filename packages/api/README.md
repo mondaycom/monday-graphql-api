@@ -1,7 +1,7 @@
 # Important
 
 This will explain how to use our provided operations and their types to start working with the api
-All the exported types will correspond to the stable version, with no regard to the version you specify
+For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify
 
 ## Monday GraphQL JS SDK
 
@@ -65,31 +65,4 @@ const user: User = {
     name: 'John Doe',
     email: 'john.doe@someorg.com'
 }
-```
-
-## SeamlessApiHandler
-
-The SeamlessApiHandler class is a tool designed for making seamless API requests to Monday.com, tailored for use within the client side of applications deployed on the platform.
-Basically, when you are making an api call from the client side of an app deployed on Monday.com, you dont need to specify the users token.
-
-```typescript
-import {
-  Board,
-} from "@mondaycom/api";
-const { boards } = await seamlessApiHandler.seamlessQuery<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
-
-// or using your own types after integrating with @mondaycom/setup-api
-import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
-const variables: GetBoardsQueryVariables = { ids: ["some_id"] };
-
-export const getBoards = gql`
-  query GetBoards($ids: [ID!]) {
-    boards(ids: $ids) {
-      id
-      name
-    }
-  }
-`;
-
-const data = await seamlessApiHandler.seamlessQuery<GetBoardsQuery>(getBoards, variables);
 ```
