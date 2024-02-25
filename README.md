@@ -2,9 +2,9 @@
 
 This monorepo contains all the packages for the monday.com GraphQL SDKs. Currently, it holds the following packages:
 
-- [@mondaycom/api](./packages/api/README.md)
-- [@mondaycom/api-types](./packages/api-types)
-- [@mondaycom/api](./packages/setup-api)
+- [@mondaydotcomorg/api](./packages/api/README.md)
+- [@mondaydotcomorg/api-types](./packages/api-types)
+- [@mondaydotcomorg/api](./packages/setup-api)
 
 ## Usage of generated code
 

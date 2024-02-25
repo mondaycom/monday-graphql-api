@@ -1,5 +1,5 @@
 {
-  "name": "@mondaycom/api-types",
+  "name": "@mondaydotcomorg/api-types",
   "version": "0.1.0",
   "description": "monday.com API types",
   "types": "generated/api-types.d.ts",

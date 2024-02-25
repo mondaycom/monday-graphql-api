@@ -28,7 +28,7 @@ This library is intended to be installed globally, allowing you to set up any pr
 To install locally in your project:
 
 ```bash
-npx @mondaycom/setup-api 
+npx @mondaydotcomorg/setup-api 
 ```
 
 ## Running the Setup
@@ -92,7 +92,7 @@ When using this package, you will automatically get an example query and an exam
 Here is how to use them!
 
 ```typescript
-const client = new ApiClient("your_api_token"); // From the monday api sdk @mondaycom/api
+const client = new ApiClient("your_api_token"); // From the monday api sdk @mondaydotcomorg/api
 
 const queryVariables: QueryBoardsArgs = { ids: ["your_board_id"] }; // replace with your board id
 const queryData = await client.query<GetBoardsQuery>(exampleQuery, queryVariables);
