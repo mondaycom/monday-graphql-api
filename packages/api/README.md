@@ -3,6 +3,11 @@
 This will explain how to use our provided operations and their types to start working with the api
 For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify
 
+If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
+
+1. If you aren't a monday app developer, use @mondaycom/setup-api
+2. If you are a monday app developer, use @mondaycom/apps-cli in your app root directory, and choose the api:generate option
+
 ## Monday GraphQL JS SDK
 
 This SDK provides you with an easy way to interact with monday.com's GraphQL API.
