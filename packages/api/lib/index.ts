@@ -1,3 +1,3 @@
 export * from './generated/sdk';
-export * from './classes/index';
+export * from './api-client';
 export * from './constants/index';
