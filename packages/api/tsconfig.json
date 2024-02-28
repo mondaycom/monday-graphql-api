@@ -5,7 +5,7 @@
     "module": "ESNext",
     "target": "es5",
     "moduleResolution": "node",
-    "rootDir": "./lib",
+    "rootDirs": ["./lib", "tests"],
     "outDir": "./dist",
     "moduleDetection": "force",
     "strict": true,
@@ -16,5 +16,5 @@
     "resolveJsonModule": true
   },
   "exclude": ["dist", "node_modules"],
-  "include": ["./lib/**/*"]
+  "include": ["./lib/**/*", "tests"]
 }

@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
-import { ApiClient } from '../classes/api-client';
-import pkg from '../../package.json';
+import { ApiClient } from '../lib/api-client';
+import pkg from '../package.json';
 
 jest.mock('graphql-request', () => {
   return {
