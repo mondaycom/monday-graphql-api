@@ -1,7 +1,7 @@
 # Important
 
-This will explain how to use our provided operations and their types to start working with the api
-For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify
+In here you will learn how to use our provided operations and their types to start working with the api.
+For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify.
 
 If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
 
