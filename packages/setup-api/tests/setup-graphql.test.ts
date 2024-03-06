@@ -49,7 +49,7 @@ describe('setupGraphQL', () => {
       (fs.writeFileSync as jest.Mock).mock.calls.find((call) => call[0] === './package.json')[1],
     );
     expect(writtenContent.scripts['fetch:schema']).toEqual('bash fetch-schema.sh');
-    expect(writtenContent.scripts['codgen']).toEqual('graphql-codegen');
-    expect(writtenContent.scripts['fetch:generate']).toEqual('npm run fetch:schema && npm run codgen');
+    expect(writtenContent.scripts['codegen']).toEqual('graphql-codegen');
+    expect(writtenContent.scripts['fetch:generate']).toEqual('npm run fetch:schema && npm run codegen');
   });
 });

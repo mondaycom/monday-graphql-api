@@ -84,8 +84,8 @@ export const updatePackageJsonScripts = () => {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   packageJson.scripts = packageJson.scripts || {};
   packageJson.scripts['fetch:schema'] = 'bash fetch-schema.sh';
-  packageJson.scripts['codgen'] = 'graphql-codegen';
-  packageJson.scripts['fetch:generate'] = 'npm run fetch:schema && npm run codgen';
+  packageJson.scripts['codegen'] = 'graphql-codegen';
+  packageJson.scripts['fetch:generate'] = 'npm run fetch:schema && npm run codegen';
 
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
   console.log('Updated package.json with new scripts');
