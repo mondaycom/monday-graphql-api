@@ -1,23 +1,27 @@
-# Important
+# Monday GraphQL JS SDK
 
-In here you will learn how to use our provided operations and their types to start working with the api.
-For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify.
+The SDK provides a simple way to interact with monday.com's GraphQL platform API, making it easier than ever to get started with our API.
+The SDK abstracts away the complex GraphQL queries, providing simple operations for the most common endpoints such as fetching board data, or creating items.
 
-If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
-
-1. If you aren't a monday app developer, use @mondaydotcomorg/setup-api
-2. If you are a monday app developer, use @mondaydotcomorg/apps-cli in your app root directory, and choose the api:generate option
-
-## Monday GraphQL JS SDK
-
-This SDK provides you with an easy way to interact with monday.com's GraphQL API.
 The SDK is supported in both Node.js and browser environments, and is using the [graphql-request client](https://www.npmjs.com/package/graphql-request) under the hood.
+
+Want to make more complex queries or find out more about what our API has to offer, check out [monday.com's platform API documentation](https://developer.monday.com/api-reference).
 
 ## Installation
 
 ```bash
 npm install @mondaydotcomorg/api
 ```
+
+## Important
+
+For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify.
+
+If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
+
+1. If you aren't a monday app developer, use @mondaydotcomorg/setup-api
+2. If you are a monday app developer, use @mondaydotcomorg/apps-cli in your app root directory, and choose the api:generate option
+(you can find more about app development here [monday-apps-sdk](https://developer.monday.com/apps/docs/introduction-to-the-sdk))
 
 ## Usage
 
