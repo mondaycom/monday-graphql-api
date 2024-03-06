@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/api",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "monday.com API client",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -14,8 +14,7 @@
     "prettier": "prettier --write \"lib/**/*.ts\"",
     "lint": "eslint --fix \"lib/**/*.ts\"",
     "test": "jest -c",
-    "watch": "rollup -c -w",
-    "postinstall": "npm run build"
+    "watch": "rollup -c -w"
   },
   "dependencies": {
     "graphql-request": "^6.1.0",
