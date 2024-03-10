@@ -64,7 +64,7 @@ const { boards } = await client.query<{
 
 ### Using the types
 
-The package exports all the types used by the SDK, so you can use them in your code.
+The package exports all the types used by the SDK, so you can use them in your code
 
 ```typescript
 import { User } from '@mondaydotcomorg/api';
