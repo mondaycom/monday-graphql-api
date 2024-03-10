@@ -23,16 +23,10 @@ your types will be ready to use (as can be seen in the generated folder)
 
 ## Installation
 
-Run this command on the **root** of your project
+Run this command on the **root** directory of your project
 
 ```bash
 npx @mondaydotcomorg/setup-api 
-```
-
-If you prefer to install in locally or globally, you can. afterwards run the setup process in the **root** directory of your project. Simply execute the following command:
-
-```bash
-setup-api-monday
 ```
 
 ## Using the newly created scripts
