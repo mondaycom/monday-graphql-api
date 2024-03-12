@@ -25,10 +25,10 @@ overwrite: true
 schema: "src/schema.graphql"
 documents: "src/**/*.graphql.ts"
 generates:
-src/generated/graphql.ts:
-  plugins:
-    - "typescript"
-    - "typescript-operations"`;
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"`;
 
   fs.writeFileSync('codegen.yml', codegenConfig);
 
