@@ -1,11 +1,11 @@
 {
   "name": "@mondaydotcomorg/setup-api",
-  "version": "0.0.14",
+  "version": "0.0.20",
   "description": "monday.com setup api cli",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && if [ \"$(uname)\" != \"MSYS\" -a \"$(uname)\" != \"MINGW32\" -a \"$(uname)\" != \"MINGW64\" ]; then chmod +x dist/cjs/index.js; fi",
     "test": "jest -c"
   },
   "bin": {
