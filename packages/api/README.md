@@ -1,11 +1,13 @@
 # Monday GraphQL JS SDK
 
-The SDK provides a simple way to interact with monday.com's GraphQL platform API, making it easier than ever to get started with our API.
+## Introduction
+
+The monday api SDK provides a simple way to interact with monday.com's GraphQL platform API, making it easier than ever to get started with our API.
 The SDK abstracts away the complex GraphQL queries, providing simple operations for the most common endpoints such as fetching board data, or creating items.
 
 The SDK is supported in both Node.js and browser environments, and is using the [graphql-request client](https://www.npmjs.com/package/graphql-request) under the hood.
 
-Want to make more complex queries or find out more about what our API has to offer, check out [monday.com's platform API documentation](https://developer.monday.com/api-reference).
+Want to make more complex queries or find out more about what our API has to offer, check out [monday.com's API documentation](https://developer.monday.com/api-reference).
 
 ## Installation
 
@@ -15,12 +17,10 @@ npm install @mondaydotcomorg/api
 
 ## Important
 
-For now, all the exported types will correspond to the 2024-04 version, with no regard to the version you specify.
+For now, all the exported types will correspond to the 2024-04 version.
 
-If you need a different version OR When you'l want to write your own TYPED queries, you have two options:
-
-1. If you aren't a monday app developer, use @mondaydotcomorg/setup-api
-2. If you are a monday app developer, use @mondaydotcomorg/apps-cli in your app root directory, and choose the api:generate option
+For the conviniecne of monday app developers, this CLI is included in the [@mondaydotcomorg/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli).
+If you want to use it on it’s own, you can install [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).
 (you can find more about app development here [monday-apps-sdk](https://developer.monday.com/apps/docs/introduction-to-the-sdk))
 
 ## Usage

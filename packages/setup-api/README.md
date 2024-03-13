@@ -17,9 +17,11 @@ The script gets the environment ready for graphql api development
 
 ## How do I work now?
 
-After everyting will be set up, you can run write your queries in the queries.graphql.ts file ->
-run 'npm run fetch:schma' ->
-your types will be ready to use (as can be seen in the generated folder)
+After everything will be set up, you should follow those steps:
+
+1. Write your queries in the queries.graphql.ts file
+2. Run 'npm run fetch:schma'
+3. your types will be ready to use (as can be seen in the src/generated folder)
 
 ## Installation
 
@@ -31,15 +33,16 @@ npx @mondaydotcomorg/setup-api
 
 ## Using the newly created scripts
 
-After installatiom, you will have 3 new scripts:
-"fetch:schema" - Gets the monday api schema
-"codegen" - generates types
-"fetch:generate" - runs both
+After installation, you will have 3 new scripts:
 
-for now do the following to get the schema and create your first type!
+- "fetch:schema" - Gets the monday api schema
+- "codegen" - generates types
+- "fetch:generate" - runs both
+
+for now do the following to get the schema and create your first type.
 
 ```bash
-npm run fetch:gen 
+npm run fetch:generate
 ```
 
 ## Installing the GraphQL Extension for your IDE
@@ -71,8 +74,7 @@ This plugin provides features such as syntax highlighting, documentation lookup,
 
 ## What You Should Know
 
-- The library simplifies the initial configuration for working with the Monday API, but you should still familiarize yourself with the GraphQL schema and the Monday API documentation to make the most out of your development experience.
-- If you encounter permission issues or errors during the setup process, ensure that you've correctly followed the post-installation steps to set execution permissions.
+This library simplifies the initial configuration for working with the Monday API, but you should still familiarize yourself with the [GraphQL schema](https://api.monday.com/v2/get_schema) and the [Monday API documentation](https://developer.monday.com/api-reference) to make the most out of your development experience.
 
 We hope this library helps you kickstart your project with the Monday API more efficiently. Happy coding!
 
@@ -98,5 +100,9 @@ const mutationData = client.query<CreateItemMutation>(exampleMutation, mutationV
 ## Further configuration
 
 you can also add advanced options for you work environment, for example you can add configuration
-to add react hooks out of your queries (@graphql-codegen/typescript-react-query). simply install the config that best suits you manually Or
-run npm i --save-dev @graphql-codegen/cli and then run graphql-codegen init and choose config that better suits you!
+to add react hooks out of your queries (@graphql-codegen/typescript-react-query) in two ways:
+
+- Install the config that best suits you by adding it manually OR
+- Run npm i --save-dev @graphql-codegen/cli
+- Run graphql-codegen init
+- Choose the config that best suits you

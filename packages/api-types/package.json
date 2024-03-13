@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/api-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "monday.com API types",
   "types": "generated/api-types.d.ts",
   "scripts": {
@@ -16,6 +16,10 @@
     "api",
     "graphql"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/api-types"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.18",
