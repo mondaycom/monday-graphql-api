@@ -7,7 +7,7 @@ function getDates() {
   const previousQuarter = current.clone().subtract(3, 'M');
 
   const formatDate = (date: moment.Moment) => {
-    return `VERSION_${date.format('YYYY-MM').replace('-', '_')} = '${date.format('YYYY-MM')}'`;
+    return `VERSION_${date.format('YYYY-MM').replace('-', '_')} = '${date.format('YYYY-MM')}',`;
   };
 
   return {
