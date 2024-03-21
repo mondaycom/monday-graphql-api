@@ -1,0 +1,40 @@
+name: Quarterly Version Update
+
+on:
+  schedule:
+    # Schedule to run at the end of every quarter
+    - cron: '0 0 1 1,4,7,10 *'
+  workflow_dispatch:
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@master
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Change to API directory
+        run: cd packages/api
+
+      - name: Install API dependencies
+        run: npm install
+        working-directory: ./packages/api
+
+      - name: Update Version Enum and Bump Patch Version
+        run: npm run update-versions
+        working-directory: ./packages/api
+
+      - name: Create Pull Request for API package
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'Update API version enum and bump patch version'
+          title: 'Quarterly API Version Update'
+          body: 'Automated changes to update the AvailableVersions enum and bump the patch version in the API package.'
+          branch: 'api-version-update/${{ github.run_number }}'
+          path: packages/api
