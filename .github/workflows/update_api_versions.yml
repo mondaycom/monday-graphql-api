@@ -1,4 +1,4 @@
-name: Quarterly Version Update
+name: Quarterly Api Versions Update
 
 on:
   schedule:
