@@ -14,11 +14,13 @@
     "prettier": "prettier --write \"lib/**/*.ts\"",
     "lint": "eslint --fix \"lib/**/*.ts\"",
     "test": "jest -c",
-    "watch": "rollup -c -w"
+    "watch": "rollup -c -w",
+    "update-versions": "tsc scripts/update-versions.ts || true; node scripts/update-versions.js"
   },
   "dependencies": {
     "graphql-request": "^6.1.0",
-    "graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6",
+    "moment": "^2.30.1"
   },
   "engines": {
     "node": ">= 16.20.0"
