@@ -35,8 +35,8 @@ jobs:
           git config user.name "Auto Bot"
           git config user.email "bot@monday.com"
           git add .
+          npm version patch --no-git-tag-version 
           git reset HEAD -- package-lock.json
-          npm version patch --no-git-tag-version --no-package-lock
           git add .
           git commit -m "Automate version update"
           git push origin HEAD:versions-update-${{ github.sha }}
