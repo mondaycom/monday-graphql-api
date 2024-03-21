@@ -32,6 +32,8 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
+          git config user.name "Auto Bot"
+          git config user.email "bot@monday.com"
           git add .
           git commit -m "Automate version update"
           git push origin HEAD:versions-update-${{ github.sha }}
