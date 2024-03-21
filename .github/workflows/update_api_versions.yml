@@ -30,11 +30,10 @@ jobs:
         run: npm run update-versions
         working-directory: ./packages/api
 
-      - name: Create Pull Request for API package
-        uses: peter-evans/create-pull-request@v3
-        with:
-          commit-message: 'Update API version enum and bump patch version'
-          title: 'Quarterly API Version Update'
-          body: 'Automated changes to update the AvailableVersions enum and bump the patch version in the API package.'
-          branch: 'api-version-update/${{ github.run_number }}'
-          path: packages/api
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+          --body "Automated changes to update the AvailableVersions enum and bump the patch version in the API package." \
+          --title "chore: Quarterly API Version Update" \
+          --head "versions-update-${{ github.sha }}" \
+          --base "main"
