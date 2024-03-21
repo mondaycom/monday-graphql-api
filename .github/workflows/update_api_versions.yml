@@ -37,3 +37,4 @@ jobs:
           --title "chore: Quarterly API Version Update" \
           --head "versions-update-${{ github.sha }}" \
           --base "main"
+          --token ${{ secrets.GITHUB_TOKEN }}
