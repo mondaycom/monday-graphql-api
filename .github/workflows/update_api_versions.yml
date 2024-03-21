@@ -36,8 +36,8 @@ jobs:
           git config user.email "bot@monday.com"
           git add .
           npm version patch --no-git-tag-version 
-          git rm --cached packages/api/package-lock.json
           git add .
+          git restore --staged package-lock.json
           git commit -m "Automate version update"
           git push origin HEAD:versions-update-${{ github.sha }}
         working-directory: ./packages/api
