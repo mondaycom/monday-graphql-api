@@ -30,6 +30,13 @@ jobs:
         run: npm run update-versions
         working-directory: ./packages/api
 
+      - name: Commit and Push Changes
+        run: |
+          git add .
+          git commit -m "Automate version update"
+          git push origin HEAD:versions-update-${{ github.sha }}
+        working-directory: ./packages/api
+
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
