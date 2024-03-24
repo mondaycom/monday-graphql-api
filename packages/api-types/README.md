@@ -4,14 +4,14 @@ The SDK is supported in both Node.js and browser environments
 
 ## Installation
 ```bash
-npm install @mondaydotcomorg/api-types
+npm install --save-dev @mondaydotcomorg/api-types
 ```
 
 ## Usage
 The package exports all the types used by the SDK, so you can use them in your code.
 
 ```typescript
-import type { User } from '@mondaydotcomorg/api';
+import type { User } from '@mondaydotcomorg/api-types';
 
 const user: User = {
     id: '123',
