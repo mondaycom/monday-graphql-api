@@ -20,17 +20,12 @@ export class ApiClient {
    * the specified authentication token and API version.
    *
    * @param {string} token - The authentication token required for making API requests to Monday.com.
-   * @param {ApiVersionType} [apiVersion=defaultVersion] - The API version to use for requests.
-   *        Can be one of the predefined versions in `AvailableVersions` or a custom version string.
-   *        Defaults to the current version if not specified.
+   * @param {string} [apiVersion=defaultVersion] - The API version to use for requests.
+   *        Defaults to the version corresponding to the package version release (which will be the current), but can be specified with custom string.
    * @param {string} [endpoint='https://api.monday.com/v2'] - The URL of the API endpoint. Defaults to the standard Monday.com API endpoint if not specified.
    */
 
-  constructor(
-    token: string,
-    apiVersion: ApiVersionType | string = defaultVersion,
-    endpoint = 'https://api.monday.com/v2',
-  ) {
+  constructor(token: string, apiVersion: string = defaultVersion, endpoint = 'https://api.monday.com/v2') {
     this.apiVersion = apiVersion;
     this.client = new GraphQLClient(endpoint, {
       headers: {
