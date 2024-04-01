@@ -22,6 +22,10 @@ jobs:
       - name: Change to API directory
         run: cd packages/api
 
+      - name: Pull latest changes from main branch
+        run: git pull origin main --rebase
+        working-directory: ./packages/api
+
       - name: Install API dependencies
         run: npm install
         working-directory: ./packages/api
@@ -34,7 +38,6 @@ jobs:
         run: |
           git config user.name "Auto Bot"
           git config user.email "bot@monday.com"
-          git add .
           npm version major --no-git-tag-version 
           git add .
           git restore --staged package-lock.json
