@@ -52,6 +52,8 @@ export type Account = {
 /** The product a workspace is used in. */
 export type AccountProduct = {
   __typename?: 'AccountProduct';
+  /** The account product default workspace id */
+  default_workspace_id?: Maybe<Scalars['ID']['output']>;
   /** The account product id */
   id?: Maybe<Scalars['ID']['output']>;
   /** The account product kind (core / marketing / crm / software / projectManagement / project_management / service / forms / whiteboard). */
@@ -75,7 +77,7 @@ export type ActivityLogType = {
 export type AppInstall = {
   __typename?: 'AppInstall';
   /** The app's unique identifier. */
-  app_id: Scalars['Int']['output'];
+  app_id: Scalars['ID']['output'];
   /** An app installer's account details. */
   app_install_account: AppInstallAccount;
   /** An app installer's user details */
@@ -92,7 +94,7 @@ export type AppInstall = {
 export type AppInstallAccount = {
   __typename?: 'AppInstallAccount';
   /** The app's installer account id. */
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
 };
 
 /** The required and approved scopes for an app install. */
@@ -108,7 +110,7 @@ export type AppInstallPermissions = {
 export type AppInstallUser = {
   __typename?: 'AppInstallUser';
   /** The app's installer user id. */
-  id?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
 };
 
 /** The app monetization status for the current account */
@@ -1140,11 +1142,23 @@ export type ItemsPageByColumnValuesQuery = {
 };
 
 export type ItemsQuery = {
+  /** A list of rule groups */
+  groups?: InputMaybe<Array<ItemsQueryGroup>>;
   /** A list of item IDs to fetch. Use this to fetch a specific set of items by their IDs. Max: 100 IDs */
   ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  /** The operator to use for the query rules */
+  /** The operator to use for the query rules or rule groups */
   operator?: InputMaybe<ItemsQueryOperator>;
   order_by?: InputMaybe<Array<ItemsQueryOrderBy>>;
+  /** A list of rules */
+  rules?: InputMaybe<Array<ItemsQueryRule>>;
+};
+
+export type ItemsQueryGroup = {
+  /** A list of rule groups */
+  groups?: InputMaybe<Array<ItemsQueryGroup>>;
+  /** The operator to use for the query rules or rule groups */
+  operator?: InputMaybe<ItemsQueryOperator>;
+  /** A list of rules */
   rules?: InputMaybe<Array<ItemsQueryRule>>;
 };
 
@@ -1668,6 +1682,8 @@ export type MutationCreate_ItemArgs = {
   create_labels_if_missing?: InputMaybe<Scalars['Boolean']['input']>;
   group_id?: InputMaybe<Scalars['String']['input']>;
   item_name: Scalars['String']['input'];
+  position_relative_method?: InputMaybe<PositionRelative>;
+  relative_to?: InputMaybe<Scalars['ID']['input']>;
 };
 
 /** Update your monday.com data. */
@@ -2028,6 +2044,8 @@ export type Query = {
   account?: Maybe<Account>;
   /** Get a collection of installs of an app. */
   app_installs?: Maybe<Array<Maybe<AppInstall>>>;
+  /** Get operations counter current value */
+  app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
   /** Get apps monetization status for an account */
   apps_monetization_status?: Maybe<AppMonetizationStatus>;
   /** Get a collection of assets by ids. */
@@ -2038,8 +2056,6 @@ export type Query = {
   complexity?: Maybe<Complexity>;
   /** Get a collection of folders. Note: This query won't return folders from closed workspaces to which you are not subscribed */
   folders?: Maybe<Array<Maybe<Folder>>>;
-  /** Get operations counter current value */
-  increase_app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
   /** Get a collection of items. */
   items?: Maybe<Array<Maybe<Item>>>;
   /** Search items by multiple columns and values. */
@@ -2075,6 +2091,11 @@ export type QueryApp_InstallsArgs = {
 };
 
 /** Get your data from monday.com */
+export type QueryApp_Subscription_OperationsArgs = {
+  kind?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Get your data from monday.com */
 export type QueryAssetsArgs = {
   ids: Array<Scalars['ID']['input']>;
 };
@@ -2096,11 +2117,6 @@ export type QueryFoldersArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   workspace_ids?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-};
-
-/** Get your data from monday.com */
-export type QueryIncrease_App_Subscription_OperationsArgs = {
-  kind?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Get your data from monday.com */
@@ -2257,8 +2273,14 @@ export type SubtasksValue = ColumnValue & {
   __typename?: 'SubtasksValue';
   /** The column that this value belongs to. */
   column: Column;
+  /** A string representing all the names of the subtasks, separated by commas */
+  display_value: Scalars['String']['output'];
   /** The column's unique identifier. */
   id: Scalars['ID']['output'];
+  /** The subitems */
+  subitems: Array<Item>;
+  /** The subitems IDs */
+  subitems_ids: Array<Scalars['ID']['output']>;
   /** Text representation of the column value. Note: Not all columns support textual value */
   text?: Maybe<Scalars['String']['output']>;
   /** The column's type. */
@@ -2583,6 +2605,8 @@ export enum VersionKind {
   Dev = 'dev',
   /** Previous version. Migrate to current version as soon as possible */
   Maintenance = 'maintenance',
+  /** Older version that will be deprecated soon. Migrate to current version as soon as possible */
+  PreviousMaintenance = 'previous_maintenance',
   /** Next version */
   ReleaseCandidate = 'release_candidate',
 }
@@ -2696,6 +2720,8 @@ export type Workspace = {
   description?: Maybe<Scalars['String']['output']>;
   /** The workspace's unique identifier. */
   id?: Maybe<Scalars['ID']['output']>;
+  /** Returns true if it is the default workspace of the product or account */
+  is_default_workspace?: Maybe<Scalars['Boolean']['output']>;
   /** The workspace's kind (open / closed). */
   kind?: Maybe<WorkspaceKind>;
   /** The workspace's name. */
