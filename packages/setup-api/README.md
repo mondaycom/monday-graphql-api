@@ -94,7 +94,7 @@ boardId: "your_board_id", // replace with your board id
 groupId: "your_groyup_id", // replace with your group id
 itemName: "Im using my own queries!",
 };
-const mutationData = client.query<CreateItemMutation>(exampleMutation, mutationVariables);
+const mutationData = await client.query<CreateItemMutation>(exampleMutation, mutationVariables);
 ```
 
 ## Further configuration
