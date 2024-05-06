@@ -15,7 +15,7 @@ export class SeamlessApiClient {
   private listeners: Record<string, Set<ListenerCallback>> = {};
 
   /**
-   * @param {ApiVersionType} [apiVersion=defaultVersion] - Can be one of the predefined versions in `AvailableVersions` or a custom version string.
+   * @param {ApiVersionType} [apiVersion=DEFAULT_VERSION] - Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    *        Defaults to the version corresponding to the package version release (which will be the current),
    */
   constructor(apiVersion: ApiVersionType = DEFAULT_VERSION) {

@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { ApiClient } from '../lib/api-client';
 import pkg from '../package.json';
-import { defaultVersion } from '../lib/constants';
+import { DEFAULT_VERSION } from '../lib/constants';
 
 jest.mock('graphql-request', () => {
   return {
@@ -22,7 +22,7 @@ describe('ApiClient', () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
-        'API-Version': defaultVersion,
+        'API-Version': DEFAULT_VERSION,
         'Api-Sdk-Version': pkg.version,
       },
     });
