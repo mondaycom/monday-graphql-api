@@ -19,7 +19,7 @@ npm install @mondaydotcomorg/api
 
 ## Important
 
-All exported types correspond to the current version when the npm version got released
+All exported types correspond to the current version of the API that existed when the NPM package was released
 
 For the conviniecne of monday app developers, this CLI is included in the [@mondaydotcomorg/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli).
 If you want to use it on it’s own, you can install [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).
