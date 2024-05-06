@@ -7,7 +7,9 @@ export enum AvailableVersions {
   CURRENT_VERSION = '2024-04',
 }
 
-export const defaultVersion = AvailableVersions.CURRENT_VERSION;
+export const MONDAY_API_ENDPOINT = 'https://api.monday.com/v2';
+
+export const DEFAULT_VERSION = AvailableVersions.CURRENT_VERSION;
 
 export type ApiVersionType = AvailableVersions | string;
 

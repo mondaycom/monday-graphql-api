@@ -1,4 +1,4 @@
-import { ApiVersionType, QueryVariables, defaultVersion } from './constants';
+import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from './constants';
 
 interface ListenerCallback {
   (data: any): void;
@@ -18,7 +18,7 @@ export class SeamlessApiClient {
    * @param {ApiVersionType} [apiVersion=defaultVersion] - Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    *        Defaults to the version corresponding to the package version release (which will be the current),
    */
-  constructor(apiVersion: ApiVersionType = defaultVersion) {
+  constructor(apiVersion: ApiVersionType = DEFAULT_VERSION) {
     this.apiVersion = apiVersion;
   }
   /**
