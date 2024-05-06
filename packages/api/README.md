@@ -88,7 +88,7 @@ import {
   Board,
 } from "@mondaycom/api";
 
-const { boards } = await SeamlessApiClient.seamlessQuery<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
+const { boards } = await SeamlessApiClient.query<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
 
 // or using your own types after integrating with @mondaycom/setup-api
 import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
@@ -103,5 +103,5 @@ export const getBoards = gql`
   }
 `;
 
-const data = await SeamlessApiClient.seamlessQuery<GetBoardsQuery>(getBoards, variables);
+const data = await SeamlessApiClient.query<GetBoardsQuery>(getBoards, variables);
 ```
