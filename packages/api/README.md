@@ -9,6 +9,8 @@ The SDK is supported in both Node.js and browser environments, and is using the 
 
 Want to make more complex queries or find out more about what our API has to offer, check out [monday.com's API documentation](https://developer.monday.com/api-reference).
 
+If your code operates within a browser-based app deployed on monday.com, you can utilize the **SeamlessApiClient** class which does not require specifying the user's token. For all other scenarios, use the **ApiClient** class.
+
 ## Installation
 
 ```bash
@@ -17,7 +19,7 @@ npm install @mondaydotcomorg/api
 
 ## Important
 
-For now, all the exported types will correspond to the 2024-04 version.
+All exported types correspond to the current version of the API that existed when the NPM package was released
 
 For the conviniecne of monday app developers, this CLI is included in the [@mondaydotcomorg/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli).
 If you want to use it on it’s own, you can install [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).
@@ -34,7 +36,7 @@ import { ApiClient } from '@mondaydotcomorg/api';
 
 const client = new ApiClient('<API-TOKEN>');
 
-// or use the operations provided by the SDK
+// Or use the operations provided by the SDK
 const me = await client.operations.getMeOp();
 
 // Example how to change a text column
@@ -53,7 +55,7 @@ const changeStatusColumn = await client.operations.changeColumnValueOp({
     value: JSON.stringify({ label: "Done" }),
 });
 
-// use the client to query monday's API freestyle WITHOUT TYPES -> Use @mondaydotcomorg/setup-api to setup typed project!
+// Use the client to query monday's API freestyle WITHOUT TYPES -> Use @mondaydotcomorg/setup-api to setup typed project!
 const boards = await client.query<{boards: [{ name: string }]}>(`query { boards(ids: some_id) { name } }`);
 
 // You can also use the types provided by the sdk 
@@ -74,4 +76,32 @@ const user: User = {
     name: 'John Doe',
     email: 'john.doe@someorg.com'
 }
+```
+
+## SeamlessApiClient
+
+The SeamlessApiClient class is a tool designed for making seamless API requests to Monday.com, tailored for use within the client side of applications deployed on the platform.
+Basically, when you are making an api call from the client side of an app deployed on Monday.com, you dont need to specify the users token.
+
+```typescript
+import {
+  Board,
+} from "@mondaycom/api";
+
+const { boards } = await SeamlessApiClient.query<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
+
+// or using your own types after integrating with @mondaycom/setup-api
+import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
+const variables: GetBoardsQueryVariables = { ids: ["some_id"] };
+
+export const getBoards = gql`
+  query GetBoards($ids: [ID!]) {
+    boards(ids: $ids) {
+      id
+      name
+    }
+  }
+`;
+
+const data = await SeamlessApiClient.query<GetBoardsQuery>(getBoards, variables);
 ```

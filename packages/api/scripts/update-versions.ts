@@ -5,7 +5,7 @@ function getDates() {
   const current = moment().startOf('quarter');
 
   const formatDate = (date: moment.Moment) => {
-    return `VERSION_${date.format('YYYY-MM').replace('-', '_')} = '${date.format('YYYY-MM')}'`;
+    return `CURRENT_VERSION = '${date.format('YYYY-MM')}'`;
   };
 
   return {

@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { ApiVersionType, QueryVariables, defaultVersion } from './constants/index';
+import { ApiVersionType, DEFAULT_VERSION, MONDAY_API_ENDPOINT, QueryVariables } from './constants/index';
 import { Sdk, getSdk } from './generated/sdk';
 import pkg from '../package.json';
 
@@ -20,13 +20,13 @@ export class ApiClient {
    * the specified authentication token and API version.
    *
    * @param {string} token - The authentication token required for making API requests to Monday.com.
-   * @param {string} [apiVersion=defaultVersion] - The API version to use for requests.
+   * @param {string} [apiVersion=DEFAULT_VERSION] - The API version to use for requests.
    *        Defaults to the version corresponding to the package version release (which will be the current), but can be specified with custom string.
-   * @param {string} [endpoint='https://api.monday.com/v2'] - The URL of the API endpoint. Defaults to the standard Monday.com API endpoint if not specified.
    */
 
-  constructor(token: string, apiVersion: string = defaultVersion, endpoint = 'https://api.monday.com/v2') {
+  constructor(token: string, apiVersion: string = DEFAULT_VERSION) {
     this.apiVersion = apiVersion;
+    const endpoint = process.env.MONDAY_API_ENDPOINT || MONDAY_API_ENDPOINT;
     this.client = new GraphQLClient(endpoint, {
       headers: {
         'Content-Type': 'application/json',
