@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/api",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "monday.com API client",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,7 +15,8 @@
     "lint": "eslint --fix \"lib/**/*.ts\"",
     "test": "jest -c",
     "watch": "rollup -c -w",
-    "update-versions": "tsc scripts/update-versions.ts || true; node scripts/update-versions.js"
+    "update-versions": "tsc scripts/update-versions.ts || true; node scripts/update-versions.js",
+    "prepublish": "npm version minor && npm run build"
   },
   "dependencies": {
     "graphql-request": "^6.1.0",
