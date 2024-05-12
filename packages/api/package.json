@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/api",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "monday.com API client",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,13 +15,8 @@
     "lint": "eslint --fix \"lib/**/*.ts\"",
     "test": "jest -c",
     "watch": "rollup -c -w",
-    "update-versions": "tsc scripts/update-versions.ts || true; node scripts/update-versions.js",
-    "prepublish": "npm version minor && npm run build"
-  },
-  "dependencies": {
-    "graphql-request": "^6.1.0",
-    "graphql-tag": "^2.12.6",
-    "moment": "^2.30.1"
+    "update-versions": "npm run build && node dist/scripts/update-versions.js",
+    "prepublish": "npm version patch && npm run build"
   },
   "engines": {
     "node": ">= 16.20.0"
@@ -37,7 +32,12 @@
     "type": "git",
     "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/api"
   },
+  "dependencies": {
+    "graphql-request": "^6.1.0",
+    "graphql-tag": "^2.12.6"
+  },
   "devDependencies": {
+    "moment": "^2.30.1",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",

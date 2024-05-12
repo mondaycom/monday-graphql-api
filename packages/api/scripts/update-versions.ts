@@ -1,31 +1,19 @@
 import { readFileSync, writeFileSync } from 'fs';
-import * as moment from 'moment';
+import moment from 'moment';
 
-function getDates() {
+const getDate = () => {
   const current = moment().startOf('quarter');
-
-  const formatDate = (date: moment.Moment) => {
-    return `CURRENT_VERSION = '${date.format('YYYY-MM')}'`;
-  };
-
-  return {
-    currentQuarter: formatDate(current),
-  };
-}
+  return `CURRENT_VERSION = '${current.format('YYYY-MM')}'`;
+};
 
 // Update the path to the file you want to modify
 const filePath = 'lib/constants/index.ts';
 let fileContent = readFileSync(filePath, 'utf8');
 
-const dates = getDates();
+const newCurrentVersion = getDate();
 
-const updatedVersionConsts = `
-  ${dates.currentQuarter}
-`;
-
-// Regex pattern to match the existing quarter lines
-const pattern = /VERSION_\d{4}_\d{2} = '\d{4}-\d{2}'/g;
-fileContent = fileContent.replace(pattern, updatedVersionConsts.trim());
+const pattern = /CURRENT_VERSION = '\d{4}-\d{2}'/;
+fileContent = fileContent.replace(pattern, newCurrentVersion);
 
 writeFileSync(filePath, fileContent);
 

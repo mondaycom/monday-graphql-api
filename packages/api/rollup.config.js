@@ -41,4 +41,24 @@ const typesConfig = {
   plugins: [dts()],
 };
 
-export default [mainConfig, typesConfig];
+const updateVersionsConfig = {
+  input: 'scripts/update-versions.ts',
+  output: {
+    file: 'dist/scripts/update-versions.js',
+    format: 'cjs',
+    sourcemap: false,
+  },
+  plugins: [
+    resolve(),
+    commonjs(),
+    typescript({ tsconfig: './tsconfig.json' }),
+    json(),
+    terser({
+      format: {
+        comments: false,
+      },
+    }),
+  ],
+};
+
+export default [mainConfig, typesConfig, updateVersionsConfig];
