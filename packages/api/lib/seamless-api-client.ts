@@ -20,6 +20,7 @@ export class SeamlessApiClient {
    */
   constructor(apiVersion: ApiVersionType = DEFAULT_VERSION) {
     this.apiVersion = apiVersion;
+    window.addEventListener('message', this.receiveMessage.bind(this), false);
   }
   /**
    * Performs a seamless query to the Monday API. This function is intended for use exclusively within
@@ -87,5 +88,14 @@ export class SeamlessApiClient {
         delete this.listeners[key];
       }
     };
+  }
+
+  private receiveMessage(event: MessageEvent): void {
+    const { requestId } = event.data;
+    const listeners = this.listeners[requestId];
+
+    if (listeners) {
+      listeners.forEach((listener) => listener(event.data));
+    }
   }
 }
