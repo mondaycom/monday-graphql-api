@@ -25,6 +25,8 @@ export type Scalars = {
 /** Your monday.com account */
 export type Account = {
   __typename?: 'Account';
+  /** The number of active member users in the account */
+  active_members_count?: Maybe<Scalars['Int']['output']>;
   /** The account's country two-letter code in ISO3166 format */
   country_code?: Maybe<Scalars['String']['output']>;
   /** The first day of the week for the account (sunday / monday) */
@@ -165,6 +167,13 @@ export type AppVersion = {
   type?: Maybe<Scalars['String']['output']>;
 };
 
+/** The app monetization information for the current account */
+export type AppsMonetizationInfo = {
+  __typename?: 'AppsMonetizationInfo';
+  /** The number of seats in the account, across all products, used to match the app’s subscription among apps that utilize the seats-based monetization method */
+  seats_count?: Maybe<Scalars['Int']['output']>;
+};
+
 /** A file uploaded to monday.com */
 export type Asset = {
   __typename?: 'Asset';
@@ -199,6 +208,17 @@ export enum AssetsSource {
   /** Assets only from item's files gallery */
   Gallery = 'gallery',
 }
+
+/** Result of an batch operation */
+export type BatchExtendTrialPeriod = {
+  __typename?: 'BatchExtendTrialPeriod';
+  /** Details of operations */
+  details?: Maybe<Array<ExtendTrialPeriod>>;
+  /** Reason of an error */
+  reason?: Maybe<Scalars['String']['output']>;
+  /** Result of a batch operation */
+  success: Scalars['Boolean']['output'];
+};
 
 /** A monday.com board. */
 export type Board = {
@@ -712,6 +732,40 @@ export type DependencyValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
+/** Various documents blocks types, such as text. */
+export enum DocBlockContentType {
+  /** Bulleted list block */
+  BulletedList = 'bulleted_list',
+  /** Check list block */
+  CheckList = 'check_list',
+  /** Code block */
+  Code = 'code',
+  /** Divider block */
+  Divider = 'divider',
+  /** Image block */
+  Image = 'image',
+  /** Large title block */
+  LargeTitle = 'large_title',
+  /** Layout block */
+  Layout = 'layout',
+  /** Medium title block */
+  MediumTitle = 'medium_title',
+  /** Simple text block */
+  NormalText = 'normal_text',
+  /** Notice block */
+  NoticeBox = 'notice_box',
+  /** Numbered list block */
+  NumberedList = 'numbered_list',
+  /** Quote text block */
+  Quote = 'quote',
+  /** Small title block */
+  SmallTitle = 'small_title',
+  /** Table block */
+  Table = 'table',
+  /** Video block */
+  Video = 'video',
+}
+
 export type DocValue = ColumnValue & {
   __typename?: 'DocValue';
   /** The column that this value belongs to. */
@@ -726,6 +780,81 @@ export type DocValue = ColumnValue & {
   type: ColumnType;
   /** The column's raw value in JSON format. */
   value?: Maybe<Scalars['JSON']['output']>;
+};
+
+/** Options to order by. */
+export enum DocsOrderBy {
+  /** The rank order of the document creation time (desc). */
+  CreatedAt = 'created_at',
+  /** The last time the user making the request viewd the document (desc). */
+  UsedAt = 'used_at',
+}
+
+/** A monday.com document. */
+export type Document = {
+  __typename?: 'Document';
+  /** The document's content blocks */
+  blocks?: Maybe<Array<Maybe<DocumentBlock>>>;
+  /** The document's creation date. */
+  created_at?: Maybe<Scalars['Date']['output']>;
+  /** The document's creator */
+  created_by?: Maybe<User>;
+  /** The document's folder unique identifier (null for first level). */
+  doc_folder_id?: Maybe<Scalars['ID']['output']>;
+  /** The document's kind (public / private / share). */
+  doc_kind: BoardKind;
+  /** The document's unique identifier. */
+  id: Scalars['ID']['output'];
+  /** The document's name. */
+  name: Scalars['String']['output'];
+  /** The associated board or object's unique identifier. */
+  object_id: Scalars['ID']['output'];
+  /** The document's relative url */
+  relative_url?: Maybe<Scalars['String']['output']>;
+  /** The document's settings. */
+  settings?: Maybe<Scalars['JSON']['output']>;
+  /** The document's direct url */
+  url?: Maybe<Scalars['String']['output']>;
+  /** The workspace that contains this document (null for main workspace). */
+  workspace?: Maybe<Workspace>;
+  /** The document's workspace unique identifier (null for main workspace). */
+  workspace_id?: Maybe<Scalars['ID']['output']>;
+};
+
+/** A monday.com document. */
+export type DocumentBlocksArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** A monday.com document block. */
+export type DocumentBlock = {
+  __typename?: 'DocumentBlock';
+  /** The block's content. */
+  content?: Maybe<Scalars['JSON']['output']>;
+  /** The block's creation date. */
+  created_at?: Maybe<Scalars['Date']['output']>;
+  /** The block's creator */
+  created_by?: Maybe<User>;
+  /** The block's document unique identifier. */
+  doc_id?: Maybe<Scalars['ID']['output']>;
+  /** The block's unique identifier. */
+  id: Scalars['String']['output'];
+  /** The block's parent block unique identifier. */
+  parent_block_id?: Maybe<Scalars['String']['output']>;
+  /** The block's position on the document. */
+  position?: Maybe<Scalars['Float']['output']>;
+  /** The block content type. */
+  type?: Maybe<Scalars['String']['output']>;
+  /** The block's last updated date. */
+  updated_at?: Maybe<Scalars['Date']['output']>;
+};
+
+/** A monday.com doc block. */
+export type DocumentBlockIdOnly = {
+  __typename?: 'DocumentBlockIdOnly';
+  /** The block's unique identifier. */
+  id: Scalars['String']['output'];
 };
 
 export type DropdownValue = ColumnValue & {
@@ -781,6 +910,17 @@ export type EmailValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
+/** Result of a single operation */
+export type ExtendTrialPeriod = {
+  __typename?: 'ExtendTrialPeriod';
+  /** Account slug */
+  account_slug: Scalars['String']['output'];
+  /** Reason of an error */
+  reason?: Maybe<Scalars['String']['output']>;
+  /** Result of a single operation */
+  success: Scalars['Boolean']['output'];
+};
+
 export type FileAssetValue = {
   __typename?: 'FileAssetValue';
   /** The asset associated with the file. */
@@ -807,6 +947,8 @@ export type FileDocValue = {
   creator?: Maybe<User>;
   /** The ID of user who created the file. */
   creator_id?: Maybe<Scalars['ID']['output']>;
+  /** The doc associated with the file. */
+  doc: Document;
   /** The file's unique identifier. */
   file_id: Scalars['ID']['output'];
   /** The associated board or object's unique identifier. */
@@ -882,6 +1024,10 @@ export type Folder = {
   color?: Maybe<FolderColor>;
   /** The folder's creation date. */
   created_at: Scalars['Date']['output'];
+  /** The folder's custom icon. */
+  custom_icon?: Maybe<FolderCustomIcon>;
+  /** The folder's font weight. */
+  font_weight?: Maybe<FolderFontWeight>;
   /** The folder's unique identifier. */
   id: Scalars['ID']['output'];
   /** The folder's name. */
@@ -930,6 +1076,34 @@ export enum FolderColor {
   Sunset = 'SUNSET',
   /** working_orange */
   WorkingOrange = 'WORKING_ORANGE',
+}
+
+/** One value out of a list of valid folder custom icons */
+export enum FolderCustomIcon {
+  /** Folder */
+  Folder = 'FOLDER',
+  /** MoreBelow */
+  Morebelow = 'MOREBELOW',
+  /** MoreBelowFilled */
+  Morebelowfilled = 'MOREBELOWFILLED',
+  /** No custom icon */
+  Null = 'NULL',
+  /** Work */
+  Work = 'WORK',
+}
+
+/** One value out of a list of valid folder font weights */
+export enum FolderFontWeight {
+  /** font-weight-bold */
+  FontWeightBold = 'FONT_WEIGHT_BOLD',
+  /** font-weight-light */
+  FontWeightLight = 'FONT_WEIGHT_LIGHT',
+  /** font-weight-normal */
+  FontWeightNormal = 'FONT_WEIGHT_NORMAL',
+  /** font-weight-very-light */
+  FontWeightVeryLight = 'FONT_WEIGHT_VERY_LIGHT',
+  /** No font weight */
+  Null = 'NULL',
 }
 
 export type FormulaValue = ColumnValue & {
@@ -1429,6 +1603,8 @@ export type Mutation = {
   archive_group?: Maybe<Group>;
   /** Archive an item. */
   archive_item?: Maybe<Item>;
+  /** Extends trial period of an application to selected accounts */
+  batch_extend_trial_period?: Maybe<BatchExtendTrialPeriod>;
   /** Change a column's properties */
   change_column_metadata?: Maybe<Column>;
   /** Change a column's title */
@@ -1447,6 +1623,8 @@ export type Mutation = {
   create_board?: Maybe<Board>;
   /** Create a new column in board. */
   create_column?: Maybe<Column>;
+  /** Create new document block */
+  create_doc_block?: Maybe<DocumentBlock>;
   /** Creates a folder in a specific workspace. */
   create_folder?: Maybe<Folder>;
   /** Creates a new group in a specific board. */
@@ -1469,6 +1647,8 @@ export type Mutation = {
   delete_board?: Maybe<Board>;
   /** Delete a column. */
   delete_column?: Maybe<Column>;
+  /** Delete a document block */
+  delete_doc_block?: Maybe<DocumentBlockIdOnly>;
   /** Deletes a folder in a specific workspace. */
   delete_folder?: Maybe<Folder>;
   /** Deletes a group in a specific board. */
@@ -1503,16 +1683,24 @@ export type Mutation = {
   move_item_to_board?: Maybe<Item>;
   /** Move an item to a different group. */
   move_item_to_group?: Maybe<Item>;
+  /** Remove mock app subscription for the current account */
+  remove_mock_app_subscription?: Maybe<AppSubscription>;
   /** Remove users from team. */
   remove_users_from_team?: Maybe<ChangeTeamMembershipsResult>;
+  /** Set mock app subscription for the current account */
+  set_mock_app_subscription?: Maybe<AppSubscription>;
   /** Update Board attribute. */
   update_board?: Maybe<Scalars['JSON']['output']>;
+  /** Update a document block */
+  update_doc_block?: Maybe<DocumentBlock>;
   /** Updates a folder. */
   update_folder?: Maybe<Folder>;
   /** Update an existing group. */
   update_group?: Maybe<Group>;
   /** Update an existing workspace. */
   update_workspace?: Maybe<Workspace>;
+  /** Use a template */
+  use_template?: Maybe<Template>;
 };
 
 /** Update your monday.com data. */
@@ -1583,6 +1771,14 @@ export type MutationArchive_GroupArgs = {
 /** Update your monday.com data. */
 export type MutationArchive_ItemArgs = {
   item_id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+/** Update your monday.com data. */
+export type MutationBatch_Extend_Trial_PeriodArgs = {
+  account_slugs: Array<Scalars['String']['input']>;
+  app_id: Scalars['ID']['input'];
+  duration_in_days: Scalars['Int']['input'];
+  plan_id: Scalars['String']['input'];
 };
 
 /** Update your monday.com data. */
@@ -1658,8 +1854,19 @@ export type MutationCreate_ColumnArgs = {
 };
 
 /** Update your monday.com data. */
+export type MutationCreate_Doc_BlockArgs = {
+  after_block_id?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['JSON']['input'];
+  doc_id: Scalars['ID']['input'];
+  parent_block_id?: InputMaybe<Scalars['String']['input']>;
+  type: DocBlockContentType;
+};
+
+/** Update your monday.com data. */
 export type MutationCreate_FolderArgs = {
   color?: InputMaybe<FolderColor>;
+  custom_icon?: InputMaybe<FolderCustomIcon>;
+  font_weight?: InputMaybe<FolderFontWeight>;
   name: Scalars['String']['input'];
   parent_folder_id?: InputMaybe<Scalars['ID']['input']>;
   workspace_id?: InputMaybe<Scalars['ID']['input']>;
@@ -1739,6 +1946,11 @@ export type MutationDelete_BoardArgs = {
 export type MutationDelete_ColumnArgs = {
   board_id: Scalars['ID']['input'];
   column_id: Scalars['String']['input'];
+};
+
+/** Update your monday.com data. */
+export type MutationDelete_Doc_BlockArgs = {
+  block_id: Scalars['String']['input'];
 };
 
 /** Update your monday.com data. */
@@ -1848,9 +2060,26 @@ export type MutationMove_Item_To_GroupArgs = {
 };
 
 /** Update your monday.com data. */
+export type MutationRemove_Mock_App_SubscriptionArgs = {
+  app_id: Scalars['ID']['input'];
+  partial_signing_secret: Scalars['String']['input'];
+};
+
+/** Update your monday.com data. */
 export type MutationRemove_Users_From_TeamArgs = {
   team_id: Scalars['ID']['input'];
   user_ids: Array<Scalars['ID']['input']>;
+};
+
+/** Update your monday.com data. */
+export type MutationSet_Mock_App_SubscriptionArgs = {
+  app_id: Scalars['ID']['input'];
+  billing_period?: InputMaybe<Scalars['String']['input']>;
+  is_trial?: InputMaybe<Scalars['Boolean']['input']>;
+  partial_signing_secret: Scalars['String']['input'];
+  plan_id?: InputMaybe<Scalars['String']['input']>;
+  pricing_version?: InputMaybe<Scalars['Int']['input']>;
+  renewal_date?: InputMaybe<Scalars['Date']['input']>;
 };
 
 /** Update your monday.com data. */
@@ -1861,9 +2090,17 @@ export type MutationUpdate_BoardArgs = {
 };
 
 /** Update your monday.com data. */
+export type MutationUpdate_Doc_BlockArgs = {
+  block_id: Scalars['String']['input'];
+  content: Scalars['JSON']['input'];
+};
+
+/** Update your monday.com data. */
 export type MutationUpdate_FolderArgs = {
   color?: InputMaybe<FolderColor>;
+  custom_icon?: InputMaybe<FolderCustomIcon>;
   folder_id: Scalars['ID']['input'];
+  font_weight?: InputMaybe<FolderFontWeight>;
   name?: InputMaybe<Scalars['String']['input']>;
   parent_folder_id?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -1880,6 +2117,21 @@ export type MutationUpdate_GroupArgs = {
 export type MutationUpdate_WorkspaceArgs = {
   attributes: UpdateWorkspaceAttributesInput;
   id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+/** Update your monday.com data. */
+export type MutationUse_TemplateArgs = {
+  board_kind?: InputMaybe<BoardKind>;
+  board_owner_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  board_owner_team_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  board_subscriber_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  board_subscriber_teams_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  callback_url_on_complete?: InputMaybe<Scalars['String']['input']>;
+  destination_folder_id?: InputMaybe<Scalars['Int']['input']>;
+  destination_folder_name?: InputMaybe<Scalars['String']['input']>;
+  destination_name?: InputMaybe<Scalars['String']['input']>;
+  destination_workspace_id?: InputMaybe<Scalars['Int']['input']>;
+  template_id: Scalars['Int']['input'];
 };
 
 /** A notification. */
@@ -2044,8 +2296,12 @@ export type Query = {
   account?: Maybe<Account>;
   /** Get a collection of installs of an app. */
   app_installs?: Maybe<Array<Maybe<AppInstall>>>;
+  /** Get the current app subscription. Note: This query does not work in the playground */
+  app_subscription?: Maybe<Array<Maybe<AppSubscription>>>;
   /** Get operations counter current value */
   app_subscription_operations?: Maybe<AppSubscriptionOperationsCounter>;
+  /** Get apps monetization information for an account */
+  apps_monetization_info?: Maybe<AppsMonetizationInfo>;
   /** Get apps monetization status for an account */
   apps_monetization_status?: Maybe<AppMonetizationStatus>;
   /** Get a collection of assets by ids. */
@@ -2054,6 +2310,8 @@ export type Query = {
   boards?: Maybe<Array<Maybe<Board>>>;
   /** Get the complexity data of your queries. */
   complexity?: Maybe<Complexity>;
+  /** Get a collection of docs. */
+  docs?: Maybe<Array<Maybe<Document>>>;
   /** Get a collection of folders. Note: This query won't return folders from closed workspaces to which you are not subscribed */
   folders?: Maybe<Array<Maybe<Folder>>>;
   /** Get a collection of items. */
@@ -2108,6 +2366,16 @@ export type QueryBoardsArgs = {
   order_by?: InputMaybe<BoardsOrderBy>;
   page?: InputMaybe<Scalars['Int']['input']>;
   state?: InputMaybe<State>;
+  workspace_ids?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+};
+
+/** Get your data from monday.com */
+export type QueryDocsArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  object_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  order_by?: InputMaybe<DocsOrderBy>;
+  page?: InputMaybe<Scalars['Int']['input']>;
   workspace_ids?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
 };
 
@@ -2366,6 +2634,13 @@ export type TeamValue = ColumnValue & {
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
+/** A monday.com template. */
+export type Template = {
+  __typename?: 'Template';
+  /** The template process unique identifier for async operations. */
+  process_id?: Maybe<Scalars['String']['output']>;
+};
+
 export type TextValue = ColumnValue & {
   __typename?: 'TextValue';
   /** The column that this value belongs to. */
@@ -2605,7 +2880,9 @@ export enum VersionKind {
   Dev = 'dev',
   /** Previous version. Migrate to current version as soon as possible */
   Maintenance = 'maintenance',
-  /** Older version that will be deprecated soon. Migrate to current version as soon as possible */
+  /** Old version that will be deprecated in January. Migrate to current version as soon as possible */
+  OldPreviousMaintenance = 'old_previous_maintenance',
+  /** Older version that will be deprecated in January. Migrate to current version as soon as possible */
   PreviousMaintenance = 'previous_maintenance',
   /** Next version */
   ReleaseCandidate = 'release_candidate',
