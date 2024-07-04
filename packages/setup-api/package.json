@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/setup-api",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "monday.com setup api cli",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",

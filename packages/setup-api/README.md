@@ -4,6 +4,16 @@
 
 This library automates the setup of a development environment for working with the Monday API using GraphQL. It's designed to help developers quickly start projects with pre-configured tools and settings.
 
+## Whats the end result?
+
+You can start writing qeuries with auto complete on the types of your queries
+
+![alt text](./public/image-1.png)
+
+After usage, you can get only what you asked for
+
+![alt text](./public/image-2.png)
+
 ## What does the script do?
 
 The script gets the environment ready for graphql api development
