@@ -2,10 +2,16 @@ import { createFiles, installPackages, updatePackageJsonScripts } from '../lib/i
 import * as shell from 'shelljs';
 import * as fs from 'fs';
 
+const useYarn = shell.which('yarn');
+const packageManager = useYarn ? 'yarn' : 'npm';
+const installCommand = useYarn ? 'add' : 'install';
+const devFlag = useYarn ? '-D' : '--save-dev';
+
 jest.mock('shelljs', () => ({
   exec: jest.fn().mockReturnValue({ code: 0 }),
   exit: jest.fn(),
   mkdir: jest.fn(),
+  which: jest.fn().mockReturnValue(true),
 }));
 
 jest.mock('fs', () => ({
@@ -20,16 +26,18 @@ describe('setupGraphQL', () => {
     jest.clearAllMocks();
   });
 
-  it('should execute npm install commands', () => {
+  it('should install the necessary packages with appropriate package manager', () => {
     installPackages();
-    expect(shell.exec).toHaveBeenCalledWith(expect.stringContaining('npm install graphql-request'));
+
+    expect(shell.exec).toHaveBeenCalledWith(
+      expect.stringContaining(`${packageManager} ${installCommand} graphql-request`),
+    );
     expect(shell.exec).toHaveBeenCalledWith(
       expect.stringContaining(
-        'npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
+        `${packageManager} ${installCommand} ${devFlag} @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations`,
       ),
     );
   });
-
   it('should create necessary files', () => {
     createFiles();
     expect(fs.writeFileSync).toHaveBeenCalledWith('codegen.yml', expect.any(String));
