@@ -105,3 +105,11 @@ export const getBoards = gql`
 
 const data = await SeamlessApiClient.query<GetBoardsQuery>(getBoards, variables);
 ```
+
+### Type support
+
+note that after usage, you'l get all the available fields, with no regard to the fields you asked for
+
+![alt text](./public/image.png)
+
+**But there's a solution, look [here!](https://www.npmjs.com/package/@mondaydotcomorg/setup-api)**

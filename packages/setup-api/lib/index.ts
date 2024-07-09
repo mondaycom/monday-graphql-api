@@ -3,13 +3,20 @@
 import * as shell from 'shelljs';
 import * as fs from 'fs';
 
-export const installPackages = () => {
-  const commands = [
-    'npm install graphql-request',
-    'npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
-  ];
+const isYarn = fs.existsSync('yarn.lock');
 
-  commands.forEach((command) => {
+const installCommands = isYarn
+  ? [
+      'yarn add graphql-request',
+      'yarn add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
+    ]
+  : [
+      'npm install graphql-request',
+      'npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
+    ];
+
+export const installPackages = () => {
+  installCommands.forEach((command) => {
     if (shell.exec(command).code !== 0) {
       console.error(`Error executing command: ${command}`);
       shell.exit(1);
