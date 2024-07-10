@@ -110,6 +110,6 @@ const data = await SeamlessApiClient.query<GetBoardsQuery>(getBoards, variables)
 
 note that after usage, you'l get all the available fields, with no regard to the fields you asked for
 
-![alt text](./public/image.png)
+![alt text](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/api/public/image.png)
 
 **But there's a solution, look [here!](https://www.npmjs.com/package/@mondaydotcomorg/setup-api)**

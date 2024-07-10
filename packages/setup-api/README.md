@@ -8,11 +8,11 @@ This library automates the setup of a development environment for working with t
 
 You can start writing qeuries with auto complete on the types of your queries
 
-![alt text](./public/image-1.png)
+![alt text](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/setup-api/public/image-1.png)
 
 After usage, you can get only what you asked for
 
-![alt text](./public/image-2.png)
+![alt text](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/setup-api/public/image-2.png)
 
 ## What does the script do?
 
