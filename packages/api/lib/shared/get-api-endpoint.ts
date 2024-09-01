@@ -13,7 +13,7 @@ export const getApiEndpoint = (): string => {
         return platformApiSecretsMap.PLATFORM_API_ENDPOINT;
       }
     } catch (error) {
-      console.error('Failed to parse PLATFORM_API_SECRETS', error);
+      console.error('Failed to parse PLATFORM_API secret', error);
     }
   }
 
