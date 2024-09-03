@@ -1,7 +1,8 @@
 import { GraphQLClient } from 'graphql-request';
-import { ApiVersionType, DEFAULT_VERSION, MONDAY_API_ENDPOINT, QueryVariables } from './constants/index';
+import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from './constants/index';
 import { Sdk, getSdk } from './generated/sdk';
 import pkg from '../package.json';
+import { getApiEndpoint } from './shared/get-api-endpoint';
 
 /**
  * The `ApiClient` class provides a structured way to interact with the Monday.com API,
@@ -26,7 +27,7 @@ export class ApiClient {
 
   constructor(token: string, apiVersion: string = DEFAULT_VERSION) {
     this.apiVersion = apiVersion;
-    const endpoint = process.env.MONDAY_API_ENDPOINT || MONDAY_API_ENDPOINT;
+    const endpoint = getApiEndpoint();
     this.client = new GraphQLClient(endpoint, {
       headers: {
         'Content-Type': 'application/json',
