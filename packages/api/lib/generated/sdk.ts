@@ -2881,6 +2881,8 @@ export enum VersionKind {
   /** Previous version. Migrate to current version as soon as possible */
   Maintenance = 'maintenance',
   /** Old version that will be deprecated in January. Migrate to current version as soon as possible */
+  OldMaintenance = 'old__maintenance',
+  /** Old version that will be deprecated in January. Migrate to current version as soon as possible */
   OldPreviousMaintenance = 'old_previous_maintenance',
   /** Older version that will be deprecated in January. Migrate to current version as soon as possible */
   PreviousMaintenance = 'previous_maintenance',
