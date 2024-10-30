@@ -16,7 +16,7 @@ jest.mock('graphql-request', () => {
 describe('ApiClient', () => {
   it('should correctly initialize with default parameters', () => {
     const token = 'test-token';
-    const apiClient = new ApiClient(token);
+    const apiClient = new ApiClient({ token });
 
     expect(GraphQLClient).toHaveBeenCalledWith('https://api.monday.com/v2', {
       headers: {

@@ -94,17 +94,17 @@ When using this package, you will automatically get an example query and an exam
 Here is how to use them!
 
 ```typescript
-const client = new ApiClient("your_api_token"); // From the monday api sdk @mondaydotcomorg/api
+const client = new ApiClient({token: '<API-TOKEN>'}); // From the monday api sdk @mondaydotcomorg/api
 
 const queryVariables: QueryBoardsArgs = { ids: ["your_board_id"] }; // replace with your board id
-const queryData = await client.query<GetBoardsQuery>(exampleQuery, queryVariables);
+const queryData = await client.request<GetBoardsQuery>(exampleQuery, queryVariables);
 
 const mutationVariables: CreateItemMutationVariables = {
 boardId: "your_board_id", // replace with your board id
-groupId: "your_groyup_id", // replace with your group id
+groupId: "your_group_id", // replace with your group id
 itemName: "Im using my own queries!",
 };
-const mutationData = await client.query<CreateItemMutation>(exampleMutation, mutationVariables);
+const mutationData = await client.request<CreateItemMutation>(exampleMutation, mutationVariables);
 ```
 
 ## Further configuration
