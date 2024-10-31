@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/api",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "monday.com API client",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -33,6 +33,7 @@
     "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/api"
   },
   "dependencies": {
+    "graphql": "16.8.2",
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6"
   },

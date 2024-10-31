@@ -44,7 +44,7 @@ export class SeamlessApiClient {
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if called from within the monday.com platform and the request failed, or if the request timed out.
    */
-  public query<T>(
+  public request<T>(
     query: string,
     variables?: QueryVariables,
     version?: ApiVersionType,

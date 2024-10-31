@@ -21,7 +21,7 @@ npm install @mondaydotcomorg/api
 
 All exported types correspond to the current version of the API that existed when the NPM package was released
 
-For the conviniecne of monday app developers, this CLI is included in the [@mondaydotcomorg/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli).
+For the convenience of monday app developers, this CLI is included in the [@mondaydotcomorg/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli).
 If you want to use it on it’s own, you can install [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).
 (you can find more about app development here [monday-apps-sdk](https://developer.monday.com/apps/docs/introduction-to-the-sdk))
 
@@ -34,7 +34,7 @@ The package exports the class `ApiClient` which is the main entry point to the S
 ```typescript
 import { ApiClient } from '@mondaydotcomorg/api';
 
-const client = new ApiClient('<API-TOKEN>');
+const client = new ApiClient({token: '<API-TOKEN>'});
 
 // Or use the operations provided by the SDK
 const me = await client.operations.getMeOp();
@@ -56,10 +56,10 @@ const changeStatusColumn = await client.operations.changeColumnValueOp({
 });
 
 // Use the client to query monday's API freestyle WITHOUT TYPES -> Use @mondaydotcomorg/setup-api to setup typed project!
-const boards = await client.query<{boards: [{ name: string }]}>(`query { boards(ids: some_id) { name } }`);
+const boards = await client.request<{boards: [{ name: string }]}>(`query { boards(ids: some_id) { name } }`);
 
 // You can also use the types provided by the sdk 
-const { boards } = await client.query<{
+const { boards } = await client.request<{
   boards: [Board];
 }>(`query { boards(ids: some_id) { name } }`);
 ```
@@ -78,17 +78,102 @@ const user: User = {
 }
 ```
 
+### Configuration
+
+#### ErrorPolicy
+
+By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received. You can define errorPolicy in the GraphQLClient constructor.
+
+```typescript
+const client = new ApiClient({token: '<API-TOKEN>', requestConfig: { errorPolicy: 'all' }});
+```
+
+**None (default)**
+Allow no errors at all. If you receive a GraphQL error the client will throw.
+
+**Ignore**
+Ignore incoming errors and resolve like no errors occurred
+
+**All**
+Return both the errors and data, only works with the client's rawRequest call option.
+
+### Handling errors
+
+The errors are returned from the `ClientError` type.
+**The example below is leveraging types using [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).**
+
+```typescript
+import { ApiClient, ClientError } from "@mondaydotcomorg/api";
+import { GetBoardsQuery, GetBoardsQueryVariables } from "./generated/graphql";
+import { exampleQuery } from "./queries.graphql";
+
+async function getBoardDetails(): Promise<void> {
+  try {
+    const token = "<API_TOKEN>";
+    const client = new ApiClient({ token });
+    const queryVariables: GetBoardsQueryVariables = { ids: ["5901934630"] };
+    const queryData = await client.request<GetBoardsQuery>(
+      exampleQuery,
+      queryVariables
+    );
+
+    console.log(queryData.boards);
+  } catch (error) {
+    if (error instanceof ClientError) {
+      console.error(error.response.errors);
+    } else {
+      console.error(error);
+    }
+  }
+}
+
+getBoardDetails();
+```
+
+### Other request options
+
+If you prefer the 'old' style of response (data, errors, extensions) you can call the api using the rawRequest option
+**The example below is leveraging types using [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).**
+
+```typescript
+import { ApiClient, ClientError } from "@mondaydotcomorg/api";
+import { GetBoardsQuery, GetBoardsQueryVariables } from "./generated/graphql";
+import { exampleQuery } from "./queries.graphql";
+
+async function getBoardDetails(): Promise<void> {
+  try {
+    const token = "<API_TOKEN>";
+    const client = new ApiClient({ token });
+    const queryVariables: GetBoardsQueryVariables = { ids: ["5901934630"] };
+    const queryData = await client.rawRequest<GetBoardsQuery>(
+      exampleQuery,
+      queryVariables
+    );
+
+    console.log(queryData.data.boards);
+  } catch (error) {
+    if (error instanceof ClientError) {
+      console.error(error.response.errors);
+    } else {
+      console.error(error);
+    }
+  }
+}
+
+getBoardDetails();
+```
+
 ## SeamlessApiClient
 
 The SeamlessApiClient class is a tool designed for making seamless API requests to Monday.com, tailored for use within the client side of applications deployed on the platform.
-Basically, when you are making an api call from the client side of an app deployed on Monday.com, you dont need to specify the users token.
+Basically, when you are making an api call from the client side of an app deployed on Monday.com, you don't need to specify the users token.
 
 ```typescript
 import {
   Board,
 } from "@mondaycom/api";
 
-const { boards } = await SeamlessApiClient.query<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
+const { boards } = await SeamlessApiClient.request<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
 
 // or using your own types after integrating with @mondaycom/setup-api
 import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
@@ -103,7 +188,7 @@ export const getBoards = gql`
   }
 `;
 
-const data = await SeamlessApiClient.query<GetBoardsQuery>(getBoards, variables);
+const data = await SeamlessApiClient.request<GetBoardsQuery>(getBoards, variables);
 ```
 
 ### Type support
