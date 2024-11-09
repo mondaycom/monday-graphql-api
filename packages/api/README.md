@@ -171,12 +171,15 @@ Basically, when you are making an api call from the client side of an app deploy
 ```typescript
 import {
   Board,
-} from "@mondaycom/api";
+} from "@mondaydotcomorg/api";
 
-const { boards } = await SeamlessApiClient.request<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
+// Option A - using pre defined types
+const seamlessApiClient = new SeamlessApiClient();
+const { boards } = await client.request<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
 
-// or using your own types after integrating with @mondaycom/setup-api
+// Option B - using your own types after integrating with @mondaydotcomorg/setup-api
 import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
+const seamlessApiClient = new SeamlessApiClient();
 const variables: GetBoardsQueryVariables = { ids: ["some_id"] };
 
 export const getBoards = gql`
@@ -188,7 +191,13 @@ export const getBoards = gql`
   }
 `;
 
-const data = await SeamlessApiClient.request<GetBoardsQuery>(getBoards, variables);
+try {
+  const data = await seamlessApiClient.request<GetBoardsQuery>(getBoards, variables);
+} catch (error) { 
+  // If the error is from SeamlessApiClient, it will be of type SeamlessApiClientError, which you can import from our package. Also, error.type will also 'SeamlessApiClientError'.
+  
+  console.log(error.response.errors)
+}
 ```
 
 ### Type support
