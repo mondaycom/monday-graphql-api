@@ -1,5 +1,11 @@
 # Changelog
 
+## [7.0.0]
+
+### ⚠️ Breaking Changes
+
+- **SeamlessApiClient error type**: The `SeamlessApiClient` class now aligns its error format with the ApiClient class. Errors are now nested under response.errors. Use the SeamlessApiClientError type provided by the package to handle these errors.
+
 ## [6.0.0]
 
 ### ⚠️ Breaking Changes

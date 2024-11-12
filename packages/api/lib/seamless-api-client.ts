@@ -1,4 +1,7 @@
 import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from './constants';
+import { SeamlessApiClientError } from './errors/seamless-api-client-error';
+
+export { SeamlessApiClientError };
 
 interface ListenerCallback {
   (data: any): void;
@@ -65,7 +68,8 @@ export class SeamlessApiClient {
         clearTimeout(timeoutId);
         removeListener();
         if (data.errorMessage) {
-          reject(new Error(`${data.errorMessage} - ${data.data}`));
+          const error = new SeamlessApiClientError(data.errorMessage, data.data.errors);
+          reject(error);
         } else {
           resolve(data as T);
         }
