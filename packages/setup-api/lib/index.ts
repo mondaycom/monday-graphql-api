@@ -5,14 +5,15 @@ import * as fs from 'fs';
 
 const isYarn = fs.existsSync('yarn.lock');
 const GRAPHQL_REQUEST = 'graphql-request@6.1.0';
+const GRAPHQL = 'graphql@16.8.2';
 
 const installCommands = isYarn
   ? [
-      `yarn add ${GRAPHQL_REQUEST}`,
+      `yarn add ${GRAPHQL_REQUEST} ${GRAPHQL}`,
       'yarn add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
     ]
   : [
-      `npm install ${GRAPHQL_REQUEST}`,
+      `npm install ${GRAPHQL_REQUEST} ${GRAPHQL}`,
       'npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
     ];
 
