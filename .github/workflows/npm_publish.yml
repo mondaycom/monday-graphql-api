@@ -19,9 +19,12 @@ jobs:
       - run: npm run build --workspaces
       - run: npm publish --workspaces
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - uses: "marvinpinto/action-automatic-releases@latest"
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm whoami
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: 'marvinpinto/action-automatic-releases@latest'
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
           prerelease: false
           automatic_release_tag: latest
