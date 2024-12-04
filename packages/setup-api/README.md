@@ -1,5 +1,15 @@
 # Monday API Setup Library
 
+**Important: This command works only in bash-like environments (e.g., macOS Terminal, iTerm, Linux shell, Git Bash on Windows). It is not compatible with Windows Command Prompt (cmd).**
+
+## Installation
+
+Run this command on the **root** directory of your project
+
+```bash
+npx @mondaydotcomorg/setup-api 
+```
+
 ## Overview
 
 This library automates the setup of a development environment for working with the Monday API using GraphQL. It's designed to help developers quickly start projects with pre-configured tools and settings.
@@ -33,14 +43,6 @@ After everything will be set up, you should follow those steps:
 2. Run 'npm run fetch:schma'
 3. your types will be ready to use (as can be seen in the src/generated folder)
 
-## Installation
-
-Run this command on the **root** directory of your project
-
-```bash
-npx @mondaydotcomorg/setup-api 
-```
-
 ## Using the newly created scripts
 
 After installation, you will have 3 new scripts:
@@ -49,10 +51,16 @@ After installation, you will have 3 new scripts:
 - "codegen" - generates types
 - "fetch:generate" - runs both
 
-for now do the following to get the schema and create your first type.
+To get the schema and create your first type run the following command:
 
 ```bash
 npm run fetch:generate
+```
+
+Afterward, whenever you change your queries and want to recreate the types, you need to run:
+
+```bash
+npm run codegen
 ```
 
 ## Installing the GraphQL Extension for your IDE
