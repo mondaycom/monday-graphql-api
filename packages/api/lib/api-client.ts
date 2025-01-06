@@ -10,7 +10,7 @@ export { ClientError };
 export interface ApiClientConfig {
   token: string;
   apiVersion?: string;
-  requestConfig?: Omit<RequestConfig, 'headers'>;
+  requestConfig?: RequestConfig;
 }
 
 /**
@@ -41,14 +41,21 @@ export class ApiClient {
     }
     this.apiVersion = apiVersion;
     const endpoint = getApiEndpoint();
+    const defaultHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: token,
+      'API-Version': this.apiVersion,
+      'Api-Sdk-Version': pkg.version,
+    };
+
+    const mergedHeaders = {
+      ...defaultHeaders,
+      ...(requestConfig.headers || {}),
+    };
+
     this.client = new GraphQLClient(endpoint, {
       ...requestConfig,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-        'API-Version': this.apiVersion,
-        'Api-Sdk-Version': pkg.version,
-      },
+      headers: mergedHeaders,
     });
 
     this.operations = getSdk(this.client);
