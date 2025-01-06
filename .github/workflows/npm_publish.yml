@@ -1,5 +1,4 @@
 name: Publish Package to NPM
-
 on:
   workflow_dispatch:
   push:
@@ -11,17 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18.12.1
           registry-url: https://registry.npmjs.org/
+
       - run: npm ci
+      
       - run: npm run build --workspaces
-      - run: npm publish --workspaces
+
+      - name: Get changed packages
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD^ HEAD | grep "^packages/" | cut -d/ -f2 | sort -u | jq -R -s -c 'split("\n")[:-1]')
+          echo "packages=$CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Publish changed packages
+        if: steps.changed.outputs.packages != '[]'
+        run: |
+          PACKAGES=$(echo '${{ steps.changed.outputs.packages }}' | jq -r '.[]')
+          for PKG in $PACKAGES; do
+            cd packages/$PKG
+            npm publish
+            cd ../..
+          done
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          automatic_release_tag: latest
