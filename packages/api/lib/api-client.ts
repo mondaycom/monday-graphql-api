@@ -39,6 +39,7 @@ export class ApiClient {
         "Invalid API version format. Expected format is 'yyyy-mm' with month as one of '01', '04', '07', or '10'.",
       );
     }
+
     this.apiVersion = apiVersion;
     const endpoint = getApiEndpoint();
     const defaultHeaders = {
