@@ -107,6 +107,6 @@ export class ApiClient {
    * @returns {boolean} - Returns true if the version matches yyyy-mm format with allowed months.
    */
   private isValidApiVersion(version: string): boolean {
-    return /^\d{4}-(01|04|07|10)$/.test(version);
+    return version === 'dev' || /^\d{4}-(01|04|07|10)$/.test(version);
   }
 }
