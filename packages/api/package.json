@@ -1,8 +1,8 @@
 {
   "name": "@mondaydotcomorg/api",
-  "version": "8.0.2",
+  "version": "9.0.0",
   "description": "monday.com API client",
-  "main": "dist/cjs/index.js",
+  "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "files": [
