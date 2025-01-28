@@ -34,7 +34,7 @@ jobs:
           PACKAGES=$(echo '${{ steps.changed.outputs.packages }}' | jq -r '.[]')
           for PKG in $PACKAGES; do
             cd packages/$PKG
-            npm publish
+            npm publish --access public
             cd ../..
           done
         env:
