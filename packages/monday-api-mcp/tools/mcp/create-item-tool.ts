@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { ApiClient } from '@mondaydotcomorg/api';
 import { CreateItemMutation, CreateItemMutationVariables } from '../../src/generated/graphql.js';
 import { createItem } from '../../src/queries.graphql.js';
+import { GraphQLHandler } from '../../utils/graphql-handler.js';
 
 // Define the input schema for the tool
 const createItemSchema = z.object({
@@ -21,30 +21,20 @@ export const registerCreateItemTool = (mcp: McpServer) => {
     },
     async ({ inputSchema }: { inputSchema: CreateItemInput }) => {
       try {
-        const token = process.env.MONDAY_API_TOKEN;
-
-        if (!token) {
-          throw new Error('MONDAY_API_TOKEN environment variable is not set');
-        }
-
-        const apiClient = new ApiClient({ token });
+        const graphqlHandler = GraphQLHandler.getInstance();
 
         const queryVariables: CreateItemMutationVariables = {
           boardId: inputSchema.boardId.toString(),
           itemName: inputSchema.itemName,
         };
 
-        const response = await apiClient.request<CreateItemMutation>(createItem, queryVariables);
+        const { content, _meta } = await graphqlHandler.execute<CreateItemMutation>(
+          createItem,
+          queryVariables,
+          (data) => `Successfully created item "${inputSchema.itemName}" with ID: ${data.create_item?.id}`,
+        );
 
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `Successfully created item "${inputSchema.itemName}" with ID: ${response.create_item?.id}`,
-            },
-          ],
-          _meta: {},
-        };
+        return { content, _meta };
       } catch (error) {
         return {
           content: [
