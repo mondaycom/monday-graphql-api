@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { registerTools } from './tools/mcp/index.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { registerTools } from './tools/index.js';
 
 /**
  * The main MCP server instance for the monday-api-mcp project

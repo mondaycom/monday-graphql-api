@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { CreateItemMutation, CreateItemMutationVariables } from '../../src/generated/graphql.js';
-import { createItem } from '../../src/queries.graphql.js';
-import { GraphQLHandler } from '../../utils/graphql-handler.js';
+import { GraphQLHandler } from '../utils/graphql-handler.js';
+import { CreateItemMutation, CreateItemMutationVariables } from '../src/generated/graphql.js';
+import { createItem } from '../src/queries.graphql.js';
 
 // Define the input schema for the tool
 const createItemSchema = z.object({
