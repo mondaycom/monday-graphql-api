@@ -2,6 +2,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerTools } from './tools/mcp/index.js';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 /**
  * The main MCP server instance for the monday-api-mcp project
@@ -19,6 +22,10 @@ registerTools(mcp);
  * Uses stdio for transport
  */
 async function runServer() {
+  const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  dotenv.config({ path: path.resolve(packageRoot, '.env') });
+  console.log(process.env.MONDAY_API_TOKEN);
+
   const transport = new StdioServerTransport();
 
   await mcp.connect(transport);

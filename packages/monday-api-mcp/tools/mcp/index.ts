@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-// import { registerCombinedSearchTool } from './combined-search-tool.js';
+import { registerCreateItemTool } from './create-item-tool.js';
 
 /**
  * Registers all MCP tools with the provided MCP server instance
@@ -7,5 +7,5 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
  * @param mcp - The MCP server instance to register the tools with
  */
 export const registerTools = (mcp: McpServer) => {
-  // registerCombinedSearchTool(mcp);
+  registerCreateItemTool(mcp);
 };
