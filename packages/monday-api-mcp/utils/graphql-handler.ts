@@ -1,4 +1,5 @@
-import { ApiClient, ClientError } from '@mondaydotcomorg/api';
+import { ApiClient } from '@mondaydotcomorg/api';
+import { ClientError } from 'graphql-request';
 
 type McpTextContent = {
   type: 'text';
