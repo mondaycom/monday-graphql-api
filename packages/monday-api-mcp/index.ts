@@ -24,7 +24,6 @@ registerTools(mcp);
 async function runServer() {
   const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   dotenv.config({ path: path.resolve(packageRoot, '.env') });
-  console.log(process.env.MONDAY_API_TOKEN);
 
   const transport = new StdioServerTransport();
 
