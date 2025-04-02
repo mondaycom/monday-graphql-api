@@ -5,7 +5,6 @@ import { createItem } from '../monday-graphql/queries.graphql';
 import { CreateItemMutation, CreateItemMutationVariables } from '../monday-graphql/generated/graphql';
 
 export const createItemToolSchema = {
-  boardId: z.number().describe('The id of the board to which the new item will be added'),
   name: z.string().describe("The name of the new item to be created, must be relevant to the user's request"),
   groupId: z
     .string()
@@ -18,7 +17,14 @@ export const createItemToolSchema = {
     ),
 };
 
-export class CreateItemTool extends BaseMondayApiTool<typeof createItemToolSchema> {
+export const createItemInBoardToolSchema = {
+  boardId: z.number().describe('The id of the board to which the new item will be added'),
+  ...createItemToolSchema,
+};
+
+export type CreateItemToolInput = typeof createItemToolSchema | typeof createItemInBoardToolSchema;
+
+export class CreateItemTool extends BaseMondayApiTool<CreateItemToolInput> {
   name = 'create_item';
   type = ToolType.MUTATION;
 
@@ -26,13 +32,18 @@ export class CreateItemTool extends BaseMondayApiTool<typeof createItemToolSchem
     return 'Create a new item in a monday.com board';
   }
 
-  getInputSchema(): typeof createItemToolSchema {
-    return createItemToolSchema;
+  getInputSchema(): CreateItemToolInput {
+    if (this.context?.boardId) {
+      return createItemToolSchema;
+    }
+
+    return createItemInBoardToolSchema;
   }
 
-  async execute(input: ToolInputType<typeof createItemToolSchema>): Promise<ToolOutputType<never>> {
+  async execute(input: ToolInputType<CreateItemToolInput>): Promise<ToolOutputType<never>> {
+    const boardId = this.context?.boardId ?? (input as ToolInputType<typeof createItemInBoardToolSchema>).boardId;
     const variables: CreateItemMutationVariables = {
-      boardId: input.boardId.toString(),
+      boardId: boardId.toString(),
       itemName: input.name,
       groupId: input.groupId,
       columnValues: input.columnValues,

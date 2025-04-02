@@ -5,11 +5,17 @@ import { getBoardItemsByName } from '../monday-graphql/queries.graphql';
 import { GetBoardItemsByNameQuery, GetBoardItemsByNameQueryVariables } from '../monday-graphql/generated/graphql';
 
 export const getItemsToolSchema = {
-  boardId: z.number(),
   term: z.string(),
 };
 
-export class GetBoardItemsTool extends BaseMondayApiTool<typeof getItemsToolSchema> {
+export const getItemsInBoardToolSchema = {
+  boardId: z.number(),
+  ...getItemsToolSchema,
+};
+
+export type GetItemsToolInput = typeof getItemsToolSchema | typeof getItemsInBoardToolSchema;
+
+export class GetBoardItemsTool extends BaseMondayApiTool<GetItemsToolInput> {
   name = 'get_board_items_by_name';
   type = ToolType.QUERY;
 
@@ -17,20 +23,24 @@ export class GetBoardItemsTool extends BaseMondayApiTool<typeof getItemsToolSche
     return 'Get items by board id and term';
   }
 
-  getInputSchema(): typeof getItemsToolSchema {
-    return getItemsToolSchema;
+  getInputSchema(): GetItemsToolInput {
+    if (this.context?.boardId) {
+      return getItemsToolSchema;
+    }
+
+    return getItemsInBoardToolSchema;
   }
 
-  async execute(input: ToolInputType<typeof getItemsToolSchema>): Promise<ToolOutputType<never>> {
+  async execute(input: ToolInputType<GetItemsToolInput>): Promise<ToolOutputType<never>> {
+    const boardId = this.context?.boardId ?? (input as ToolInputType<typeof getItemsInBoardToolSchema>).boardId;
     const variables: GetBoardItemsByNameQueryVariables = {
-      boardId: input.boardId.toString(),
+      boardId: boardId.toString(),
       term: input.term,
     };
 
     const res = await this.mondayApi.request<GetBoardItemsByNameQuery>(getBoardItemsByName, variables);
 
-    // TODO: add structured output
-    // TODO: add pagination?
+    // TODO: support pagination
     return {
       content: `Items ${res.boards?.[0]?.items_page?.items?.map((item) => `name: ${item.name}, id: ${item.id}`).join(', ')} successfully fetched`,
     };

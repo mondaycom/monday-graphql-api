@@ -79,3 +79,45 @@ export const moveItemToGroup = gql`
     }
   }
 `;
+
+export const createBoard = gql`
+  mutation createBoard($boardKind: BoardKind!, $boardName: String!, $boardDescription: String, $workspaceId: ID) {
+    create_board(
+      board_kind: $boardKind
+      board_name: $boardName
+      description: $boardDescription
+      workspace_id: $workspaceId
+      empty: true
+    ) {
+      id
+    }
+  }
+`;
+
+export const createColumn = gql`
+  mutation createColumn(
+    $boardId: ID!
+    $columnType: ColumnType!
+    $columnTitle: String!
+    $columnDescription: String
+    $columnSettings: JSON
+  ) {
+    create_column(
+      board_id: $boardId
+      column_type: $columnType
+      title: $columnTitle
+      description: $columnDescription
+      defaults: $columnSettings
+    ) {
+      id
+    }
+  }
+`;
+
+export const deleteColumn = gql`
+  mutation deleteColumn($boardId: ID!, $columnId: String!) {
+    delete_column(board_id: $boardId, column_id: $columnId) {
+      id
+    }
+  }
+`;
