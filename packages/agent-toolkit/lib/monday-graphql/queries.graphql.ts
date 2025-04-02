@@ -55,15 +55,11 @@ export const getBoardSchema = gql`
 `;
 
 export const getUsersByName = gql`
-  query getUsersByName($name: String!) {
+  query getUsersByName($name: String) {
     users(name: $name) {
       id
       name
       title
-      teams {
-        id
-        name
-      }
     }
   }
 `;

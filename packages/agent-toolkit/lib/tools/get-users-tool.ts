@@ -5,7 +5,7 @@ import { getUsersByName } from '../monday-graphql/queries.graphql';
 import { GetUsersByNameQuery, GetUsersByNameQueryVariables } from '../monday-graphql/generated/graphql';
 
 export const getUsersToolSchema = {
-  name: z.string().describe('The name or partial name of the user to get'),
+  name: z.string().optional().describe('The name or partial name of the user to get'),
 };
 
 export class GetUsersTool extends BaseMondayApiTool<typeof getUsersToolSchema> {
@@ -13,7 +13,7 @@ export class GetUsersTool extends BaseMondayApiTool<typeof getUsersToolSchema> {
   type = ToolType.QUERY;
 
   getDescription(): string {
-    return 'Get users by name or partial name';
+    return 'Get users, can be filtered by name or partial name';
   }
 
   getInputSchema(): typeof getUsersToolSchema {
@@ -27,7 +27,7 @@ export class GetUsersTool extends BaseMondayApiTool<typeof getUsersToolSchema> {
 
     const res = await this.mondayApi.request<GetUsersByNameQuery>(getUsersByName, variables);
     return {
-      content: `Relevant users:\n ${res.users?.map((user) => ` id: ${user?.id}, name: ${user?.name}, title: ${user?.title}, teams: ${user?.teams?.map((team) => ` id: ${team?.id}, name: ${team?.name}`).join(', ')}`).join('\n')}`,
+      content: `Relevant users:\n ${res.users?.map((user) => ` id: ${user?.id}, name: ${user?.name}, title: ${user?.title}`).join('\n')}`,
     };
   }
 }
