@@ -8,7 +8,7 @@ import type {
 import { z } from 'zod';
 import { allTools } from '../tools';
 import { filterTools, ToolsConfiguration } from '../tools/utils';
-import { BaseMondayApiTool } from '../core/base-monday-api-tool';
+import { Tool } from '../core/tool';
 
 export type MondayAgentToolkitConfig = {
   mondayApiToken: ApiClientConfig['token'];
@@ -19,7 +19,7 @@ export type MondayAgentToolkitConfig = {
 
 export class MondayAgentToolkit {
   private readonly mondayApi: ApiClient;
-  tools: ChatCompletionTool[];
+  tools: Tool<any, any>[];
 
   constructor(config: MondayAgentToolkitConfig) {
     this.mondayApi = new ApiClient({
@@ -29,20 +29,26 @@ export class MondayAgentToolkit {
     });
 
     const toolsToRegister = filterTools(allTools, this.mondayApi, config.toolsConfiguration);
-    const toolInstances = toolsToRegister.map((tool) => new tool(this.mondayApi));
-
-    this.tools = toolInstances.map((tool) => ({
-      type: 'function',
-      function: {
-        name: tool.name,
-        description: tool.getDescription(),
-        parameters: zodToJsonSchema(z.object(tool.getInputSchema())),
-      },
-    }));
+    this.tools = toolsToRegister.map((tool) => new tool(this.mondayApi)) as Tool<any, any>[];
   }
 
+  /**
+   * Returns the tools that are available to be used in the OpenAI API.
+   *
+   * @returns {ChatCompletionTool[]} The tools that are available to be used in the OpenAI API.
+   */
   getTools(): ChatCompletionTool[] {
-    return this.tools;
+    return this.tools.map((tool) => {
+      const inputSchema = tool.getInputSchema();
+      return {
+        type: 'function',
+        function: {
+          name: tool.name,
+          description: tool.getDescription(),
+          parameters: inputSchema ? zodToJsonSchema(z.object(inputSchema)) : undefined,
+        },
+      };
+    });
   }
 
   /**
@@ -57,17 +63,11 @@ export class MondayAgentToolkit {
     const { name, arguments: stringifiedArgs } = toolCall.function;
     const args = JSON.parse(stringifiedArgs);
 
-    const toolInstance = this.tools.find((t) => t.function.name === name);
-    if (!toolInstance) {
+    const tool = this.tools.find((t) => t.name === name);
+    if (!tool) {
       throw new Error(`Unknown tool: ${name}`);
     }
 
-    const toolClass = allTools.find((t) => new t(this.mondayApi).name === name);
-    if (!toolClass) {
-      throw new Error(`Tool class not found: ${name}`);
-    }
-
-    const tool = new toolClass(this.mondayApi) as BaseMondayApiTool<any>;
     const parsedResult = z.object(tool.getInputSchema()).safeParse(args);
     if (!parsedResult.success) {
       // TODO: log error?

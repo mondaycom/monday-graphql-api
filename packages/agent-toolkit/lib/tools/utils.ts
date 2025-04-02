@@ -1,7 +1,5 @@
 import { ApiClient } from '@mondaydotcomorg/api';
-import { Tool } from '../core/tool';
 import { ToolType } from '../core/tool';
-import { ZodRawShape } from 'zod';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 
 export type ToolsConfiguration = {

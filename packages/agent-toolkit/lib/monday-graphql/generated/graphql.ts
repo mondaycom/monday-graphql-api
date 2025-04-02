@@ -3537,3 +3537,24 @@ export type MoveItemToGroupMutationVariables = Exact<{
 
 
 export type MoveItemToGroupMutation = { __typename?: 'Mutation', move_item_to_group?: { __typename?: 'Item', id: string } | null };
+
+export type CreateBoardMutationVariables = Exact<{
+  boardKind: BoardKind;
+  boardName: Scalars['String']['input'];
+  boardDescription?: InputMaybe<Scalars['String']['input']>;
+  workspaceId?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type CreateBoardMutation = { __typename?: 'Mutation', create_board?: { __typename?: 'Board', id: string } | null };
+
+export type CreateColumnMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  columnType: ColumnType;
+  columnTitle: Scalars['String']['input'];
+  columnDescription?: InputMaybe<Scalars['String']['input']>;
+  columnSettings?: InputMaybe<Scalars['JSON']['input']>;
+}>;
+
+
+export type CreateColumnMutation = { __typename?: 'Mutation', create_column?: { __typename?: 'Column', id: string } | null };

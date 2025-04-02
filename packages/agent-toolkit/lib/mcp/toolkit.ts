@@ -1,8 +1,10 @@
+import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ApiClient, ApiClientConfig } from '@mondaydotcomorg/api';
 import { allTools } from '../tools';
 import { filterTools, ToolsConfiguration } from '../tools/utils';
 import { CallToolResult } from '@modelcontextprotocol/sdk/types';
+import { Tool } from '../core/tool';
 
 export type MondayAgentToolkitConfig = {
   mondayApiToken: ApiClientConfig['token'];
@@ -27,18 +29,36 @@ export class MondayAgentToolkit extends McpServer {
     });
 
     const toolsToRegister = filterTools(allTools, this.mondayApiClient, config.toolsConfiguration);
-    const tools = toolsToRegister.map((tool) => new tool(this.mondayApiClient));
+    const tools = toolsToRegister.map((tool) => new tool(this.mondayApiClient)) as Tool<any, any>[];
 
     tools.forEach((tool) => {
-      this.tool(tool.name, tool.getDescription(), tool.getInputSchema(), async (args: any, _extra: any) => {
-        const res = await tool.execute(args);
+      const inputSchema = tool.getInputSchema();
+      if (!inputSchema) {
+        this.tool(tool.name, tool.getDescription(), async (_extra: any) => {
+          const res = await tool.execute();
 
-        const result: CallToolResult = {
-          content: [{ type: 'text', text: res.content }],
-        };
+          const result: CallToolResult = {
+            content: [{ type: 'text', text: res.content }],
+          };
 
-        return result;
-      });
+          return result;
+        });
+      } else {
+        this.tool(tool.name, tool.getDescription(), inputSchema, async (args: any, _extra: any) => {
+          const parsedArgs = z.object(inputSchema).safeParse(args);
+          if (!parsedArgs.success) {
+            throw new Error(`Invalid arguments: ${parsedArgs.error.message}`);
+          }
+
+          const res = await tool.execute(parsedArgs.data);
+
+          const result: CallToolResult = {
+            content: [{ type: 'text', text: res.content }],
+          };
+
+          return result;
+        });
+      }
     });
   }
 }
