@@ -53,3 +53,33 @@ export const getBoardSchema = gql`
     }
   }
 `;
+
+export const getUsersByName = gql`
+  query getUsersByName($name: String!) {
+    users(name: $name) {
+      id
+      name
+      title
+      teams {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const changeItemColumnValues = gql`
+  mutation changeItemColumnValues($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
+    change_multiple_column_values(board_id: $boardId, item_id: $itemId, column_values: $columnValues) {
+      id
+    }
+  }
+`;
+
+export const moveItemToGroup = gql`
+  mutation moveItemToGroup($itemId: ID!, $groupId: String!) {
+    move_item_to_group(item_id: $itemId, group_id: $groupId) {
+      id
+    }
+  }
+`;

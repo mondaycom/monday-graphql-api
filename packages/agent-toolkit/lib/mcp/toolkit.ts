@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ApiClient, ApiClientConfig } from '@mondaydotcomorg/api';
 import { allTools } from '../tools';
 import { filterTools, ToolsConfiguration } from '../tools/utils';
+import { CallToolResult } from '@modelcontextprotocol/sdk/types';
 
 export type MondayAgentToolkitConfig = {
   mondayApiToken: ApiClientConfig['token'];
@@ -29,12 +30,14 @@ export class MondayAgentToolkit extends McpServer {
     const tools = toolsToRegister.map((tool) => new tool(this.mondayApiClient));
 
     tools.forEach((tool) => {
-      this.tool(tool.name, tool.description, tool.inputSchema, async (args: any, _extra: any) => {
+      this.tool(tool.name, tool.getDescription(), tool.getInputSchema(), async (args: any, _extra: any) => {
         const res = await tool.execute(args);
 
-        return {
-          content: [{ type: 'text' as const, text: res }],
+        const result: CallToolResult = {
+          content: [{ type: 'text', text: res.content }],
         };
+
+        return result;
       });
     });
   }

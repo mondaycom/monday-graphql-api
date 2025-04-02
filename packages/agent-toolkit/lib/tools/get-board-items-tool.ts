@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InputType, ToolType } from '../core/tool';
+import { ToolInputType, ToolOutputType, ToolType } from '../core/tool';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 import { getBoardItemsByName } from '../monday-graphql/queries.graphql';
 import { GetBoardItemsByNameQuery, GetBoardItemsByNameQueryVariables } from '../monday-graphql/generated/graphql';
@@ -11,11 +11,17 @@ export const getItemsToolSchema = {
 
 export class GetBoardItemsTool extends BaseMondayApiTool<typeof getItemsToolSchema> {
   name = 'get_board_items_by_name';
-  description = 'Get items by board id and term';
-  inputSchema = getItemsToolSchema;
   type = ToolType.QUERY;
 
-  async execute(input: InputType<typeof getItemsToolSchema>): Promise<string> {
+  getDescription(): string {
+    return 'Get items by board id and term';
+  }
+
+  getInputSchema(): typeof getItemsToolSchema {
+    return getItemsToolSchema;
+  }
+
+  async execute(input: ToolInputType<typeof getItemsToolSchema>): Promise<ToolOutputType<never>> {
     const variables: GetBoardItemsByNameQueryVariables = {
       boardId: input.boardId.toString(),
       term: input.term,
@@ -25,6 +31,8 @@ export class GetBoardItemsTool extends BaseMondayApiTool<typeof getItemsToolSche
 
     // TODO: add structured output
     // TODO: add pagination?
-    return `Items ${res.boards?.[0]?.items_page?.items?.map((item) => `name: ${item.name}, id: ${item.id}`).join(', ')} successfully fetched`;
+    return {
+      content: `Items ${res.boards?.[0]?.items_page?.items?.map((item) => `name: ${item.name}, id: ${item.id}`).join(', ')} successfully fetched`,
+    };
   }
 }

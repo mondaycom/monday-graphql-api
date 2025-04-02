@@ -1,11 +1,11 @@
-import { z, ZodTypeAny } from 'zod';
+import { z } from 'zod';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
+import { ToolInputType, ToolOutputType, ToolType } from '../core/tool';
 import { createItem } from '../monday-graphql/queries.graphql';
 import { CreateItemMutation, CreateItemMutationVariables } from '../monday-graphql/generated/graphql';
-import { ToolType } from 'lib/core';
 
 export const createItemToolSchema = {
-  boardId: z.number(),
+  boardId: z.number().describe('The id of the board to which the new item will be added'),
   name: z.string().describe("The name of the new item to be created, must be relevant to the user's request"),
   groupId: z
     .string()
@@ -20,12 +20,17 @@ export const createItemToolSchema = {
 
 export class CreateItemTool extends BaseMondayApiTool<typeof createItemToolSchema> {
   name = 'create_item';
-  description =
-    "creating a new item in a monday.com board, Make sure the item name is relevant to the user's request, if not directly specified, choose a name that is relevant to the user's request.";
-  inputSchema = createItemToolSchema;
   type = ToolType.MUTATION;
 
-  async execute(input: z.objectOutputType<typeof createItemToolSchema, ZodTypeAny>): Promise<string> {
+  getDescription(): string {
+    return 'Create a new item in a monday.com board';
+  }
+
+  getInputSchema(): typeof createItemToolSchema {
+    return createItemToolSchema;
+  }
+
+  async execute(input: ToolInputType<typeof createItemToolSchema>): Promise<ToolOutputType<never>> {
     const variables: CreateItemMutationVariables = {
       boardId: input.boardId.toString(),
       itemName: input.name,
@@ -35,6 +40,8 @@ export class CreateItemTool extends BaseMondayApiTool<typeof createItemToolSchem
 
     const res = await this.mondayApi.request<CreateItemMutation>(createItem, variables);
 
-    return `Item ${res.create_item?.id} successfully created`;
+    return {
+      content: `Item ${res.create_item?.id} successfully created`,
+    };
   }
 }

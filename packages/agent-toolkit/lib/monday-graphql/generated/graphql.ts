@@ -3513,3 +3513,27 @@ export type GetBoardSchemaQueryVariables = Exact<{
 
 
 export type GetBoardSchemaQuery = { __typename?: 'Query', boards?: Array<{ __typename?: 'Board', groups?: Array<{ __typename?: 'Group', id: string, title: string } | null> | null, columns?: Array<{ __typename?: 'Column', id: string, type: ColumnType, title: string } | null> | null } | null> | null };
+
+export type GetUsersByNameQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type GetUsersByNameQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', id: string, name: string, title?: string | null, teams?: Array<{ __typename?: 'Team', id: string, name: string } | null> | null } | null> | null };
+
+export type ChangeItemColumnValuesMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  itemId: Scalars['ID']['input'];
+  columnValues: Scalars['JSON']['input'];
+}>;
+
+
+export type ChangeItemColumnValuesMutation = { __typename?: 'Mutation', change_multiple_column_values?: { __typename?: 'Item', id: string } | null };
+
+export type MoveItemToGroupMutationVariables = Exact<{
+  itemId: Scalars['ID']['input'];
+  groupId: Scalars['String']['input'];
+}>;
+
+
+export type MoveItemToGroupMutation = { __typename?: 'Mutation', move_item_to_group?: { __typename?: 'Item', id: string } | null };

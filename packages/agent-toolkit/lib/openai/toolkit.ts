@@ -35,8 +35,8 @@ export class MondayAgentToolkit {
       type: 'function',
       function: {
         name: tool.name,
-        description: tool.description,
-        parameters: zodToJsonSchema(z.object(tool.inputSchema)),
+        description: tool.getDescription(),
+        parameters: zodToJsonSchema(z.object(tool.getInputSchema())),
       },
     }));
   }
@@ -68,7 +68,7 @@ export class MondayAgentToolkit {
     }
 
     const tool = new toolClass(this.mondayApi) as BaseMondayApiTool<any>;
-    const parsedResult = z.object(tool.inputSchema).safeParse(args);
+    const parsedResult = z.object(tool.getInputSchema()).safeParse(args);
     if (!parsedResult.success) {
       // TODO: log error?
       throw new Error(`Invalid arguments: ${parsedResult.error.message}`);
@@ -79,7 +79,7 @@ export class MondayAgentToolkit {
     return {
       role: 'tool',
       tool_call_id: toolCall.id,
-      content: result,
+      content: result.content,
     } as ChatCompletionToolMessageParam;
   }
 }

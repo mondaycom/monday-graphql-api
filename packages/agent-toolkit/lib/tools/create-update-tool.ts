@@ -1,8 +1,8 @@
-import { z, ZodTypeAny } from 'zod';
+import { z } from 'zod';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
+import { ToolInputType, ToolOutputType, ToolType } from '../core/tool';
 import { createUpdate } from '../monday-graphql/queries.graphql';
 import { CreateUpdateMutation, CreateUpdateMutationVariables } from '../monday-graphql/generated/graphql';
-import { ToolType } from 'lib/core';
 
 export const createUpdateToolSchema = {
   itemId: z.number().describe('The id of the item to which the update will be added'),
@@ -11,12 +11,17 @@ export const createUpdateToolSchema = {
 
 export class CreateUpdateTool extends BaseMondayApiTool<typeof createUpdateToolSchema> {
   name = 'create_update';
-  description =
-    "creating a new update in a monday.com board, Make sure the update is relevant to the user's request, if not directly specified, choose a update that is relevant to the user's request.";
-  inputSchema = createUpdateToolSchema;
   type = ToolType.MUTATION;
 
-  async execute(input: z.objectOutputType<typeof createUpdateToolSchema, ZodTypeAny>): Promise<string> {
+  getDescription(): string {
+    return 'Create a new update in a monday.com board';
+  }
+
+  getInputSchema(): typeof createUpdateToolSchema {
+    return createUpdateToolSchema;
+  }
+
+  async execute(input: ToolInputType<typeof createUpdateToolSchema>): Promise<ToolOutputType<never>> {
     const variables: CreateUpdateMutationVariables = {
       itemId: input.itemId.toString(),
       body: input.body,
@@ -24,6 +29,8 @@ export class CreateUpdateTool extends BaseMondayApiTool<typeof createUpdateToolS
 
     const res = await this.mondayApi.request<CreateUpdateMutation>(createUpdate, variables);
 
-    return `Update ${res.create_update?.id} successfully created on item ${input.itemId}`;
+    return {
+      content: `Update ${res.create_update?.id} successfully created on item ${input.itemId}`,
+    };
   }
 }
