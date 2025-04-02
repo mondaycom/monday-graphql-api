@@ -34,8 +34,6 @@ async function runServer() {
     mondayApiRequestConfig: {},
   });
 
-  // registerTools(toolkit);
-
   const transport = new StdioServerTransport();
 
   await toolkit.connect(transport);

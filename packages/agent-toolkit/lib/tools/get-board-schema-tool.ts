@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InputType } from '../core/tool';
+import { InputType, ToolType } from '../core/tool';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 import { getBoardSchema } from '../monday-graphql/queries.graphql';
 import { GetBoardSchemaQuery, GetBoardSchemaQueryVariables } from '../monday-graphql/generated/graphql';
@@ -12,7 +12,7 @@ export class GetBoardSchemaTool extends BaseMondayApiTool<typeof getBoardSchemaT
   name = 'get_board_schema';
   description = 'Get board schema by board id';
   inputSchema = getBoardSchemaToolSchema;
-
+  type = ToolType.QUERY;
   async execute(input: InputType<typeof getBoardSchemaToolSchema>): Promise<string> {
     const variables: GetBoardSchemaQueryVariables = {
       boardId: input.boardId.toString(),

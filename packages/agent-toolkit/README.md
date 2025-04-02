@@ -41,33 +41,60 @@ The toolkit includes several pre-built tools for common Monday.com operations:
 
 ```typescript
 import { MondayAgentToolkit } from '@mondaydotcomorg/agent-toolkit/openai';
+import OpenAI from 'openai';
 
-const toolkit = new MondayAgentToolkit({
+// Initialize the Monday.com Agent Toolkit
+const mondayToolkit = new MondayAgentToolkit({
   mondayApiToken: 'your-monday-api-token',
-  mondayApiVersion: 'your-api-version',
-  mondayApiRequestConfig: {} // Optional request config
+  mondayApiVersion: '2025-01',
+  mondayApiRequestConfig: {},
+  toolsConfiguration: {
+    // Optional: Configure available tools
+    include: ['deleteItem', 'getBoardItems'],
+    // OR exclude specific tools
+    // exclude: ['createItem'],
+    // Disable all mutation operations
+    // disableMutations: true,
+  }
 });
 
-// Get tools for OpenAI
-const tools = toolkit.getTools();
-
-// Handle tool calls from OpenAI
-await toolkit.handleToolCall(toolCall);
-```
 
 ### MCP Integration
 
 ```typescript
 import { MondayAgentToolkit } from '@mondaydotcomorg/agent-toolkit/mcp';
 
+// Initialize with all tools
 const toolkit = new MondayAgentToolkit({
   mondayApiToken: 'your-monday-api-token',
   mondayApiVersion: 'your-api-version',
   mondayApiRequestConfig: {} // Optional request config
 });
 
+// Or initialize with specific tools / disable mutations
+const toolkitWithSpecificTools = new MondayAgentToolkit({
+  mondayApiToken: 'your-monday-api-token',
+  mondayApiVersion: 'your-api-version',
+  mondayApiRequestConfig: {},
+  tools: {
+    include: ['mcp_monday_api_mcp_delete_item', 'create monday item'], // Only include these tools
+    disableMutations: true, // Disable all mutation tools (create, update, delete operations)
+    // OR
+    // exclude: ['tool_name_to_exclude'] // Include all tools except these
+  }
+});
+
 // The toolkit extends McpServer and automatically registers all available tools
 ```
+
+### Types
+
+The toolkit categorizes tools into two types:
+
+- **Query Tools**: Read-only operations that fetch data (e.g., get board items, get board schema)
+- **Mutation Tools**: Write operations that modify data (e.g., create item, delete item, create update)
+
+You can disable all mutation tools using the `disableMutations` option in the configuration. This is useful when you want to ensure that your agent can only read data and cannot make any modifications.
 
 ### Using Individual Tools
 

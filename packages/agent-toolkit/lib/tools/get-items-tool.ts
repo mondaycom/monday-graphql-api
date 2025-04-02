@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InputType } from '../core/tool';
+import { InputType, ToolType } from '../core/tool';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 import { getBoardItemsByName } from '../monday-graphql/queries.graphql';
 import { GetBoardItemsByNameQuery, GetBoardItemsByNameQueryVariables } from '../monday-graphql/generated/graphql';
@@ -13,6 +13,7 @@ export class GetBoardItemsTool extends BaseMondayApiTool<typeof getItemsToolSche
   name = 'get_board_items_by_name';
   description = 'Get items by board id and term';
   inputSchema = getItemsToolSchema;
+  type = ToolType.QUERY;
 
   async execute(input: InputType<typeof getItemsToolSchema>): Promise<string> {
     const variables: GetBoardItemsByNameQueryVariables = {

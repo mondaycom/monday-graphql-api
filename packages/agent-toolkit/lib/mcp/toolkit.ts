@@ -1,11 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ApiClient, ApiClientConfig } from '@mondaydotcomorg/api';
 import { allTools } from '../tools';
+import { filterTools, ToolsConfiguration } from '../tools/utils';
 
 export type MondayAgentToolkitConfig = {
   mondayApiToken: ApiClientConfig['token'];
   mondayApiVersion: ApiClientConfig['apiVersion'];
   mondayApiRequestConfig: ApiClientConfig['requestConfig'];
+  toolsConfiguration?: ToolsConfiguration;
 };
 
 export class MondayAgentToolkit extends McpServer {
@@ -23,7 +25,8 @@ export class MondayAgentToolkit extends McpServer {
       requestConfig: config.mondayApiRequestConfig,
     });
 
-    const tools = allTools.map((tool) => new tool(this.mondayApiClient));
+    const toolsToRegister = filterTools(allTools, this.mondayApiClient, config.toolsConfiguration);
+    const tools = toolsToRegister.map((tool) => new tool(this.mondayApiClient));
 
     tools.forEach((tool) => {
       this.tool(tool.name, tool.description, tool.inputSchema, async (args: any, _extra: any) => {

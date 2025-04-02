@@ -2,6 +2,7 @@ import { z, ZodTypeAny } from 'zod';
 import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 import { createUpdate } from '../monday-graphql/queries.graphql';
 import { CreateUpdateMutation, CreateUpdateMutationVariables } from '../monday-graphql/generated/graphql';
+import { ToolType } from 'lib/core';
 
 export const createUpdateToolSchema = {
   itemId: z.number().describe('The id of the item to which the update will be added'),
@@ -13,6 +14,7 @@ export class CreateUpdateTool extends BaseMondayApiTool<typeof createUpdateToolS
   description =
     "creating a new update in a monday.com board, Make sure the update is relevant to the user's request, if not directly specified, choose a update that is relevant to the user's request.";
   inputSchema = createUpdateToolSchema;
+  type = ToolType.MUTATION;
 
   async execute(input: z.objectOutputType<typeof createUpdateToolSchema, ZodTypeAny>): Promise<string> {
     const variables: CreateUpdateMutationVariables = {

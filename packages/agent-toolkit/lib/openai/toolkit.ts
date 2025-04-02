@@ -6,17 +6,19 @@ import type {
   ChatCompletionToolMessageParam,
 } from 'openai/resources';
 import { z } from 'zod';
-import { DeleteItemTool } from '../tools';
+import { allTools } from '../tools';
+import { filterTools, ToolsConfiguration } from '../tools/utils';
+import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 
 export type MondayAgentToolkitConfig = {
   mondayApiToken: ApiClientConfig['token'];
   mondayApiVersion: ApiClientConfig['apiVersion'];
   mondayApiRequestConfig: ApiClientConfig['requestConfig'];
+  toolsConfiguration?: ToolsConfiguration;
 };
 
 export class MondayAgentToolkit {
   private readonly mondayApi: ApiClient;
-
   tools: ChatCompletionTool[];
 
   constructor(config: MondayAgentToolkitConfig) {
@@ -26,9 +28,10 @@ export class MondayAgentToolkit {
       requestConfig: config.mondayApiRequestConfig,
     });
 
-    const tools = [new DeleteItemTool(this.mondayApi)];
+    const toolsToRegister = filterTools(allTools, this.mondayApi, config.toolsConfiguration);
+    const toolInstances = toolsToRegister.map((tool) => new tool(this.mondayApi));
 
-    this.tools = tools.map((tool) => ({
+    this.tools = toolInstances.map((tool) => ({
       type: 'function',
       function: {
         name: tool.name,
@@ -52,14 +55,19 @@ export class MondayAgentToolkit {
    */
   async handleToolCall(toolCall: ChatCompletionMessageToolCall) {
     const { name, arguments: stringifiedArgs } = toolCall.function;
-    if (name !== 'deleteItem') {
-      // TODO: log error?
+    const args = JSON.parse(stringifiedArgs);
+
+    const toolInstance = this.tools.find((t) => t.function.name === name);
+    if (!toolInstance) {
       throw new Error(`Unknown tool: ${name}`);
     }
 
-    const args = JSON.parse(stringifiedArgs);
-    const tool = new DeleteItemTool(this.mondayApi);
+    const toolClass = allTools.find((t) => new t(this.mondayApi).name === name);
+    if (!toolClass) {
+      throw new Error(`Tool class not found: ${name}`);
+    }
 
+    const tool = new toolClass(this.mondayApi) as BaseMondayApiTool<any>;
     const parsedResult = z.object(tool.inputSchema).safeParse(args);
     if (!parsedResult.success) {
       // TODO: log error?
