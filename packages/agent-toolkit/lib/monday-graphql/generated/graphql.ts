@@ -3558,3 +3558,11 @@ export type CreateColumnMutationVariables = Exact<{
 
 
 export type CreateColumnMutation = { __typename?: 'Mutation', create_column?: { __typename?: 'Column', id: string } | null };
+
+export type DeleteColumnMutationVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  columnId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteColumnMutation = { __typename?: 'Mutation', delete_column?: { __typename?: 'Column', id: string } | null };

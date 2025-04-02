@@ -113,3 +113,11 @@ export const createColumn = gql`
     }
   }
 `;
+
+export const deleteColumn = gql`
+  mutation deleteColumn($boardId: ID!, $columnId: String!) {
+    delete_column(board_id: $boardId, column_id: $columnId) {
+      id
+    }
+  }
+`;
