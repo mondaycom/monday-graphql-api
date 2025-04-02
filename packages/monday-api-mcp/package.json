@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
+    "@mondaydotcomorg/agent-toolkit": "^1.0.0",
     "@mondaydotcomorg/api": "^9.0.1",
     "@types/node": "^22",
     "@types/node-fetch": "^2.6.12",
