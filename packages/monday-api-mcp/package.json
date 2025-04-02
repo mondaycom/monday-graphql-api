@@ -17,36 +17,18 @@
     "build": "tsc && shx chmod +x dist/*.js",
     "prepare": "npm run build",
     "watch": "tsc --watch",
-    "start": "npm run build && node dist/index.js",
-    "fetch:schema": "bash fetch-schema.sh",
-    "codegen": "graphql-codegen",
-    "fetch:generate": "npm run fetch:schema && npm run codegen"
+    "start": "npm run build && node dist/index.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
     "@mondaydotcomorg/agent-toolkit": "^1.0.0",
-    "@mondaydotcomorg/api": "^9.0.1",
     "@types/node": "^22",
     "@types/node-fetch": "^2.6.12",
-    "axios": "^1.8.3",
-    "dotenv": "^16.4.7",
-    "graphql": "^16.8.2",
-    "graphql-request": "^6.1.0",
     "node-fetch": "^3.3.2",
-    "universal-user-agent": "^7.0.2",
-    "winston": "^3.17.0",
-    "zod": "^3.22.4",
-    "zod-to-json-schema": "^3.23.5"
+    "universal-user-agent": "^7.0.2"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.5",
-    "@graphql-codegen/typescript": "^4.1.6",
-    "@graphql-codegen/typescript-operations": "^4.6.0",
     "shx": "^0.3.4",
     "typescript": "^5.6.2"
-  },
-  "eslintConfig": {
-    "extends": "@mondaydotcomorg/trident-library",
-    "root": true
   }
 }
