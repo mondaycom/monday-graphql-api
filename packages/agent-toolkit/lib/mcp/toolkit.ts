@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ApiClient, ApiClientConfig } from '@mondaydotcomorg/api';
-import { DeleteItemTool } from '../tools';
+import { allTools } from '../tools';
 
 export type MondayAgentToolkitConfig = {
   mondayApiToken: ApiClientConfig['token'];
@@ -23,14 +23,14 @@ export class MondayAgentToolkit extends McpServer {
       requestConfig: config.mondayApiRequestConfig,
     });
 
-    const tools = [new DeleteItemTool(this.mondayApiClient)];
+    const tools = allTools.map((tool) => new tool(this.mondayApiClient));
 
     tools.forEach((tool) => {
-      this.tool(tool.name, tool.description, tool.inputSchema, async (args, _extra) => {
+      this.tool(tool.name, tool.description, tool.inputSchema, async (args: any, _extra: any) => {
         const res = await tool.execute(args);
 
         return {
-          content: [{ type: 'text', text: res }],
+          content: [{ type: 'text' as const, text: res }],
         };
       });
     });

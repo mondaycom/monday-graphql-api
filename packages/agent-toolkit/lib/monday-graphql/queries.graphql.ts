@@ -7,3 +7,16 @@ export const deleteItem = gql`
     }
   }
 `;
+
+export const getBoardItemsByName = gql`
+  query GetBoardItemsByName($boardId: ID!, $term: CompareValue!) {
+    boards(ids: [$boardId]) {
+      items_page(query_params: { rules: [{ column_id: "name", operator: contains_text, compare_value: $term }] }) {
+        items {
+          id
+          name
+        }
+      }
+    }
+  }
+`;

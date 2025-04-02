@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { MondayAgentToolkit } from '@mondaydotcomorg/agent-toolkit/mcp';
+import { registerTools } from './tools/index.js';
 
 /**
  * Initializes and starts the MCP server with the Monday Agent Toolkit
@@ -32,6 +33,8 @@ async function runServer() {
     mondayApiVersion: '2025-01',
     mondayApiRequestConfig: {},
   });
+
+  // registerTools(toolkit);
 
   const transport = new StdioServerTransport();
 

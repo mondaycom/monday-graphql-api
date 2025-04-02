@@ -3480,3 +3480,11 @@ export type DeleteItemMutationVariables = Exact<{
 
 
 export type DeleteItemMutation = { __typename?: 'Mutation', delete_item?: { __typename?: 'Item', id: string } | null };
+
+export type GetBoardItemsByNameQueryVariables = Exact<{
+  boardId: Scalars['ID']['input'];
+  term: Scalars['CompareValue']['input'];
+}>;
+
+
+export type GetBoardItemsByNameQuery = { __typename?: 'Query', boards?: Array<{ __typename?: 'Board', items_page: { __typename?: 'ItemsResponse', items: Array<{ __typename?: 'Item', id: string, name: string }> } } | null> | null };
