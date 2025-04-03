@@ -33,14 +33,7 @@ const subpathConfigs = ['mcp', 'tools', 'core', 'openai'].map((dir) => ({
     json(),
     terser(),
   ].filter(Boolean),
-  external: [
-    '@mondaydotcomorg/api',
-    'zod',
-    'zod-to-json-schema',
-    '@langchain/core',
-    '@modelcontextprotocol/sdk',
-    'openai',
-  ],
+  external: ['@langchain/core', '@modelcontextprotocol/sdk', 'openai'],
 }));
 
 // Subpath types
