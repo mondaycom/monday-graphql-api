@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/agent-toolkit",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "monday.com agent toolkit",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
