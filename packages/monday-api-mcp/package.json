@@ -14,10 +14,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --preserveSymlinks false && shx chmod +x dist/*.js",
+    "build": "tsc && shx chmod +x dist/*.js",
     "watch": "tsc --watch",
-    "start": "npm run build && node dist/index.js",
-    "prepublishOnly": "npm run build"
+    "start": "npm run build && node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +24,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
-    "@mondaydotcomorg/agent-toolkit": "^0.1.2",
+    "@mondaydotcomorg/agent-toolkit": "^0.1.3",
     "@types/node": "^22",
     "@types/node-fetch": "^2.6.12",
     "node-fetch": "^3.3.2",
