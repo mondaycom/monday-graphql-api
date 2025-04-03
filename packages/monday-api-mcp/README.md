@@ -15,7 +15,7 @@ A server implementation for the [Model Context Protocol (MCP)](https://modelcont
 | Monday API Token | `--token`, `-t` | Monday.com API token | Yes | - |
 | API Version | `--version`, `-v` | Monday.com API version | No | `current` |
 | Read Only Mode | `--read-only`, `-ro` | Enable read-only mode | No | `false` |
-| Disable All API | `--disable-all-api-mode`, `-da` | Disable all API mode (Mode that includes the whole API schema) | No | `false` |
+| Dynamic API Tools | `--enable-dynamic-api-tools`, `-edat` | (Beta) Enable dynamic API tools (Mode that includes the whole API schema, not supported when using read-only mode) | No | `false` |
 
 ## Example Integration with Cursor
 

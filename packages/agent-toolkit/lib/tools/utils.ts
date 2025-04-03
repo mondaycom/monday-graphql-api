@@ -6,7 +6,7 @@ export type ToolsConfiguration = {
   include?: string[];
   exclude?: string[];
   readOnlyMode?: boolean;
-  disableAllApi?: boolean;
+  enableDynamicApiTools?: boolean;
 };
 
 export function filterTools<T extends new (api: ApiClient) => BaseMondayApiTool<any>>(
@@ -18,7 +18,16 @@ export function filterTools<T extends new (api: ApiClient) => BaseMondayApiTool<
     return tools;
   }
 
+  // If dynamic API tools are enabled and read-only mode is not enabled, return all tools
   let filteredTools = tools;
+  if (config.enableDynamicApiTools && !config.readOnlyMode) {
+    return filteredTools;
+  }
+  
+  filteredTools = filteredTools.filter((tool) => {
+    const toolInstance = new tool(apiClient);
+    return toolInstance.type !== ToolType.ALL_API;
+  });
 
   if (config.include) {
     filteredTools = tools.filter((tool) => {
@@ -36,11 +45,6 @@ export function filterTools<T extends new (api: ApiClient) => BaseMondayApiTool<
     filteredTools = filteredTools.filter((tool) => {
       const toolInstance = new tool(apiClient);
       return toolInstance.type === ToolType.QUERY;
-    });
-  } else if (config.disableAllApi) {
-    filteredTools = filteredTools.filter((tool) => {
-      const toolInstance = new tool(apiClient);
-      return toolInstance.type !== ToolType.ALL_API;
     });
   }
 

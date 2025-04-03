@@ -38,7 +38,7 @@ The toolkit includes several pre-built tools for common Monday.com operations, o
 ### Account Operations
 - `GetUsersTool` - Get users, can be filtered by name or partial name
 
-### API & Schema Tools
+### Dynamic API Tools
 - `AllMondayApiTool` - Execute any Monday.com API operation by generating GraphQL queries and mutations dynamically
 - `GetGraphQLSchemaTool` - Fetch the Monday.com GraphQL schema structure including query and mutation definitions
 - `GetTypeDetailsTool` - Get detailed information about a specific GraphQL type from the Monday.com API schema

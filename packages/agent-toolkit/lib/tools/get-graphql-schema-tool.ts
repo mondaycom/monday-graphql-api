@@ -5,7 +5,7 @@ import { GetGraphQlSchemaQuery } from '../monday-graphql/generated/graphql';
 
 export class GetGraphQLSchemaTool extends BaseMondayApiTool<undefined> {
   name = 'get_graphql_schema';
-  type = ToolType.QUERY;
+  type = ToolType.ALL_API;
 
   getDescription(): string {
     return 'Fetch the Monday.com GraphQL schema structure including query and mutation definitions';

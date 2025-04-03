@@ -22,9 +22,9 @@ export const ARG_CONFIGS: ArgConfig[] = [
     defaultValue: false,
   },
   {
-    name: 'disableAllApiMode',
-    flags: ['--disable-all-api-mode', '-da'],
-    description: 'Disable all API mode (Mode that includes the whole API schema)',
+    name: 'enableDynamicApiTools',
+    flags: ['--enable-dynamic-api-tools', '-edat'],
+    description: '(Beta) Enable dynamic API tools (Mode that includes the whole API schema, not supported when using read-only mode)',
     required: false,
     defaultValue: false,
   },
