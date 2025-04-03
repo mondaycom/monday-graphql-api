@@ -10,7 +10,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.12.x'
-      - run: npm ci
+      - run: npm ci --workspaces
       - run: npm run prettier --workspaces
       - run: npm run lint --workspaces
       - run: npm run build --workspaces
