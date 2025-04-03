@@ -33,6 +33,23 @@ A server implementation for the [Model Context Protocol (MCP)](https://modelcont
 }
 ```
 
+### Example Integration with Claude Desktop
+
+```json
+{
+  "mcpServers": {
+    "monday-api-mcp": {
+      "command": "npx",
+      "args": [
+        "@mondaydotcomorg/monday-api-mcp",
+        "-t",
+        "abcd123"
+      ]
+    }
+  }
+}
+```
+
 ## License
 
 MIT 
