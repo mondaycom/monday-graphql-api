@@ -13,5 +13,6 @@ export interface ParsedArgs {
 export interface ValidatedArgs {
   token: string;
   version: string;
-  disableMutations: boolean;
+  readOnlyMode: boolean;
+  disableAllApiMode: boolean;
 }

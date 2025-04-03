@@ -5,7 +5,8 @@ import { BaseMondayApiTool } from '../core/base-monday-api-tool';
 export type ToolsConfiguration = {
   include?: string[];
   exclude?: string[];
-  disableMutations?: boolean;
+  readOnlyMode?: boolean;
+  disableAllApi?: boolean;
 };
 
 export function filterTools<T extends new (api: ApiClient) => BaseMondayApiTool<any>>(
@@ -31,10 +32,15 @@ export function filterTools<T extends new (api: ApiClient) => BaseMondayApiTool<
     });
   }
 
-  if (config.disableMutations) {
+  if (config.readOnlyMode) {
     filteredTools = filteredTools.filter((tool) => {
       const toolInstance = new tool(apiClient);
       return toolInstance.type === ToolType.QUERY;
+    });
+  } else if (config.disableAllApi) {
+    filteredTools = filteredTools.filter((tool) => {
+      const toolInstance = new tool(apiClient);
+      return toolInstance.type !== ToolType.ALL_API;
     });
   }
 

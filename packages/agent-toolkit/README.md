@@ -78,7 +78,7 @@ const toolkitWithSpecificTools = new MondayAgentToolkit({
   mondayApiRequestConfig: {},
   tools: {
     include: ['mcp_monday_api_mcp_delete_item', 'create monday item'], // Only include these tools
-    disableMutations: true, // Disable all mutation tools (create, update, delete operations)
+    readOnlyMode: true, // Disable all mutation tools (create, update, delete operations)
     // OR
     // exclude: ['tool_name_to_exclude'] // Include all tools except these
   }
@@ -94,7 +94,7 @@ The toolkit categorizes tools into two types:
 - **Query Tools**: Read-only operations that fetch data (e.g., get board items, get board schema)
 - **Mutation Tools**: Write operations that modify data (e.g., create item, delete item, create update)
 
-You can disable all mutation tools using the `disableMutations` option in the configuration. This is useful when you want to ensure that your agent can only read data and cannot make any modifications.
+You can disable all mutation tools using the `readOnlyMode` option in the configuration. This is useful when you want to ensure that your agent can only read data and cannot make any modifications.
 
 ### Using Individual Tools
 
