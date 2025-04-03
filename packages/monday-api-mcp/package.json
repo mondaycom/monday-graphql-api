@@ -22,7 +22,10 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
     "@mondaydotcomorg/agent-toolkit": "^1.0.0",
-    "@types/node": "^22"
+    "@types/node": "^22",
+    "@types/node-fetch": "^2.6.12",
+    "node-fetch": "^3.3.2",
+    "universal-user-agent": "^7.0.2"
   },
   "devDependencies": {
     "shx": "^0.3.4",
