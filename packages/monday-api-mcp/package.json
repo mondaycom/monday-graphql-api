@@ -1,11 +1,8 @@
 {
   "name": "@mondaydotcomorg/monday-api-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for using the monday.com API",
   "license": "MIT",
-  "author": "Anthropic, PBC (https://anthropic.com)",
-  "homepage": "https://modelcontextprotocol.io",
-  "bugs": "https://github.com/modelcontextprotocol/servers/issues",
   "type": "module",
   "bin": {
     "mcp-server-monday-api": "dist/index.js"
@@ -24,11 +21,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
-    "@mondaydotcomorg/agent-toolkit": "^0.1.2",
-    "@types/node": "^22",
-    "@types/node-fetch": "^2.6.12",
-    "node-fetch": "^3.3.2",
-    "universal-user-agent": "^7.0.2"
+    "@mondaydotcomorg/agent-toolkit": "^0.1.2"
   },
   "devDependencies": {
     "shx": "^0.3.4",
