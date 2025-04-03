@@ -2,44 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Okteto",
-      "type": "node",
-      "request": "attach",
-      "port": 30079,
-      "address": "localhost",
-      "localRoot": "${workspaceFolder}/src",
-      "remoteRoot": "/app/src",
-      "restart": true,
-      "autoAttachChildProcesses": false,
-      "skipFiles": [
-        "${workspaceFolder}/node_modules/**",
-        "!${workspaceFolder}/node_modules/@mondaydotcomorg/**",
-        "<node_internals>/**",
-        "internal/async_hooks"
-      ]
-    },
-    {
       "name": "Attach to Test (Local)",
       "type": "node",
       "request": "attach",
       "port": 9931,
-      "address": "localhost",
-      "localRoot": "${workspaceFolder}/src",
-      "remoteRoot": "/app/src",
-      "restart": true,
-      "autoAttachChildProcesses": false,
-      "skipFiles": [
-        "${workspaceFolder}/node_modules/**",
-        "!${workspaceFolder}/node_modules/@mondaydotcomorg/**",
-        "<node_internals>/**",
-        "internal/async_hooks"
-      ]
-    },
-    {
-      "name": "Attach to Test (Okteto)",
-      "type": "node",
-      "request": "attach",
-      "port": 30081,
       "address": "localhost",
       "localRoot": "${workspaceFolder}/src",
       "remoteRoot": "/app/src",

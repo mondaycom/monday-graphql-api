@@ -8,7 +8,5 @@
     "source.addMissingImports": "explicit",
     "source.organizeImports": "explicit",
     "source.fixAll": "explicit"
-  },
-  "jestrunner.configPath": "node_modules/@mondaydotcomorg/trident-backend-toolkit/dist/configurations/jest/jest.config.js",
-  "jest.jestCommandLine": "node_modules/.bin/jest --config node_modules/@mondaydotcomorg/trident-backend-toolkit/dist/configurations/jest/jest.config.js"
+  }
 }
