@@ -1,4 +1,4 @@
-import { z, ZodRawShape, ZodTypeAny } from 'zod';
+import { ZodRawShape } from 'zod';
 import { ApiClient } from '@mondaydotcomorg/api';
 import { ToolInputType, ToolOutputType, Tool, ToolType } from './tool';
 
