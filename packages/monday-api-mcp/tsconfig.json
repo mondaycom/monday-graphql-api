@@ -1,10 +1,16 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": "."
   },
-  "include": [
-    "./**/*.ts"
-  ]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
 }
