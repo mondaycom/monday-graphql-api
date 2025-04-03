@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "outDir": "./dist",
-    "rootDir": "."
+    "rootDir": "./lib"
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
