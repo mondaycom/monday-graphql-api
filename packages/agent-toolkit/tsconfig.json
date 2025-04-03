@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["ES2021", "dom"],
+    "module": "ESNext",
+    "target": "ES2021",
+    "moduleResolution": "node",
+    "rootDirs": ["./lib", "tests"],
+    "outDir": "./dist",
+    "moduleDetection": "force",
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["dist", "node_modules"],
+  "include": ["./lib/**/*", "tests", "scripts"]
+}

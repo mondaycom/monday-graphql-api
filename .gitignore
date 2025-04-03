@@ -40,5 +40,4 @@ dist
 # Editor directories and files
 .idea
 
-*.js
-
+.qodo

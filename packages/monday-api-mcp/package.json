@@ -1,0 +1,30 @@
+{
+  "name": "@mondaydotcomorg/monday-api-mcp",
+  "version": "0.1.1",
+  "description": "MCP server for using the monday.com API",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "mcp-server-monday-api": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && shx chmod +x dist/*.js",
+    "watch": "tsc --watch",
+    "start": "npm run build && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/monday-api-mcp"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "@mondaydotcomorg/agent-toolkit": "^0.1.2"
+  },
+  "devDependencies": {
+    "shx": "^0.3.4",
+    "typescript": "^5.6.2"
+  }
+}
