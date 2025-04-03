@@ -8,14 +8,6 @@ A powerful toolkit for building AI agents that interact with the Monday.com API.
 npm install @mondaydotcomorg/agent-toolkit
 ```
 
-## Features
-
-- OpenAI integration support
-- Model Context Protocol (MCP) support
-- Pre-built Monday.com API tools
-- TypeScript support with full type definitions
-- Modular architecture with subpath exports
-
 ## Subpath Exports
 
 The package provides several modular components that can be imported separately:
@@ -27,144 +19,28 @@ The package provides several modular components that can be imported separately:
 
 ## Available Tools
 
-The toolkit includes several pre-built tools for common Monday.com operations:
+The toolkit includes several pre-built tools for common Monday.com operations, organized by functionality:
 
-- Delete Item Tool
-- Get Board Items Tool
-- Create Item Tool
-- Create Update Tool
-- Get Board Schema Tool
+### Item Operations
+- `CreateItemTool` - Create a new item in a monday.com board
+- `DeleteItemTool` - Delete an item from a board
+- `GetBoardItemsTool` - Get items by board id and term
+- `CreateUpdateTool` - Create a new update on a specific item
+- `ChangeItemColumnValuesTool` - Change the column values of an item in a monday.com board
+- `MoveItemToGroupTool` - Move an item to a group in a monday.com board
+
+### Board Operations
+- `CreateBoardTool` - Create a monday.com board
+- `GetBoardSchemaTool` - Get board schema (columns and groups) by board id
+- `CreateColumnTool` - Create a new column in a monday.com board
+- `DeleteColumnTool` - Delete a column from a monday.com board
+
+### Account Operations
+- `GetUsersTool` - Get users, can be filtered by name or partial name
+
+### API & Schema Tools
+- `AllMondayApiTool` - Execute any Monday.com API operation by generating GraphQL queries and mutations dynamically
+- `GetGraphQLSchemaTool` - Fetch the Monday.com GraphQL schema structure including query and mutation definitions
+- `GetTypeDetailsTool` - Get detailed information about a specific GraphQL type from the Monday.com API schema
 
 ## Usage
-
-### OpenAI Integration
-
-```typescript
-import { MondayAgentToolkit } from '@mondaydotcomorg/agent-toolkit/openai';
-import OpenAI from 'openai';
-
-// Initialize the Monday.com Agent Toolkit
-const mondayToolkit = new MondayAgentToolkit({
-  mondayApiToken: 'your-monday-api-token',
-  mondayApiVersion: '2025-01',
-  mondayApiRequestConfig: {},
-  toolsConfiguration: {
-    // Optional: Configure available tools
-    include: ['deleteItem', 'getBoardItems'],
-    // OR exclude specific tools
-    // exclude: ['createItem'],
-    // Disable all mutation operations
-    // disableMutations: true,
-  }
-});
-
-
-### MCP Integration
-
-```typescript
-import { MondayAgentToolkit } from '@mondaydotcomorg/agent-toolkit/mcp';
-
-// Initialize with all tools
-const toolkit = new MondayAgentToolkit({
-  mondayApiToken: 'your-monday-api-token',
-  mondayApiVersion: 'your-api-version',
-  mondayApiRequestConfig: {} // Optional request config
-});
-
-// Or initialize with specific tools / disable mutations
-const toolkitWithSpecificTools = new MondayAgentToolkit({
-  mondayApiToken: 'your-monday-api-token',
-  mondayApiVersion: 'your-api-version',
-  mondayApiRequestConfig: {},
-  tools: {
-    include: ['mcp_monday_api_mcp_delete_item', 'create monday item'], // Only include these tools
-    readOnlyMode: true, // Disable all mutation tools (create, update, delete operations)
-    // OR
-    // exclude: ['tool_name_to_exclude'] // Include all tools except these
-  }
-});
-
-// The toolkit extends McpServer and automatically registers all available tools
-```
-
-### Types
-
-The toolkit categorizes tools into two types:
-
-- **Query Tools**: Read-only operations that fetch data (e.g., get board items, get board schema)
-- **Mutation Tools**: Write operations that modify data (e.g., create item, delete item, create update)
-
-You can disable all mutation tools using the `readOnlyMode` option in the configuration. This is useful when you want to ensure that your agent can only read data and cannot make any modifications.
-
-### Using Individual Tools
-
-```typescript
-import { CreateItemTool } from '@mondaydotcomorg/agent-toolkit/tools';
-import { ApiClient } from '@mondaydotcomorg/api';
-
-const apiClient = new ApiClient({
-  token: 'your-monday-api-token',
-  apiVersion: 'your-api-version'
-});
-
-const createItemTool = new CreateItemTool(apiClient);
-await createItemTool.execute(/* tool input */);
-```
-
-## Requirements
-
-- Node.js >= 16.20.0
-- Monday.com API token
-- OpenAI API key (if using OpenAI integration)
-
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Build the package
-npm run build
-
-# Run tests
-npm test
-
-# Format code
-npm run prettier
-
-# Lint code
-npm run lint
-
-# Watch mode during development
-npm run watch
-
-# Update Monday.com GraphQL schema
-npm run fetch:schema
-
-# Generate types from schema
-npm run codegen
-
-# Fetch schema and generate types
-npm run fetch:generate
-```
-
-## License
-
-MIT
-
-## Author
-
-monday.com API Team
-
-## Repository
-
-[GitHub Repository](https://github.com/mondaycom/monday-graphql-api/tree/main/packages/agent-toolkit)
-
-## Keywords
-
-- monday
-- api
-- agent-toolkit
-- openai
-- mcp
-- ai-agents
