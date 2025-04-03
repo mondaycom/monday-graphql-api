@@ -26,7 +26,6 @@ async function runServer() {
   const transport = new StdioServerTransport();
 
   await toolkit.connect(transport);
-  console.info('Monday Agent Toolkit MCP Server running on stdio');
 }
 
 runServer().catch((error) => {
