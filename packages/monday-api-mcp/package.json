@@ -15,7 +15,6 @@
   ],
   "scripts": {
     "build": "tsc && shx chmod +x dist/*.js",
-    "prepare": "npm run build",
     "watch": "tsc --watch",
     "start": "npm run build && node dist/index.js"
   },
@@ -25,7 +24,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
-    "@mondaydotcomorg/agent-toolkit": "^0.1.2",
+    "@mondaydotcomorg/agent-toolkit": "^0.1.3",
     "@types/node": "^22",
     "@types/node-fetch": "^2.6.12",
     "node-fetch": "^3.3.2",
