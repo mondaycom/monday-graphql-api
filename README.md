@@ -14,13 +14,13 @@ This project uses [Turborepo](https://turbo.build/) for managing the monorepo. C
 
 ```bash
 # Build all packages
-npm run build
+yarn build
 
 # Run tests
-npm run test
+yarn test
 
 # Run development mode
-npm run dev
+yarn dev
 ```
 
 ## Usage of generated code
