@@ -23,4 +23,3 @@ jobs:
 
       - name: Test packages
         run: yarn test
-        continue-on-error: true
