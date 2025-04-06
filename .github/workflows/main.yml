@@ -28,9 +28,9 @@ jobs:
         run: npm run update-versions
         working-directory: ./packages/api
 
-      # Build packages using nx
-      - name: Build packages with nx
-        run: npm run build:nx
+      # Build packages using Turborepo
+      - name: Build packages
+        run: npm run build
 
       - name: Create Pull Request for API package
         uses: peter-evans/create-pull-request@v6

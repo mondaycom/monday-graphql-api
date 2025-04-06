@@ -42,10 +42,8 @@ dist
 
 .qodo
 
-# NX
-.nx/
-.nxignore
-nx-cloud.env
+# Turborepo
+.turbo
 **/dist
 **/.angular
 **/.next
@@ -54,5 +52,3 @@ nx-cloud.env
 **/.output
 **/.vercel
 **/.netlify
-.nx-container
-nx-cloud.env

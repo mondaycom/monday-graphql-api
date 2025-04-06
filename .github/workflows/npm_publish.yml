@@ -20,9 +20,9 @@ jobs:
 
       - run: npm ci
 
-      # Build packages using nx
-      - name: Build packages with nx
-        run: npm run build:nx
+      # Build packages using Turborepo
+      - name: Build packages
+        run: npm run build
 
       - name: Get changed packages
         id: changed

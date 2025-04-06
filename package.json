@@ -3,16 +3,17 @@
   "version": "1.0.0",
   "description": "monday.com API monorepo",
   "private": true,
+  "packageManager": "npm@9.8.1",
   "scripts": {
-    "build:nx": "nx run-many --target=build --all",
-    "test:nx": "nx run-many --target=test --all --skip-nx-cache --continue-on-error",
-    "graph": "nx graph"
+    "build": "turbo build",
+    "test": "turbo test",
+    "dev": "turbo dev"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "eslint": "^8.56.0",
-    "nx": "^20.7.1",
     "prettier": "^3.2.4",
+    "turbo": "^2.1.0",
     "typescript": "^5.3.3"
   },
   "workspaces": [
