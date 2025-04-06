@@ -6,12 +6,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.12.x'
-      - run: npm ci
-      - run: npm run prettier --workspaces
-      - run: npm run lint --workspaces
-      - run: npm run build --workspaces
-      - run: npm test --workspaces
+          node-version: '18.18.1'
+      - name: Install Yarn
+        run: npm install -g yarn@1.22.21
+      - run: yarn install
+      - run: yarn prettier
+      - run: yarn lint
+
+      - name: Build packages
+        run: yarn build
+
+      - name: Test packages
+        run: yarn test

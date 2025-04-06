@@ -5,8 +5,8 @@
   "types": "generated/api-types.d.ts",
   "scripts": {
     "build": "echo \"No build step\"",
-    "prettier": "prettier --write \"generated/*.ts\"",
-    "lint": "eslint --fix \"generated/*.ts\"",
+    "prettier": "echo \"Skipping prettier for generated files\"",
+    "lint": "echo \"Skipping linting for generated files\"",
     "test": "jest -c"
   },
   "author": "monday.com Api Team",

@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/agent-toolkit",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "monday.com agent toolkit",
   "type": "module",
   "exports": {
@@ -31,13 +31,13 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "prettier": "prettier --write \"lib/**/*.ts\"",
-    "lint": "eslint --fix \"lib/**/*.ts\"",
+    "prettier": "prettier --write \"lib/**/*.ts\" --ignore-path \"../../.prettierignore\"",
+    "lint": "eslint --fix \"lib/**/*.ts\" --ignore-path \"../../.eslintignore\"",
     "test": "jest -c",
     "watch": "rollup -c -w",
     "fetch:schema": "bash fetch-schema.sh",
     "codegen": "graphql-codegen",
-    "fetch:generate": "npm run fetch:schema && npm run codegen"
+    "fetch:generate": "yarn fetch:schema && yarn codegen"
   },
   "engines": {
     "node": ">= 16.20.0"
@@ -54,9 +54,12 @@
     "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/agent-toolkit"
   },
   "dependencies": {
-    "@mondaydotcomorg/api": "^9.0.1",
+    "@mondaydotcomorg/api": "workspace:*",
     "zod": "^3.24.2",
-    "zod-to-json-schema": "^3.24.5"
+    "zod-to-json-schema": "^3.24.5",
+    "@langchain/core": "^0.3.43",
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "openai": "^4.91.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
@@ -73,10 +76,5 @@
     "rollup-plugin-dts": "^4.2.3",
     "ts-jest": "^29.1.2",
     "typescript": "^4.9.5"
-  },
-  "peerDependencies": {
-    "@langchain/core": "^0.3.43",
-    "@modelcontextprotocol/sdk": "^1.8.0",
-    "openai": "^4.91.0"
   }
 }

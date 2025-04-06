@@ -9,8 +9,8 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "outDir": "./dist",
-    "rootDir": "./lib"
+    "rootDirs": ["./lib"]
   },
-  "include": ["./**/*.ts"],
+  "include": ["./lib/**/*"],
   "exclude": ["node_modules"]
 }

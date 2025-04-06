@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
 
 describe('File existence', () => {
   it('should check that generated/api-types.d.ts exists', () => {

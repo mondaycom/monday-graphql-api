@@ -41,3 +41,14 @@ dist
 .idea
 
 .qodo
+
+# Turborepo
+.turbo
+**/dist
+**/.angular
+**/.next
+**/.svelte-kit
+**/.solid
+**/.output
+**/.vercel
+**/.netlify
