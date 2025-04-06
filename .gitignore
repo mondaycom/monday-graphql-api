@@ -41,3 +41,18 @@ dist
 .idea
 
 .qodo
+
+# NX
+.nx/
+.nxignore
+nx-cloud.env
+**/dist
+**/.angular
+**/.next
+**/.svelte-kit
+**/.solid
+**/.output
+**/.vercel
+**/.netlify
+.nx-container
+nx-cloud.env

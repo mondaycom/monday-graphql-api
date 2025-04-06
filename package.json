@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "description": "monday.com API monorepo",
   "private": true,
+  "scripts": {
+    "build:nx": "nx run-many --target=build --all",
+    "graph": "nx graph"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "eslint": "^8.56.0",
+    "nx": "^20.7.1",
     "prettier": "^3.2.4",
     "typescript": "^5.3.3"
   },

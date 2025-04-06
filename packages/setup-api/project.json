@@ -1,0 +1,18 @@
+{
+  "name": "setup-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/setup-api",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run build",
+        "cwd": "packages/setup-api"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["api-types"]
+}

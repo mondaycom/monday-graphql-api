@@ -19,8 +19,10 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - run: npm ci
-      
-      - run: npm run build --workspaces
+
+      # Build packages using nx
+      - name: Build packages with nx
+        run: npm run build:nx
 
       - name: Get changed packages
         id: changed

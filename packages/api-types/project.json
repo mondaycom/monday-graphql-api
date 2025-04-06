@@ -1,0 +1,17 @@
+{
+  "name": "api-types",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/api-types",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run build",
+        "cwd": "packages/api-types"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  },
+  "tags": []
+}
