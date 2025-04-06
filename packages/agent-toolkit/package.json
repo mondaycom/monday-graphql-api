@@ -56,7 +56,10 @@
   "dependencies": {
     "@mondaydotcomorg/api": "workspace:*",
     "zod": "^3.24.2",
-    "zod-to-json-schema": "^3.24.5"
+    "zod-to-json-schema": "^3.24.5",
+    "@langchain/core": "^0.3.43",
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "openai": "^4.91.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
@@ -73,10 +76,5 @@
     "rollup-plugin-dts": "^4.2.3",
     "ts-jest": "^29.1.2",
     "typescript": "^4.9.5"
-  },
-  "peerDependencies": {
-    "@langchain/core": "^0.3.43",
-    "@modelcontextprotocol/sdk": "^1.8.0",
-    "openai": "^4.91.0"
   }
 }
