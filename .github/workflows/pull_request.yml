@@ -19,4 +19,5 @@ jobs:
       - name: Build packages with nx
         run: npm run build:nx
 
-      - run: npm test --workspaces
+      - name: Test packages with nx
+        run: npm run test:nx

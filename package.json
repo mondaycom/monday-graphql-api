@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build:nx": "nx run-many --target=build --all",
+    "test:nx": "nx run-many --target=test --all",
     "graph": "nx graph"
   },
   "devDependencies": {
