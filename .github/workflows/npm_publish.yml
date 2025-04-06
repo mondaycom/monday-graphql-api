@@ -33,6 +33,11 @@ jobs:
           CHANGED=$(git diff --name-only HEAD^ HEAD | grep "^packages/" | cut -d/ -f2 | sort -u | jq -R -s -c 'split("\n")[:-1]')
           echo "packages=$CHANGED" >> $GITHUB_OUTPUT
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Publish changed packages
         if: steps.changed.outputs.packages != '[]'
         run: |
