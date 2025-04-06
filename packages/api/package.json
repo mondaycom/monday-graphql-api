@@ -15,8 +15,8 @@
     "lint": "eslint --fix \"lib/**/*.ts\"",
     "test": "jest -c",
     "watch": "rollup -c -w",
-    "update-versions": "npm run build && node dist/scripts/update-versions.js",
-    "prepublish": "npm version patch && npm run build"
+    "update-versions": "yarn build && node dist/scripts/update-versions.js",
+    "prepublish": "yarn version --patch && yarn build"
   },
   "engines": {
     "node": ">= 16.20.0"

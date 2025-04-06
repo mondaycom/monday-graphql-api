@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDirs": ["./lib", "./tests"],
-    "isolatedModules": true
+    "isolatedModules": true,
+    "esModuleInterop": true
   },
   "include": ["./lib/**/*", "./tests/**/*"]
 }

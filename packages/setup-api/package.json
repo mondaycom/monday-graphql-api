@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rollup -c && if [ \"$(uname)\" != \"MSYS\" -a \"$(uname)\" != \"MINGW32\" -a \"$(uname)\" != \"MINGW64\" ]; then chmod +x dist/cjs/index.js; fi",
     "test": "jest -c",
-    "prepublish": "npm version minor && npm run build"
+    "prepublish": "yarn version --minor && yarn build"
   },
   "bin": {
     "setup-api-monday": "./dist/cjs/index.js"

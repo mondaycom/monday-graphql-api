@@ -21,16 +21,19 @@ jobs:
         with:
           node-version: '18.12.1'
 
+      - name: Install Yarn
+        run: npm install -g yarn@1.22.21
+
       - name: Install dependencies
-        run: npm ci
+        run: yarn install
 
       - name: Update Version Enum and Bump Patch Version
-        run: npm run update-versions
+        run: yarn update-versions
         working-directory: ./packages/api
 
       # Build packages using Turborepo
       - name: Build packages
-        run: npm run build
+        run: yarn build
 
       - name: Create Pull Request for API package
         uses: peter-evans/create-pull-request@v6

@@ -18,11 +18,14 @@ jobs:
           node-version: 18.12.1
           registry-url: https://registry.npmjs.org/
 
-      - run: npm ci
+      - name: Install Yarn
+        run: npm install -g yarn@1.22.21
+
+      - run: yarn install
 
       # Build packages using Turborepo
       - name: Build packages
-        run: npm run build
+        run: yarn build
 
       - name: Get changed packages
         id: changed
@@ -36,7 +39,7 @@ jobs:
           PACKAGES=$(echo '${{ steps.changed.outputs.packages }}' | jq -r '.[]')
           for PKG in $PACKAGES; do
             cd packages/$PKG
-            npm publish --access public
+            yarn publish --access public
             cd ../..
           done
         env:
