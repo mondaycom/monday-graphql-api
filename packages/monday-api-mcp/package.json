@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
-    "@mondaydotcomorg/agent-toolkit": "*"
+    "@mondaydotcomorg/agent-toolkit": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
