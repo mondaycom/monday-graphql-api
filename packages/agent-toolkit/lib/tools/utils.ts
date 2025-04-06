@@ -23,7 +23,7 @@ export function filterTools<T extends new (api: ApiClient) => BaseMondayApiTool<
   if (config.enableDynamicApiTools && !config.readOnlyMode) {
     return filteredTools;
   }
-  
+
   filteredTools = filteredTools.filter((tool) => {
     const toolInstance = new tool(apiClient);
     return toolInstance.type !== ToolType.ALL_API;

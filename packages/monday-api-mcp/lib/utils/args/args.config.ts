@@ -24,7 +24,8 @@ export const ARG_CONFIGS: ArgConfig[] = [
   {
     name: 'enableDynamicApiTools',
     flags: ['--enable-dynamic-api-tools', '-edat'],
-    description: '(Beta) Enable dynamic API tools (Mode that includes the whole API schema, not supported when using read-only mode)',
+    description:
+      '(Beta) Enable dynamic API tools (Mode that includes the whole API schema, not supported when using read-only mode)',
     required: false,
     defaultValue: false,
   },

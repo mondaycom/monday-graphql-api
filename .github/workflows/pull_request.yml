@@ -15,8 +15,8 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn@1.22.21
       - run: yarn install
-      - run: yarn prettier --workspaces
-      - run: yarn lint --workspaces
+      - run: yarn prettier
+      - run: yarn lint
 
       - name: Build packages
         run: yarn build

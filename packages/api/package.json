@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "prettier": "prettier --write \"lib/**/*.ts\"",
-    "lint": "eslint --fix \"lib/**/*.ts\"",
+    "prettier": "prettier --write \"lib/**/*.ts\" --ignore-path \"../../.prettierignore\"",
+    "lint": "eslint --fix \"lib/**/*.ts\" --ignore-path \"../../.eslintignore\"",
     "test": "jest -c",
     "watch": "rollup -c -w",
     "update-versions": "yarn build && node dist/scripts/update-versions.js",
