@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDirs": ["./lib", "./tests"],
+    "isolatedModules": true
+  },
+  "include": ["./lib/**/*", "./tests/**/*"]
+}

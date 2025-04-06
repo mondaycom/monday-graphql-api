@@ -13,7 +13,8 @@
   "scripts": {
     "build": "tsc && shx chmod +x dist/*.js",
     "watch": "tsc --watch",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --config jest.config.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,10 @@
     "@mondaydotcomorg/agent-toolkit": "*"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
     "shx": "^0.3.4",
+    "ts-jest": "^29.1.2",
     "typescript": "^5.6.2"
   }
 }

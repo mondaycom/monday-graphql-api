@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build:nx": "nx run-many --target=build --all",
-    "test:nx": "nx run-many --target=test --all",
+    "test:nx": "nx run-many --target=test --all --skip-nx-cache --continue-on-error",
     "graph": "nx graph"
   },
   "devDependencies": {
