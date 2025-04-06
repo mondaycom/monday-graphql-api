@@ -25,7 +25,13 @@ export class MondayAgentToolkit extends McpServer {
     this.mondayApiClient = new ApiClient({
       token: config.mondayApiToken,
       apiVersion: config.mondayApiVersion,
-      requestConfig: config.mondayApiRequestConfig,
+      requestConfig: {
+        ...config.mondayApiRequestConfig,
+        headers: {
+          ...(config.mondayApiRequestConfig?.headers || {}),
+          'user-agent': 'monday-api-mcp',
+        },
+      },
     });
 
     const toolsToRegister = filterTools(allTools, this.mondayApiClient, config.toolsConfiguration);
