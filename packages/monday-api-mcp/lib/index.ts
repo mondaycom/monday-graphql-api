@@ -2,6 +2,9 @@
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { MondayAgentToolkit } from '@mondaydotcomorg/agent-toolkit/mcp';
 import { parseArgs, validateArgs } from './utils/args/args.service.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
  * Initializes and starts the MCP server with the Monday Agent Toolkit
