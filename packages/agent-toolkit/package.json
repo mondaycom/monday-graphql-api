@@ -37,7 +37,7 @@
     "watch": "rollup -c -w",
     "fetch:schema": "bash fetch-schema.sh",
     "codegen": "graphql-codegen",
-    "fetch:generate": "yarn fetch:schema && yarn codegen"
+    "fetch:generate": "npm run fetch:schema && npm run codegen"
   },
   "engines": {
     "node": ">= 16.20.0"
@@ -54,14 +54,19 @@
     "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/agent-toolkit"
   },
   "dependencies": {
-    "@mondaydotcomorg/api": "*",
-    "zod": "^3.24.2",
-    "zod-to-json-schema": "^3.24.5",
     "@langchain/core": "^0.3.43",
     "@modelcontextprotocol/sdk": "^1.8.0",
-    "openai": "^4.91.0"
+    "@mondaydotcomorg/api": "*",
+    "graphql": "^16.8.2",
+    "graphql-request": "^6.1.0",
+    "openai": "^4.91.0",
+    "zod": "^3.24.2",
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.5",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
