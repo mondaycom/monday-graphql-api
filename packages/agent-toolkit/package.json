@@ -54,7 +54,7 @@
     "url": "https://github.com/mondaycom/monday-graphql-api/tree/main/packages/agent-toolkit"
   },
   "dependencies": {
-    "@mondaydotcomorg/api": "workspace:*",
+    "@mondaydotcomorg/api": "*",
     "zod": "^3.24.2",
     "zod-to-json-schema": "^3.24.5",
     "@langchain/core": "^0.3.43",

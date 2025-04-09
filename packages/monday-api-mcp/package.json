@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
-    "@mondaydotcomorg/agent-toolkit": "workspace:*",
+    "@mondaydotcomorg/agent-toolkit": "*",
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
