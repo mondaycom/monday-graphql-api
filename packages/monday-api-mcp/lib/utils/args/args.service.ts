@@ -63,6 +63,14 @@ export function validateArgs(parsedArgs: ParsedArgs): ValidatedArgs {
     process.exit(1);
   }
 
-  // At this point, all required args are present, so we can safely cast
-  return parsedArgs as unknown as ValidatedArgs;
+  const typedArgs: Record<string, any> = { ...parsedArgs };
+
+  ARG_CONFIGS.forEach((config) => {
+    if (typeof config.defaultValue === 'boolean' && parsedArgs[config.name] !== undefined) {
+      const stringValue = parsedArgs[config.name] as string;
+      typedArgs[config.name] = stringValue.toLowerCase() === 'true';
+    }
+  });
+
+  return typedArgs as unknown as ValidatedArgs;
 }
