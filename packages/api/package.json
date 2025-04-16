@@ -1,6 +1,6 @@
 {
   "name": "@mondaydotcomorg/api",
-  "version": "10.0.2",
+  "version": "10.0.5",
   "description": "monday.com API client",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,8 +15,7 @@
     "lint": "eslint --fix \"lib/**/*.ts\" --ignore-path \"../../.eslintignore\"",
     "test": "jest -c",
     "watch": "rollup -c -w",
-    "update-versions": "yarn build && node dist/scripts/update-versions.js",
-    "prepublish": "yarn version --patch && yarn build"
+    "update-versions": "yarn build && node dist/scripts/update-versions.js"
   },
   "engines": {
     "node": ">= 16.20.0"
