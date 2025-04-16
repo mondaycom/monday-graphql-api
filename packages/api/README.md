@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The monday API SDK provides a simple way to interact with monday.com's GraphQL platform API, making it easier than ever to get started with our API.
+The monday api SDK provides a simple way to interact with monday.com's GraphQL platform API, making it easier than ever to get started with our API.
 The SDK abstracts away the complex GraphQL queries, providing simple operations for the most common endpoints such as fetching board data, or creating items.
 
 The SDK is supported in both Node.js and browser environments, and is using the [graphql-request client](https://www.npmjs.com/package/graphql-request) under the hood.
