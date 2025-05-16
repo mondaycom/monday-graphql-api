@@ -1,5 +1,5 @@
 ---
-description: Code examples for the official monday.com API client library @mondaydotcom/api
+description: Use these rules when making API calls to the monday.com GraphQL API. Best practices for using the monday API client, making requests and handling errors. 
 globs: 
 alwaysApply: false
 ---
@@ -61,116 +61,15 @@ type APIError = {
 }
 ```
 
-## Frontend Usage (Browser Environment)
-
-### Basic Query Example
-```typescript
-import { SeamlessApiClient } from "@mondaydotcomorg/api";
-
-// Define your query types
-type UserData = {
-    me: {
-        name: string;
-        email: string;
-    };
-}
-
-// Define your GraphQL query
-const GET_USER_INFO = `
-    query {
-        me {
-            name
-            email
-        }
-    }
-`;
-
-// Make the API call
-async function getUserInfo() {
-    const client = new SeamlessApiClient();
-    try {
-        const response = await client.request<APIResponse<UserData>>(GET_USER_INFO);
-        
-        if (response.error || response.data.error) {
-            throw new Error(response.error?.message || response.data.error?.message);
-        }
-        
-        return response.data.data;
-    } catch (error) {
-        console.error('API call failed:', error);
-        throw error;
-    }
-}
-```
-
-## Backend Usage (Node.js Environment)
-
-### Basic Mutation Example
-```typescript
-import { ApiClient } from "@mondaydotcomorg/api";
-
-// Define your mutation types
-type CreateItemResponse = {
-    create_item: {
-        id: string;
-        name: string;
-    };
-}
-
-// Define your GraphQL mutation
-const CREATE_ITEM = `
-    mutation($boardId: ID!, $itemName: String!) {
-        create_item(
-            board_id: $boardId,
-            item_name: $itemName
-        ) {
-            id
-            name
-        }
-    }
-`;
-
-// Make the API call
-async function createNewItem(boardId: string, itemName: string) {
-    // Get your API token from environment variables
-    const API_TOKEN = process.env.MONDAY_API_TOKEN;
-    if (!API_TOKEN) {
-        throw new Error('API token not found in environment variables');
-    }
-
-    const client = new ApiClient({ token: API_TOKEN, apiVersion: "2025-04"});
-    
-    try {
-        const response = await client.request<APIResponse<CreateItemResponse>>(
-            CREATE_ITEM,
-            {
-                variables: {
-                    boardId,
-                    itemName
-                }
-            }
-        );
-
-        if (response.error || response.data.error) {
-            throw new Error(response.error?.message || response.data.error?.message);
-        }
-
-        return response.data.data;
-    } catch (error) {
-        console.error('Failed to create item:', error);
-        throw error;
-    }
-}
-```
 
 ## Error Handling Best Practices
 
 1. **Always check both levels of errors**
 ```typescript
-if (response.error || response.data.error) {
-    // Handle errors appropriately
-    const errorMessage = response.error?.message || response.data.error?.message;
-    // Log error, show user friendly message, etc.
+if (error instanceof ClientError) {
+    console.error(error.response.errors);
+} else {
+    console.error(error);
 }
 ```
 
@@ -191,7 +90,6 @@ try {
    - Use environment variables for API tokens
    - Backend: Use `process.env.MONDAY_API_TOKEN`
    - Frontend: The SeamlessApiClient handles authentication automatically
-
 2. **API Version Compatibility**
    - Always pass an API version
    - Check monday API release notes for updates: @https://developer.monday.com/api-reference/docs/release-notes

@@ -12,19 +12,19 @@ Each context file is a markdown file with some YAML front matter. The rules are 
 
 ## Installation
 
-You can copy these directly or clone the subdirectory using degit. 
-```
-npx degit https://github.com/mondaycom/monday-graphql-api/packages/llm-context/api
-```
+To pass this context to your LLM, you need to first download it to your local machine. You can then attach it to the LLM of your choice (Cursor, Copilot, Claude etc). 
 
-Clone into a subdirectory: 
+You can copy the files directly or clone the subdirectory using degit. 
 ```
-npx degit https://github.com/mondaycom/monday-graphql-api/packages/llm-context/api .cursor/rules
+npx degit https://github.com/mondaycom/monday-graphql-api/llm-context/rules
 ```
 
 ## Usage with Cursor
 
 1. Copy the files into `.cursor/rules` directory (project rules)
+```
+npx degit https://github.com/mondaycom/monday-graphql-api/llm-context/rules .cursor/rules
+```
 2. Add the files to Cursor's context by @mentioning them in the Cursor chat window (recommended). 
 
 [Cursor Project Rules Documentation](https://docs.cursor.com/context/rules#project-rules)
