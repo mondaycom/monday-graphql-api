@@ -207,3 +207,7 @@ note that after usage, you'l get all the available fields, with no regard to the
 ![alt text](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/api/public/image.png)
 
 **But there's a solution, look [here!](https://www.npmjs.com/package/@mondaydotcomorg/setup-api)**
+
+## LLM Context
+
+IF you're using an AI assistant/LLM to help you code, use the rules in the `llm-context` package to make it more likely for your LLM to write good code - [LLM Context Docs](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/llm-context/README.md)

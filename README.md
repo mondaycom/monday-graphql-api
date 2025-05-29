@@ -21,6 +21,10 @@ yarn test
 yarn dev
 ```
 
+## AI-assisted coding
+
+If you're using an LLM to write code, check out the `llm-context` folder for rules you can pass to your agent to help it use the API client package correctly. 
+
 ## Usage of generated code
 
 The packages in this monorepo contain files that are generated using monday.com's sdk generator, you will find them inside the `generated` folder of each package.
