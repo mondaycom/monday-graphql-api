@@ -76,7 +76,7 @@ export const exampleMutation = gql\`
   console.log('created src/queries.graphql.ts');
 
   const scriptContent = `#!/bin/bash
-  curl "https://api.monday.com/v2/get_schema?format=sdl&version=stable" -o src/schema.graphql
+  curl "https://api.monday.com/v2/get_schema?format=sdl&version=current" -o src/schema.graphql
   `.trim();
 
   fs.writeFileSync('fetch-schema.sh', scriptContent, { mode: 0o755 });
