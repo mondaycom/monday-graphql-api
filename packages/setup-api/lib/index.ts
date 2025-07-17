@@ -10,11 +10,11 @@ const GRAPHQL = 'graphql@16.8.2';
 const installCommands = isYarn
   ? [
       `yarn add ${GRAPHQL_REQUEST} ${GRAPHQL}`,
-      'yarn add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
+      'yarn add -D @graphql-codegen/cli@^5.0.5 @graphql-codegen/client-preset@^4.8.0',
     ]
   : [
       `npm install ${GRAPHQL_REQUEST} ${GRAPHQL}`,
-      'npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations',
+      'npm install --save-dev @graphql-codegen/cli@^5.0.5 @graphql-codegen/client-preset@^4.8.0',
     ];
 
 export const installPackages = () => {
@@ -29,15 +29,18 @@ export const installPackages = () => {
 };
 
 export const createFiles = () => {
-  const codegenConfig = `
-overwrite: true
-schema: "src/schema.graphql"
-documents: "src/**/*.graphql.ts"
+  const codegenConfig = `overwrite: true
+schema: 'src/schema.graphql'
+documents: 'src/**/*.graphql.ts'
+ignoreNoDocuments: true
 generates:
-  src/generated/graphql.ts:
-    plugins:
-      - "typescript"
-      - "typescript-operations"`;
+  src/generated/graphql/:
+    presetConfig:
+      fragmentMasking: false
+    preset: client
+    hooks:
+      afterOneFileWrite:
+        - node -e "const fs = require('fs'); fs.writeFileSync('src/generated/graphql/index.ts', '/* eslint-disable */\\nexport * from \\'./gql\\';');"`;
 
   fs.writeFileSync('codegen.yml', codegenConfig);
 
