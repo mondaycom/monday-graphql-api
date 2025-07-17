@@ -34,7 +34,7 @@ describe('setupGraphQL', () => {
     );
     expect(shell.exec).toHaveBeenCalledWith(
       expect.stringContaining(
-        `${packageManager} ${installCommand} ${devFlag} @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations`,
+        `${packageManager} ${installCommand} ${devFlag} @graphql-codegen/cli@^5.0.5 @graphql-codegen/client-preset@^4.8.0`,
       ),
     );
   });
