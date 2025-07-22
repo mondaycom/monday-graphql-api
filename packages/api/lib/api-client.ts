@@ -13,6 +13,10 @@ export interface ApiClientConfig {
   requestConfig?: RequestConfig;
 }
 
+export interface RequestOptions {
+  versionOverride?: string;
+}
+
 /**
  * The `ApiClient` class provides a structured way to interact with the Monday.com API,
  * handling GraphQL requests with configurable API versioning.
@@ -21,13 +25,13 @@ export interface ApiClientConfig {
  * API version, setting up the necessary headers for all subsequent API requests.
  */
 export class ApiClient {
-  private readonly client: GraphQLClient;
+  private readonly token: string;
+  private readonly defaultApiVersion: ApiVersionType;
+  private readonly requestConfig?: RequestConfig;
   public readonly operations: Sdk;
-  public readonly apiVersion: ApiVersionType;
 
   /**
-   * Constructs a new `ApiClient` instance, initializing the GraphQL client with
-   * the specified configuration object.
+   * Constructs a new `ApiClient` instance, storing configuration for dynamic client creation.
    *
    * @param {ApiClientConfig} config - Configuration for the API client.
    *        Requires `token`, and optionally includes `apiVersion` and `requestConfig`.
@@ -40,30 +44,52 @@ export class ApiClient {
       );
     }
 
-    this.apiVersion = apiVersion;
+    this.token = token;
+    this.defaultApiVersion = apiVersion;
+    this.requestConfig = requestConfig;
+
+    // Create operations using a default client for backward compatibility
+    const defaultClient = this.createClient();
+    this.operations = getSdk(defaultClient);
+  }
+
+  /**
+   * Creates a GraphQL client with the specified options
+   *
+   * @param {RequestOptions} [options] - Optional request configuration
+   * @returns {GraphQLClient} - Configured GraphQL client
+   */
+  private createClient(options?: RequestOptions): GraphQLClient {
+    const { versionOverride } = options || {};
+    const apiVersionToUse = versionOverride ?? this.defaultApiVersion;
+
+    if (versionOverride && !this.isValidApiVersion(versionOverride)) {
+      throw new Error(
+        "Invalid API version format. Expected format is 'yyyy-mm' with month as one of '01', '04', '07', or '10'.",
+      );
+    }
+
     const endpoint = getApiEndpoint();
     const defaultHeaders = {
       'Content-Type': 'application/json',
-      Authorization: token,
-      'API-Version': this.apiVersion,
+      Authorization: this.token,
+      'API-Version': apiVersionToUse,
       'Api-Sdk-Version': pkg.version,
     };
 
     const mergedHeaders = {
       ...defaultHeaders,
-      ...(requestConfig.headers || {}),
+      ...(this.requestConfig?.headers || {}),
     };
 
-    this.client = new GraphQLClient(endpoint, {
-      ...requestConfig,
+    return new GraphQLClient(endpoint, {
+      ...this.requestConfig,
       headers: mergedHeaders,
     });
-
-    this.operations = getSdk(this.client);
   }
 
   /**
-   * Performs a GraphQL query or mutation to the Monday.com API using the configured
+   * Performs a GraphQL query or mutation to the Monday.com API using a dynamically created
    * GraphQL client. This method is asynchronous and returns a promise that resolves
    * with the query result.
    *
@@ -72,16 +98,17 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
+   * @param {RequestOptions} [options] - Optional request configuration including version override.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
    */
-  public request = async <T>(query: string, variables?: QueryVariables): Promise<T> => {
-    const res = await this.client.request<T>(query, variables);
-    return res;
+  public request = async <T>(query: string, variables?: QueryVariables, options?: RequestOptions): Promise<T> => {
+    const client = this.createClient(options);
+    return client.request<T>(query, variables);
   };
 
   /**
-   * Performs a raw GraphQL query or mutation to the Monday.com API using the configured
+   * Performs a raw GraphQL query or mutation to the Monday.com API using a dynamically created
    * GraphQL client. This method is asynchronous and returns a promise that resolves
    * with the query result.
    *
@@ -92,12 +119,17 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
+   * @param {RequestOptions} [options] - Optional request configuration including version override.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
    */
-  public rawRequest = async <T>(query: string, variables?: QueryVariables): Promise<GraphQLClientResponse<T>> => {
-    const res = await this.client.rawRequest<T>(query, variables);
-    return res;
+  public rawRequest = async <T>(
+    query: string,
+    variables?: QueryVariables,
+    options?: RequestOptions,
+  ): Promise<GraphQLClientResponse<T>> => {
+    const client = this.createClient(options);
+    return client.rawRequest<T>(query, variables);
   };
 
   /**

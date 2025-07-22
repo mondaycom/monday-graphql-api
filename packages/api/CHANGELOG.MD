@@ -1,5 +1,15 @@
 # Changelog
 
+## [11.0.0]
+
+### ⚠️ Breaking Changes
+
+- **Default API version updated**: The default API version is now `2025-07`
+
+### Added
+
+- **API version override capability**: Added the ability to override the API version per request using the `versionOverride` option in `RequestOptions`. This can be passed to both `request` and `rawRequest` methods. This allows using the same API client for different versions.
+
 ## [7.0.0]
 
 ### ⚠️ Breaking Changes
