@@ -15,6 +15,7 @@ export interface ApiClientConfig {
 
 export interface RequestOptions {
   versionOverride?: string;
+  timeout?: number;
 }
 
 /**
@@ -98,13 +99,39 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
-   * @param {RequestOptions} [options] - Optional request configuration including version override.
+   * @param {RequestOptions} [options] - Optional request configuration including version override and timeout.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
+   * @throws {Error} Throws an error if the request times out before receiving a response.
    */
   public request = async <T>(query: string, variables?: QueryVariables, options?: RequestOptions): Promise<T> => {
     const client = this.createClient(options);
-    return client.request<T>(query, variables);
+    const { timeout } = options || {};
+
+    if (!timeout) {
+      return client.request<T>(query, variables);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, timeout);
+
+    try {
+      const result = await client.request<T>({
+        document: query,
+        variables,
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      return result;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (controller.signal.aborted) {
+        throw new Error(`Request timed out after ${timeout}ms`);
+      }
+      throw error;
+    }
   };
 
   /**
@@ -119,9 +146,10 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
-   * @param {RequestOptions} [options] - Optional request configuration including version override.
+   * @param {RequestOptions} [options] - Optional request configuration including version override and timeout.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
+   * @throws {Error} Throws an error if the request times out before receiving a response.
    */
   public rawRequest = async <T>(
     query: string,
@@ -129,7 +157,32 @@ export class ApiClient {
     options?: RequestOptions,
   ): Promise<GraphQLClientResponse<T>> => {
     const client = this.createClient(options);
-    return client.rawRequest<T>(query, variables);
+    const { timeout } = options || {};
+
+    if (!timeout) {
+      return client.rawRequest<T>(query, variables);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, timeout);
+
+    try {
+      const result = await client.rawRequest<T>({
+        query,
+        variables,
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      return result;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (controller.signal.aborted) {
+        throw new Error(`Request timed out after ${timeout}ms`);
+      }
+      throw error;
+    }
   };
 
   /**
