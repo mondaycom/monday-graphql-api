@@ -1,6 +1,10 @@
 import { MONDAY_API_ENDPOINT } from '../constants/index';
 
-export const getApiEndpoint = (): string => {
+export const getApiEndpoint = (endpoint?: string): string => {
+  if (endpoint) {
+    return endpoint;
+  }
+
   if (process.env.MONDAY_API_ENDPOINT) {
     return process.env.MONDAY_API_ENDPOINT;
   }
