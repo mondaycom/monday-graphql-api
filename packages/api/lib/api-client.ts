@@ -10,6 +10,7 @@ export { ClientError };
 export interface ApiClientConfig {
   token: string;
   apiVersion?: string;
+  endpoint?: string;
   requestConfig?: RequestConfig;
 }
 
@@ -27,6 +28,7 @@ export interface RequestOptions {
 export class ApiClient {
   private readonly token: string;
   private readonly defaultApiVersion: ApiVersionType;
+  private readonly defaultEndpoint?: string;
   private readonly requestConfig?: RequestConfig;
   public readonly operations: Sdk;
 
@@ -37,7 +39,7 @@ export class ApiClient {
    *        Requires `token`, and optionally includes `apiVersion` and `requestConfig`.
    */
   constructor(config: ApiClientConfig) {
-    const { token, apiVersion = DEFAULT_VERSION, requestConfig = {} } = config;
+    const { token, apiVersion = DEFAULT_VERSION, endpoint, requestConfig = {} } = config;
     if (!this.isValidApiVersion(apiVersion)) {
       throw new Error(
         "Invalid API version format. Expected format is 'yyyy-mm' with month as one of '01', '04', '07', or '10'.",
@@ -46,6 +48,7 @@ export class ApiClient {
 
     this.token = token;
     this.defaultApiVersion = apiVersion;
+    this.defaultEndpoint = endpoint;
     this.requestConfig = requestConfig;
 
     // Create operations using a default client for backward compatibility
@@ -69,7 +72,7 @@ export class ApiClient {
       );
     }
 
-    const endpoint = getApiEndpoint();
+    const endpoint = getApiEndpoint(this.defaultEndpoint);
     const defaultHeaders = {
       'Content-Type': 'application/json',
       Authorization: this.token,
