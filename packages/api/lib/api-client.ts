@@ -1,9 +1,9 @@
 import { GraphQLClient, ClientError } from 'graphql-request';
+import type { GraphQLClientResponse, RequestConfig } from 'graphql-request/build/legacy/helpers/types';
 import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from './constants/index';
 import { Sdk, getSdk } from './generated/sdk';
 import pkg from '../package.json';
 import { getApiEndpoint } from './shared/get-api-endpoint';
-import { GraphQLClientResponse, RequestConfig } from 'graphql-request/build/esm/types';
 import z from 'zod';
 
 export { ClientError };
