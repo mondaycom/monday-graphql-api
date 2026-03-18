@@ -66,7 +66,40 @@ const { boards } = await client.request<{
 // You can also define timeout for requests
 const { boards } = await client.request<{
   boards: [Board];
-}>(`query { boards(ids: some_id) { name } }`, undefined, { timeout: 20_000 });
+}>(`query { boards(ids: some_id) { name } }`, undefined, { timeoutMs: 20_000 });
+```
+
+### File uploads
+
+The SDK supports file uploads. Yo must pass Node's `File` or `Blob` object in your variables, and the client will automatically handle the multipart request.
+
+> **Important:** The SDK uses Node's `fetch` method that recognizes built-in `File` and `Blob` to create multi-part request.
+
+```typescript
+import { ApiClient } from '@mondaydotcomorg/api';
+
+const client = new ApiClient({ token: '<API-TOKEN>' });
+
+// Create a file to upload
+const file = new File([Buffer.from('Hello World!')], 'test.txt', { type: 'text/plain' });
+
+// Upload the file to a column
+const result = await client.request(
+  `mutation ($file: File!, $itemId: ID!, $columnId: String!) {
+    add_file_to_column(file: $file, item_id: $itemId, column_id: $columnId) {
+      id
+      name
+      url
+    }
+  }`,
+  {
+    file,
+    itemId: 'your_item_id',
+    columnId: 'files', // your file column id
+  }
+);
+
+console.log(result.add_file_to_column);
 ```
 
 ### Using the types

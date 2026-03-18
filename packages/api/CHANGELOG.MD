@@ -1,5 +1,14 @@
 # Changelog
 
+## [14.0.0]
+
+### ⚠️ Breaking Changes
+
+- **Minimal Node version increased**: Package now requires Node >= 18.0.0
+
+### Added
+- **File upload functionality**: Added the ability to send files via Monday SDK. 
+
 ## [13.0.0]
 
 ### ⚠️ Breaking Changes

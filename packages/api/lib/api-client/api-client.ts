@@ -1,10 +1,11 @@
 import { GraphQLClient, ClientError } from 'graphql-request';
-import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from './constants/index';
-import { Sdk, getSdk } from './generated/sdk';
-import pkg from '../package.json';
-import { getApiEndpoint } from './shared/get-api-endpoint';
+import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from '../constants/index';
+import { Sdk, getSdk } from '../generated/sdk';
+import pkg from '../../package.json';
+import { getApiEndpoint } from '../shared/get-api-endpoint';
 import { GraphQLClientResponse, RequestConfig } from 'graphql-request/build/esm/types';
 import z from 'zod';
+import { createFileUploadMiddleware } from './middleware/file-upload';
 
 export { ClientError };
 
@@ -19,7 +20,7 @@ const requestOptionsSchema = z.object({
   versionOverride: z.string().nonempty().optional().refine((version) => !version || isValidApiVersion(version), {
     message: "Invalid API version format. Expected format is 'yyyy-mm' with month as one of '01', '04', '07', or '10'.",
   }),
-  timeout: z.number().positive().max(60_000).optional(),
+  timeoutMs: z.number().positive().max(60_000).optional(),
 })
 
 export type RequestOptions = z.infer<typeof requestOptionsSchema>;
@@ -98,6 +99,8 @@ export class ApiClient {
     return new GraphQLClient(endpoint, {
       ...this.requestConfig,
       headers: mergedHeaders,
+      requestMiddleware: createFileUploadMiddleware(this.requestConfig?.requestMiddleware),
+      fetch: this.requestConfig?.fetch ?? fetch
     });
   }
 
@@ -115,7 +118,7 @@ export class ApiClient {
   ): Promise<T> => {
     const validatedOptions = options ? requestOptionsSchema.parse(options) : options;
     const client = this.createClient(validatedOptions);
-    const { abortController, timeoutId } = this.createAbortController(validatedOptions?.timeout);
+    const { abortController, timeoutId } = this.createAbortController(validatedOptions?.timeoutMs);
 
     try {
       return await executor(client, abortController?.signal);

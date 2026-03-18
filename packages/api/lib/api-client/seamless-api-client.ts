@@ -1,5 +1,5 @@
-import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from './constants';
-import { SeamlessApiClientError } from './errors/seamless-api-client-error';
+import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from '../constants';
+import { SeamlessApiClientError } from '../errors/seamless-api-client-error';
 
 export { SeamlessApiClientError };
 
