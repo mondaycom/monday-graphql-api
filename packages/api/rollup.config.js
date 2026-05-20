@@ -19,6 +19,11 @@ const mainConfig = {
       format: 'es',
       sourcemap: true,
     },
+    {
+      file: 'dist/esm/index.mjs',
+      format: 'es',
+      sourcemap: true,
+    },
   ],
   plugins: [
     del({ targets: 'dist/*' }),
