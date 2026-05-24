@@ -4,7 +4,7 @@ export enum AvailableVersions {
   CURRENT = 'current',
   RELEASE_CANDIDATE = 'release_candidate',
   DEV = 'dev',
-  CURRENT_VERSION = '2026-01',
+  CURRENT_VERSION = '2026-04',
 }
 
 export const MONDAY_API_ENDPOINT = 'https://api.monday.com/v2';
