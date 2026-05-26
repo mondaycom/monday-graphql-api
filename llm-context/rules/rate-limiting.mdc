@@ -1,0 +1,118 @@
+---
+description: Monday.com API rate limiting and complexity budget guide. Use when building apps or agents that make many API calls and need to handle rate limits correctly.
+globs:
+alwaysApply: false
+---
+# Rate Limiting & Complexity Budget
+
+## How Monday.com Rate Limiting Works
+
+The monday.com API uses a **complexity-based** rate limiting system, not simple request counting.
+
+### Complexity Budget
+- Each account has a complexity budget that regenerates over time
+- Every query/mutation costs a certain amount of complexity
+- When the budget is exhausted, requests return a `complexityBudgetExhausted` error
+- The budget resets gradually (not all at once)
+
+### Checking Your Budget
+
+Add `complexity` to any query to see current budget:
+
+```graphql
+query {
+  complexity { before after query reset_in_x_seconds }
+  boards(ids: ["123"]) { name }
+}
+```
+
+Or use the SDK helper:
+
+```typescript
+import { getComplexityBudget } from '@mondaydotcomorg/api';
+
+const budget = await getComplexityBudget(client);
+// budget.before — budget before this query
+// budget.after — budget remaining after this query
+// budget.query — cost of this specific query
+// budget.resetInSeconds — seconds until full budget reset
+```
+
+### Reducing Complexity Cost
+
+1. **Request only fields you need** — each field adds cost
+2. **Use `limit` parameters** — smaller pages = less complexity
+3. **Avoid nested relations** — `items { subitems { column_values } }` is expensive
+4. **Use `items_page` with cursor** instead of loading all items at once
+
+### Error Responses
+
+When you hit the limit:
+```json
+{
+  "errors": [{
+    "message": "Complexity budget exhausted",
+    "extensions": { "code": "complexityBudgetExhausted" }
+  }]
+}
+```
+
+HTTP 429 response (minute-based rate limit):
+```
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+```
+
+## Handling Rate Limits in Code
+
+### Using the SDK retry helper (recommended):
+
+```typescript
+import { withRetry } from '@mondaydotcomorg/api';
+
+// Automatically retries on 429 and complexity errors with exponential backoff
+const result = await withRetry(
+  () => client.request(query, variables),
+  { maxRetries: 3 }
+);
+```
+
+### Manual handling:
+
+```typescript
+import { ClientError } from '@mondaydotcomorg/api';
+
+try {
+  const result = await client.request(query, variables);
+} catch (error) {
+  if (error instanceof ClientError) {
+    const gqlErrors = error.response?.errors;
+    const isComplexity = gqlErrors?.some(
+      e => e.extensions?.code === 'complexityBudgetExhausted'
+    );
+    const isRateLimit = error.response?.status === 429;
+
+    if (isComplexity || isRateLimit) {
+      // Wait and retry
+      await new Promise(r => setTimeout(r, 10000));
+      // retry...
+    }
+  }
+}
+```
+
+## Rate Limit Tiers
+
+| Limit Type | Budget | Resets |
+|-----------|--------|--------|
+| Complexity (per minute) | 5,000,000 – 10,000,000 (varies by plan) | Regenerates continuously |
+| Requests per minute | 5,000 | Per 60 seconds |
+| Concurrent requests | 80 | — |
+
+## Tips for High-Volume Operations
+
+1. **Add delays between writes** — 100-200ms between mutations prevents bursting
+2. **Monitor `complexity.after`** — if below 10% of starting budget, pause
+3. **Use `withRetry` from the SDK** — handles backoff automatically
+4. **Prefer batch operations** — `change_multiple_column_values` over individual column changes
+5. **Cache board structure** — don't re-query columns/groups repeatedly
