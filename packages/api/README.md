@@ -246,6 +246,66 @@ note that after usage, you'l get all the available fields, with no regard to the
 
 **But there's a solution, look [here!](https://www.npmjs.com/package/@mondaydotcomorg/setup-api)**
 
+## Agent & Automation Helpers
+
+The SDK includes utilities designed for AI agents and automation scripts that need to interact with monday.com reliably.
+
+### Column Value Builders
+
+Type-safe helpers that produce correctly formatted JSON for column value mutations:
+
+```typescript
+import { ColumnValues } from '@mondaydotcomorg/api';
+
+ColumnValues.status("Done")           // '{"label":"Done"}'
+ColumnValues.date("2024-06-15")       // '{"date":"2024-06-15"}'
+ColumnValues.people([123], [456])     // '{"personsAndTeams":[{"id":123,"kind":"person"},{"id":456,"kind":"team"}]}'
+ColumnValues.dropdown(["A", "B"])     // '{"labels":["A","B"]}'
+ColumnValues.link("https://x.com")   // '{"url":"https://x.com","text":"https://x.com"}'
+ColumnValues.clear()                  // 'null'
+```
+
+### Pagination Helper
+
+Async generator that auto-follows cursors:
+
+```typescript
+import { paginateItems } from '@mondaydotcomorg/api';
+
+for await (const page of paginateItems(client, "board_id")) {
+  for (const item of page) {
+    console.log(item.id, item.name);
+  }
+}
+```
+
+### Retry with Backoff
+
+Automatic retry on rate limits (429) and complexity budget exhaustion:
+
+```typescript
+import { withRetry } from '@mondaydotcomorg/api';
+
+const result = await withRetry(
+  () => client.request(query, variables),
+  { maxRetries: 3, initialDelayMs: 1000 }
+);
+```
+
+### Complexity Budget Monitoring
+
+```typescript
+import { getComplexityBudget, getComplexityFromResponse } from '@mondaydotcomorg/api';
+
+// Check current budget
+const budget = await getComplexityBudget(client);
+console.log(`Remaining: ${budget.after}, resets in ${budget.resetInSeconds}s`);
+
+// Extract from any raw response
+const response = await client.rawRequest(query, variables);
+const complexity = getComplexityFromResponse(response);
+```
+
 ## LLM Context
 
 IF you're using an AI assistant/LLM to help you code, use the rules in the `llm-context` package to make it more likely for your LLM to write good code - [LLM Context Docs](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/llm-context/README.md)
