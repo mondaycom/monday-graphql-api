@@ -134,6 +134,16 @@ describe('ApiClient', () => {
       });
     });
 
+    describe('idempotencyKey validation', () => {
+      it('should reject empty idempotencyKey', async () => {
+        await expect(apiClient.request('mutation { x }', {}, { idempotencyKey: '' })).rejects.toThrow();
+      });
+
+      it('should accept non-empty idempotencyKey', async () => {
+        await expect(apiClient.request('mutation { x }', {}, { idempotencyKey: 'key-1' })).resolves.not.toThrow();
+      });
+    });
+
     it('should accept empty options object', async () => {
       await expect(apiClient.request('query { me { id } }', {}, {})).resolves.not.toThrow();
     });
@@ -175,6 +185,38 @@ describe('ApiClient', () => {
       await apiClient.request('query { me { id } }');
 
       expect(lastClientHeaders()).not.toHaveProperty('X-Custom');
+    });
+
+    it('should send idempotencyKey as Idempotency-Key header', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.request('mutation { x }', {}, { idempotencyKey: 'key-1' });
+
+      expect(lastClientHeaders()['Idempotency-Key']).toBe('key-1');
+    });
+
+    it('should send idempotencyKey with rawRequest()', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.rawRequest('mutation { x }', {}, { idempotencyKey: 'key-1' });
+
+      expect(lastClientHeaders()['Idempotency-Key']).toBe('key-1');
+    });
+
+    it('should prefer idempotencyKey over Idempotency-Key passed in headers', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.request('mutation { x }', {}, {
+        headers: { 'Idempotency-Key': 'from-headers' },
+        idempotencyKey: 'from-option',
+      });
+
+      expect(lastClientHeaders()['Idempotency-Key']).toBe('from-option');
+    });
+
+    it('should not send Idempotency-Key header when idempotencyKey is not provided', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.request('mutation { x }', {}, { idempotencyKey: 'key-1' });
+      await apiClient.request('mutation { x }');
+
+      expect(lastClientHeaders()).not.toHaveProperty('Idempotency-Key');
     });
   });
 });

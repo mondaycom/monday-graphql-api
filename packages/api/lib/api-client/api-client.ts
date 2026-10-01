@@ -22,6 +22,7 @@ const requestOptionsSchema = z.object({
   }),
   timeoutMs: z.number().positive().max(60_000).optional(),
   headers: z.record(z.string(), z.string()).optional(),
+  idempotencyKey: z.string().nonempty().optional(),
 })
 
 export type RequestOptions = z.infer<typeof requestOptionsSchema>;
@@ -81,7 +82,7 @@ export class ApiClient {
    * @returns {GraphQLClient} - Configured GraphQL client
    */
   private createClient(options?: RequestOptions): GraphQLClient {
-    const { versionOverride, headers } = options || {};
+    const { versionOverride, headers, idempotencyKey } = options || {};
     const apiVersionToUse = versionOverride ?? this.defaultApiVersion;
 
     const endpoint = getApiEndpoint(this.defaultEndpoint);
@@ -96,6 +97,7 @@ export class ApiClient {
       ...defaultHeaders,
       ...(this.requestConfig?.headers || {}),
       ...(headers || {}),
+      ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}),
     };
 
     return new GraphQLClient(endpoint, {
@@ -141,7 +143,7 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
-   * @param {RequestOptions} [options] - Optional request configuration including version override, timeout and headers.
+   * @param {RequestOptions} [options] - Optional request configuration including version override, timeout, headers and idempotency key.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if the request times out before receiving a response.
@@ -164,7 +166,7 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
-   * @param {RequestOptions} [options] - Optional request configuration including version override, timeout and headers.
+   * @param {RequestOptions} [options] - Optional request configuration including version override, timeout, headers and idempotency key.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if the request times out before receiving a response.
