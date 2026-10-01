@@ -17,12 +17,12 @@ export interface ApiClientConfig {
 }
 
 const requestOptionsSchema = z.object({
+  idempotencyKey: z.string().nonempty().optional(),
+  headers: z.record(z.string(), z.string()).optional(),
   versionOverride: z.string().nonempty().optional().refine((version) => !version || isValidApiVersion(version), {
     message: "Invalid API version format. Expected format is 'yyyy-mm' with month as one of '01', '04', '07', or '10'.",
   }),
   timeoutMs: z.number().positive().max(60_000).optional(),
-  headers: z.record(z.string(), z.string()).optional(),
-  idempotencyKey: z.string().nonempty().optional(),
 })
 
 export type RequestOptions = z.infer<typeof requestOptionsSchema>;
