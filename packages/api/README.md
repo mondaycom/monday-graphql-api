@@ -67,6 +67,11 @@ const { boards } = await client.request<{
 const { boards } = await client.request<{
   boards: [Board];
 }>(`query { boards(ids: some_id) { name } }`, undefined, { timeoutMs: 20_000 });
+
+// You can also send custom headers with a single request
+const { boards } = await client.request<{
+  boards: [Board];
+}>(`query { boards(ids: some_id) { name } }`, undefined, { headers: { 'X-Custom-Header': 'value' } });
 ```
 
 ### File uploads

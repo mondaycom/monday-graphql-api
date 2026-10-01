@@ -120,11 +120,61 @@ describe('ApiClient', () => {
       });
     });
 
+    describe('headers validation', () => {
+      it('should reject non-string header values', async () => {
+        await expect(
+          apiClient.request('query { me { id } }', {}, { headers: { 'X-Custom': 1 as unknown as string } }),
+        ).rejects.toThrow();
+      });
+
+      it('should accept string header values', async () => {
+        await expect(
+          apiClient.request('query { me { id } }', {}, { headers: { 'X-Custom': 'value' } }),
+        ).resolves.not.toThrow();
+      });
+    });
+
     it('should accept empty options object', async () => {
       await expect(apiClient.request('query { me { id } }', {}, {})).resolves.not.toThrow();
     });
     it('should accept undefined options', async () => {
       await expect(apiClient.request('query { me { id } }', {}, undefined)).resolves.not.toThrow();
+    });
+  });
+
+  describe('per-request headers', () => {
+    const lastClientHeaders = () => {
+      const calls = (GraphQLClient as unknown as jest.Mock).mock.calls;
+      return calls[calls.length - 1][1].headers;
+    };
+
+    it('should send per-request headers with request()', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' } });
+
+      expect(lastClientHeaders()).toEqual(expect.objectContaining({ 'X-Custom': 'value', Authorization: TEST_TOKEN }));
+    });
+
+    it('should send per-request headers with rawRequest()', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.rawRequest('mutation { x }', {}, { headers: { 'X-Custom': 'value' } });
+
+      expect(lastClientHeaders()).toEqual(expect.objectContaining({ 'X-Custom': 'value' }));
+    });
+
+    it('should override requestConfig headers', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN, requestConfig: { headers: { 'X-Custom': 'config' } } });
+      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'request' } });
+
+      expect(lastClientHeaders()['X-Custom']).toBe('request');
+    });
+
+    it('should not leak headers into subsequent requests', async () => {
+      const apiClient = new ApiClient({ token: TEST_TOKEN });
+      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' } });
+      await apiClient.request('query { me { id } }');
+
+      expect(lastClientHeaders()).not.toHaveProperty('X-Custom');
     });
   });
 });
