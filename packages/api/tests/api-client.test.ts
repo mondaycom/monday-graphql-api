@@ -120,28 +120,11 @@ describe('ApiClient', () => {
       });
     });
 
-    describe('headers validation', () => {
-      it('should reject non-string header values', async () => {
-        await expect(
-          apiClient.request('query { me { id } }', {}, { headers: { 'X-Custom': 1 as unknown as string } }),
-        ).rejects.toThrow();
-      });
-
-      it('should accept string header values', async () => {
-        await expect(
-          apiClient.request('query { me { id } }', {}, { headers: { 'X-Custom': 'value' } }),
-        ).resolves.not.toThrow();
-      });
-    });
-
-    describe('idempotencyKey validation', () => {
-      it('should reject empty idempotencyKey', async () => {
-        await expect(apiClient.request('mutation { x }', {}, { idempotencyKey: '' })).rejects.toThrow();
-      });
-
-      it('should accept non-empty idempotencyKey', async () => {
-        await expect(apiClient.request('mutation { x }', {}, { idempotencyKey: 'key-1' })).resolves.not.toThrow();
-      });
+    it.each([
+      ['non-string header value', { headers: { 'X-Custom': 1 as unknown as string } }],
+      ['empty idempotencyKey', { idempotencyKey: '' }],
+    ])('should reject %s', async (_, options) => {
+      await expect(apiClient.request('mutation { x }', {}, options)).rejects.toThrow();
     });
 
     it('should accept empty options object', async () => {
@@ -153,70 +136,44 @@ describe('ApiClient', () => {
   });
 
   describe('per-request headers', () => {
-    const lastClientHeaders = () => {
-      const calls = (GraphQLClient as unknown as jest.Mock).mock.calls;
-      return calls[calls.length - 1][1].headers;
-    };
+    let apiClient: ApiClient;
+    const lastClientHeaders = () => (GraphQLClient as unknown as jest.Mock).mock.lastCall[1].headers;
 
-    it('should send per-request headers with request()', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
-      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' } });
-
-      expect(lastClientHeaders()).toEqual(expect.objectContaining({ 'X-Custom': 'value', Authorization: TEST_TOKEN }));
+    beforeEach(() => {
+      apiClient = new ApiClient({ token: TEST_TOKEN, requestConfig: { headers: { 'X-Config': 'config' } } });
     });
 
-    it('should send per-request headers with rawRequest()', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
-      await apiClient.rawRequest('mutation { x }', {}, { headers: { 'X-Custom': 'value' } });
+    it.each(['request', 'rawRequest'] as const)('should send headers and idempotencyKey with %s()', async (method) => {
+      await apiClient[method]('mutation { x }', {}, { headers: { 'X-Custom': 'value' }, idempotencyKey: 'key-1' });
 
-      expect(lastClientHeaders()).toEqual(expect.objectContaining({ 'X-Custom': 'value' }));
+      expect(lastClientHeaders()).toEqual(
+        expect.objectContaining({
+          Authorization: TEST_TOKEN,
+          'X-Config': 'config',
+          'X-Custom': 'value',
+          'Idempotency-Key': 'key-1',
+        }),
+      );
     });
 
-    it('should override requestConfig headers', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN, requestConfig: { headers: { 'X-Custom': 'config' } } });
-      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'request' } });
-
-      expect(lastClientHeaders()['X-Custom']).toBe('request');
-    });
-
-    it('should not leak headers into subsequent requests', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
-      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' } });
-      await apiClient.request('query { me { id } }');
-
-      expect(lastClientHeaders()).not.toHaveProperty('X-Custom');
-    });
-
-    it('should send idempotencyKey as Idempotency-Key header', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
-      await apiClient.request('mutation { x }', {}, { idempotencyKey: 'key-1' });
-
-      expect(lastClientHeaders()['Idempotency-Key']).toBe('key-1');
-    });
-
-    it('should send idempotencyKey with rawRequest()', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
-      await apiClient.rawRequest('mutation { x }', {}, { idempotencyKey: 'key-1' });
-
-      expect(lastClientHeaders()['Idempotency-Key']).toBe('key-1');
-    });
-
-    it('should prefer idempotencyKey over Idempotency-Key passed in headers', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
+    it('should apply precedence: requestConfig < headers < idempotencyKey', async () => {
       await apiClient.request('mutation { x }', {}, {
-        headers: { 'Idempotency-Key': 'from-headers' },
+        headers: { 'X-Config': 'request', 'Idempotency-Key': 'from-headers' },
         idempotencyKey: 'from-option',
       });
 
-      expect(lastClientHeaders()['Idempotency-Key']).toBe('from-option');
+      expect(lastClientHeaders()).toEqual(
+        expect.objectContaining({ 'X-Config': 'request', 'Idempotency-Key': 'from-option' }),
+      );
     });
 
-    it('should not send Idempotency-Key header when idempotencyKey is not provided', async () => {
-      const apiClient = new ApiClient({ token: TEST_TOKEN });
-      await apiClient.request('mutation { x }', {}, { idempotencyKey: 'key-1' });
-      await apiClient.request('mutation { x }');
+    it('should not leak headers into subsequent requests', async () => {
+      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' }, idempotencyKey: 'key-1' });
+      await apiClient.request('query { me { id } }');
 
+      expect(lastClientHeaders()).not.toHaveProperty('X-Custom');
       expect(lastClientHeaders()).not.toHaveProperty('Idempotency-Key');
+      expect(lastClientHeaders()['X-Config']).toBe('config');
     });
   });
 });
