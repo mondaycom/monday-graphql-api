@@ -1,5 +1,17 @@
 # Changelog
 
+## [14.1.0]
+
+### Added
+- **Per-request headers**: Added the `headers` option to `.request()` and `.rawRequest()` methods of `ApiClient`. Headers passed this way are sent only with that request and override headers from `requestConfig`.
+```
+client.request('<QUERY>', undefined, { headers: { 'X-Custom-Header': 'value' } })
+```
+- **Idempotency key**: Added the `idempotencyKey` option to `.request()` and `.rawRequest()` methods of `ApiClient`. It is sent as the `Idempotency-Key` header and takes precedence over an `Idempotency-Key` passed in `headers`, regardless of header name casing. See [idempotency docs](https://developer.monday.com/api-reference/docs/idempotency).
+```
+client.request('<MUTATION>', undefined, { idempotencyKey: '<UNIQUE-KEY>' })
+```
+
 ## [14.0.0]
 
 ### ⚠️ Breaking Changes

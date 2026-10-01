@@ -67,6 +67,17 @@ const { boards } = await client.request<{
 const { boards } = await client.request<{
   boards: [Board];
 }>(`query { boards(ids: some_id) { name } }`, undefined, { timeoutMs: 20_000 });
+
+// You can also send custom headers with a single request
+const { boards } = await client.request<{
+  boards: [Board];
+}>(`query { boards(ids: some_id) { name } }`, undefined, { headers: { 'X-Custom-Header': 'value' } });
+
+// You can also make mutations safe to retry by passing an idempotency key (sent as the `Idempotency-Key` header).
+// Reuse the same key when retrying the same operation - see https://developer.monday.com/api-reference/docs/idempotency
+const { create_item } = await client.request<{
+  create_item: { id: string };
+}>(`mutation { create_item(board_id: some_id, item_name: "New item") { id } }`, undefined, { idempotencyKey: '<UNIQUE-KEY>' });
 ```
 
 ### File uploads

@@ -17,6 +17,8 @@ export interface ApiClientConfig {
 }
 
 const requestOptionsSchema = z.object({
+  idempotencyKey: z.string().nonempty().optional(),
+  headers: z.record(z.string(), z.string()).optional(),
   versionOverride: z.string().nonempty().optional().refine((version) => !version || isValidApiVersion(version), {
     message: "Invalid API version format. Expected format is 'yyyy-mm' with month as one of '01', '04', '07', or '10'.",
   }),
@@ -34,6 +36,33 @@ export type RequestOptions = z.infer<typeof requestOptionsSchema>;
 const isValidApiVersion = (version: string): boolean => {
   return version === 'dev' || /^\d{4}-(01|04|07|10)$/.test(version);
  }
+
+/**
+ * Merges header objects case-insensitively, so a header set with different casing
+ * (e.g. `Idempotency-Key` vs `idempotency-key`) overrides rather than duplicates.
+ * Later sources win. The casing of the last-set occurrence of a header name is kept.
+ *
+ * @param {...(Record<string, string> | undefined)} sources - Header objects to merge, in precedence order.
+ * @returns {Record<string, string>} - The merged headers.
+ */
+const mergeHeaders = (...sources: (Record<string, string> | undefined)[]): Record<string, string> => {
+  const result: Record<string, string> = {};
+  const keyByLowerCase: Record<string, string> = {};
+
+  for (const source of sources) {
+    for (const [key, value] of Object.entries(source || {})) {
+      const lowerKey = key.toLowerCase();
+      const existingKey = keyByLowerCase[lowerKey];
+      if (existingKey && existingKey !== key) {
+        delete result[existingKey];
+      }
+      result[key] = value;
+      keyByLowerCase[lowerKey] = key;
+    }
+  }
+
+  return result;
+};
 
 /**
  * The `ApiClient` class provides a structured way to interact with the Monday.com API,
@@ -80,7 +109,7 @@ export class ApiClient {
    * @returns {GraphQLClient} - Configured GraphQL client
    */
   private createClient(options?: RequestOptions): GraphQLClient {
-    const { versionOverride } = options || {};
+    const { versionOverride, headers, idempotencyKey } = options || {};
     const apiVersionToUse = versionOverride ?? this.defaultApiVersion;
 
     const endpoint = getApiEndpoint(this.defaultEndpoint);
@@ -91,10 +120,12 @@ export class ApiClient {
       'Api-Sdk-Version': pkg.version,
     };
 
-    const mergedHeaders = {
-      ...defaultHeaders,
-      ...(this.requestConfig?.headers || {}),
-    };
+    const mergedHeaders = mergeHeaders(
+      defaultHeaders,
+      this.requestConfig?.headers as Record<string, string> | undefined,
+      headers,
+      idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
+    );
 
     return new GraphQLClient(endpoint, {
       ...this.requestConfig,
@@ -139,7 +170,7 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
-   * @param {RequestOptions} [options] - Optional request configuration including version override and timeout.
+   * @param {RequestOptions} [options] - Optional request configuration including version override, timeout, headers and idempotency key.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if the request times out before receiving a response.
@@ -162,7 +193,7 @@ export class ApiClient {
    *        `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *        of key-value pairs where the value can be any type. This parameter is used to provide
    *        dynamic values in the query or mutation.
-   * @param {RequestOptions} [options] - Optional request configuration including version override and timeout.
+   * @param {RequestOptions} [options] - Optional request configuration including version override, timeout, headers and idempotency key.
    * @returns {Promise<T>} A promise that resolves with the result of the query or mutation.
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if the request times out before receiving a response.

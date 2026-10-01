@@ -120,11 +120,72 @@ describe('ApiClient', () => {
       });
     });
 
+    it.each([
+      ['non-string header value', { headers: { 'X-Custom': 1 as unknown as string } }],
+      ['empty idempotencyKey', { idempotencyKey: '' }],
+    ])('should reject %s', async (_, options) => {
+      await expect(apiClient.request('mutation { x }', {}, options)).rejects.toThrow();
+    });
+
     it('should accept empty options object', async () => {
       await expect(apiClient.request('query { me { id } }', {}, {})).resolves.not.toThrow();
     });
     it('should accept undefined options', async () => {
       await expect(apiClient.request('query { me { id } }', {}, undefined)).resolves.not.toThrow();
+    });
+  });
+
+  describe('per-request headers', () => {
+    let apiClient: ApiClient;
+    const lastClientHeaders = () => (GraphQLClient as unknown as jest.Mock).mock.lastCall[1].headers;
+
+    beforeEach(() => {
+      apiClient = new ApiClient({ token: TEST_TOKEN, requestConfig: { headers: { 'X-Config': 'config' } } });
+    });
+
+    it.each(['request', 'rawRequest'] as const)('should send headers and idempotencyKey with %s()', async (method) => {
+      await apiClient[method]('mutation { x }', {}, { headers: { 'X-Custom': 'value' }, idempotencyKey: 'key-1' });
+
+      expect(lastClientHeaders()).toEqual(
+        expect.objectContaining({
+          Authorization: TEST_TOKEN,
+          'X-Config': 'config',
+          'X-Custom': 'value',
+          'Idempotency-Key': 'key-1',
+        }),
+      );
+    });
+
+    it('should apply precedence: requestConfig < headers < idempotencyKey', async () => {
+      await apiClient.request('mutation { x }', {}, {
+        headers: { 'X-Config': 'request', 'Idempotency-Key': 'from-headers' },
+        idempotencyKey: 'from-option',
+      });
+
+      expect(lastClientHeaders()).toEqual(
+        expect.objectContaining({ 'X-Config': 'request', 'Idempotency-Key': 'from-option' }),
+      );
+    });
+
+    it('should apply precedence case-insensitively, without duplicating the header', async () => {
+      await apiClient.request('mutation { x }', {}, {
+        headers: { 'idempotency-key': 'from-headers' },
+        idempotencyKey: 'from-option',
+      });
+
+      const sentHeaders = lastClientHeaders();
+      const idempotencyKeyEntries = Object.entries(sentHeaders).filter(([key]) => key.toLowerCase() === 'idempotency-key');
+
+      expect(idempotencyKeyEntries).toEqual([[expect.any(String), 'from-option']]);
+    });
+
+    it('should not leak headers into subsequent requests', async () => {
+      await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' }, idempotencyKey: 'key-1' });
+      await apiClient.request('query { me { id } }');
+
+      expect(lastClientHeaders()).not.toHaveProperty('X-Custom');
+      expect(lastClientHeaders()).not.toHaveProperty('Idempotency-Key');
+      expect(lastClientHeaders()['X-Config']).toBe('config');
     });
   });
 });
