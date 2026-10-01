@@ -7,7 +7,7 @@
 ```
 client.request('<QUERY>', undefined, { headers: { 'X-Custom-Header': 'value' } })
 ```
-- **Idempotency key**: Added the `idempotencyKey` option to `.request()` and `.rawRequest()` methods of `ApiClient`. It is sent as the `Idempotency-Key` header and takes precedence over an `Idempotency-Key` passed in `headers`. See [idempotency docs](https://developer.monday.com/api-reference/docs/idempotency).
+- **Idempotency key**: Added the `idempotencyKey` option to `.request()` and `.rawRequest()` methods of `ApiClient`. It is sent as the `Idempotency-Key` header and takes precedence over an `Idempotency-Key` passed in `headers`, regardless of header name casing. See [idempotency docs](https://developer.monday.com/api-reference/docs/idempotency).
 ```
 client.request('<MUTATION>', undefined, { idempotencyKey: '<UNIQUE-KEY>' })
 ```

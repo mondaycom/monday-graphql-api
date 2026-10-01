@@ -167,6 +167,18 @@ describe('ApiClient', () => {
       );
     });
 
+    it('should apply precedence case-insensitively, without duplicating the header', async () => {
+      await apiClient.request('mutation { x }', {}, {
+        headers: { 'idempotency-key': 'from-headers' },
+        idempotencyKey: 'from-option',
+      });
+
+      const sentHeaders = lastClientHeaders();
+      const idempotencyKeyEntries = Object.entries(sentHeaders).filter(([key]) => key.toLowerCase() === 'idempotency-key');
+
+      expect(idempotencyKeyEntries).toEqual([[expect.any(String), 'from-option']]);
+    });
+
     it('should not leak headers into subsequent requests', async () => {
       await apiClient.request('mutation { x }', {}, { headers: { 'X-Custom': 'value' }, idempotencyKey: 'key-1' });
       await apiClient.request('query { me { id } }');
