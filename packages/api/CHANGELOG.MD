@@ -82,3 +82,4 @@ client.request('<QUERY>', undefined, { timeout: 20_000 })
 ### Fixed
 
 - **GraphQL library dependency**: Resolved an issue where the GraphQL library was sometimes required as a dependency; this is now included by default.
+
