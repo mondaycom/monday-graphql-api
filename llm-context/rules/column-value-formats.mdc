@@ -1,0 +1,171 @@
+---
+description: Reference for monday.com column value JSON formats. Use when writing mutations that set or change column values (change_column_value, change_multiple_column_values, create_item with column_values).
+globs:
+alwaysApply: false
+---
+# Monday.com Column Value JSON Formats
+
+When using `change_column_value`, `change_multiple_column_values`, or `create_item` with `column_values`, the value must be a JSON-serialized string matching the column type's expected format.
+
+## Quick Reference
+
+### Status Column
+```json
+{"label": "Done"}
+```
+Or by index:
+```json
+{"index": 1}
+```
+
+### Text Column
+```json
+"Hello world"
+```
+Note: Plain string, not wrapped in an object.
+
+### Numbers Column
+```json
+"42"
+```
+Note: Plain string of the number.
+
+### Date Column
+```json
+{"date": "2024-06-15"}
+```
+With time:
+```json
+{"date": "2024-06-15", "time": "14:30:00"}
+```
+
+### People Column
+```json
+{"personsAndTeams": [{"id": 12345, "kind": "person"}, {"id": 67, "kind": "team"}]}
+```
+
+### Dropdown Column
+By labels (creates labels if `create_labels_if_missing: true`):
+```json
+{"labels": ["Option A", "Option B"]}
+```
+By IDs:
+```json
+{"ids": [1, 2, 3]}
+```
+
+### Timeline Column
+```json
+{"from": "2024-01-01", "to": "2024-01-31"}
+```
+
+### Checkbox Column
+```json
+{"checked": "true"}
+```
+
+### Long Text Column
+```json
+{"text": "Multi-line content here"}
+```
+
+### Email Column
+```json
+{"email": "user@example.com", "text": "Display Name"}
+```
+
+### Phone Column
+```json
+{"phone": "+1234567890", "countryShortName": "US"}
+```
+
+### Link Column
+```json
+{"url": "https://example.com", "text": "Click here"}
+```
+
+### Rating Column
+```json
+{"rating": 4}
+```
+
+### Hour Column
+```json
+{"hour": 14, "minute": 30}
+```
+
+### Location Column
+```json
+{"lat": 40.7128, "lng": -74.0060, "address": "New York, NY"}
+```
+
+### Country Column
+```json
+{"countryCode": "US", "countryName": "United States"}
+```
+
+### Tags Column
+```json
+{"tag_ids": [123, 456]}
+```
+
+### Week Column
+```json
+{"week": {"startDate": "2024-06-10", "endDate": "2024-06-16"}}
+```
+
+### Board Relation (Connect Boards) Column
+```json
+{"item_ids": [123456, 789012]}
+```
+
+### Clear Any Column
+```json
+null
+```
+
+## Using the SDK Column Value Builders
+
+If you're using `@mondaydotcomorg/api`, import the `ColumnValues` helper:
+
+```typescript
+import { ApiClient, ColumnValues } from '@mondaydotcomorg/api';
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN });
+
+// Change a single column
+await client.request(
+  `mutation ($boardId: ID!, $itemId: ID!, $columnId: String!, $value: JSON!) {
+    change_column_value(board_id: $boardId, item_id: $itemId, column_id: $columnId, value: $value) { id }
+  }`,
+  {
+    boardId: "123",
+    itemId: "456",
+    columnId: "status",
+    value: ColumnValues.status("Done"),
+  }
+);
+
+// Change multiple columns at once
+await client.request(
+  `mutation ($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
+    change_multiple_column_values(board_id: $boardId, item_id: $itemId, column_values: $columnValues) { id }
+  }`,
+  {
+    boardId: "123",
+    itemId: "456",
+    columnValues: JSON.stringify({
+      status: { label: "Working on it" },
+      date: { date: "2024-06-15" },
+      text: "Updated by agent",
+    }),
+  }
+);
+```
+
+## Important Notes
+
+1. **JSON serialization**: The `value` parameter in `change_column_value` expects a JSON *string*. Use `JSON.stringify()` on the object.
+2. **column_values in create_item / change_multiple_column_values**: This is also a JSON *string* — a serialized object where keys are column IDs and values are the typed objects above (without extra stringification per-field).
+3. **Column IDs**: Use the actual column ID (e.g., `"status"`, `"date4"`, `"text0"`), not the column title. Query the board's columns first if unsure.
+4. **create_labels_if_missing**: Set to `true` in the mutation if you want status/dropdown labels auto-created when they don't exist.
