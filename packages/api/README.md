@@ -249,6 +249,20 @@ try {
 }
 ```
 
+### Per-request options
+
+The third argument can be an options object instead of a version string:
+
+```typescript
+await seamlessApiClient.request('<MUTATION>', variables, {
+  versionOverride: '2025-10',
+  timeoutMs: 30000,
+  idempotencyKey: '<UNIQUE-KEY>',
+});
+```
+
+`idempotencyKey` is sent as the `Idempotency-Key` header and takes precedence over an `Idempotency-Key` passed in `headers`, regardless of header name casing. See [idempotency docs](https://developer.monday.com/api-reference/docs/idempotency). The monday.com host forwards only allowlisted `headers` (currently `Idempotency-Key`) and drops the rest. The positional form `request(query, variables, version, timeout)` keeps working.
+
 ### Type support
 
 note that after usage, you'l get all the available fields, with no regard to the fields you asked for
