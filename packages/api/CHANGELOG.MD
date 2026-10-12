@@ -1,5 +1,15 @@
 # Changelog
 
+## [14.2.0]
+
+### Added
+- **SeamlessApiClient per-request options**: `SeamlessApiClient.request()` accepts an options object as its third argument, with `versionOverride`, `timeoutMs`, `headers` and `idempotencyKey`. The positional `version` and `timeout` arguments keep working.
+```
+seamlessApiClient.request('<MUTATION>', undefined, { idempotencyKey: '<UNIQUE-KEY>' })
+```
+- `idempotencyKey` is sent as the `Idempotency-Key` header and takes precedence over an `Idempotency-Key` passed in `headers`. Headers travel to the monday.com host as `args.headers` on the `api` message; the host forwards only allowlisted headers. Hosts without header support ignore them.
+- The positional `version` and `timeout` arguments of `SeamlessApiClient.request()` are deprecated in favour of `versionOverride` and `timeoutMs` in the options object. They still work.
+
 ## [14.1.0]
 
 ### Added

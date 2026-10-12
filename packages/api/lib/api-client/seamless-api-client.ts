@@ -1,7 +1,27 @@
 import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from '../constants';
 import { SeamlessApiClientError } from '../errors/seamless-api-client-error';
+import { mergeHeaders } from '../shared/merge-headers';
 
 export { SeamlessApiClientError };
+
+export interface SeamlessRequestOptions {
+  /** API version for this request only. Overrides the version set on the client. */
+  versionOverride?: ApiVersionType;
+  /** Request timeout in milliseconds. Defaults to 60 seconds. */
+  timeoutMs?: number;
+  /**
+   * Headers to send with this request. The monday.com host forwards only allowlisted
+   * headers and drops the rest.
+   */
+  headers?: Record<string, string>;
+  /**
+   * Sent as the `Idempotency-Key` header. Takes precedence over an `Idempotency-Key`
+   * passed in `headers`.
+   */
+  idempotencyKey?: string;
+}
+
+const DEFAULT_TIMEOUT_MS = 60000;
 
 interface ListenerCallback {
   (data: any): void;
@@ -30,39 +50,59 @@ export class SeamlessApiClient {
    * client side of a app thats deployed in Monday.com. It leverages the platform's internal messaging system to
    * communicate with the API.
    *
-   * By specifying an `version` parameter, you can override the default API version set at the class level.
-   * This allows for flexible API version control on a per-query basis, enabling the use of different
-   * API versions for specific calls if necessary.
-   *
    * @param {string} query - The GraphQL query or mutation string to be sent to the Monday API.
    * @param {QueryVariables} [variables] - An optional object containing variables for the query.
    *                                       `QueryVariables` is a type alias for `Record<string, any>`, allowing specification
    *                                       of key-value pairs where the value can be any type. This parameter is used to provide
    *                                       dynamic values in the query or mutation.
-   * @param {ApiVersionType} [version] - An optional API version string. If provided, this version overrides
-   *                                     the class's default API version for this specific query.
-   *                                     Can be one of the predefined versions in `AvailableVersions` or a custom version string.
-   * @param {number} [timeout=60000] - An optional timeout value in milliseconds for the request. The default is 60 seconds.
+   * @param {SeamlessRequestOptions} [options] - Optional per-request settings: `versionOverride` (overrides the
+   *                                       class's default API version), `timeoutMs` (default 60 seconds), `headers`
+   *                                       and `idempotencyKey`.
    * @returns {Promise<T>} A promise that resolves with the query result.
    * @template T The expected type of the query or mutation result.
    * @throws {Error} Throws an error if called from within the monday.com platform and the request failed, or if the request timed out.
    */
+  public request<T>(query: string, variables?: QueryVariables, options?: SeamlessRequestOptions): Promise<T>;
+  /**
+   * @deprecated Pass an options object instead: `{ versionOverride, timeoutMs }`.
+   *
+   * @param {string} query - The GraphQL query or mutation string to be sent to the Monday API.
+   * @param {QueryVariables} [variables] - An optional object containing variables for the query.
+   * @param {ApiVersionType} [version] - An optional API version that overrides the class's default for this query.
+   * @param {number} [timeout=60000] - An optional timeout value in milliseconds for the request.
+   */
+  public request<T>(query: string, variables?: QueryVariables, version?: ApiVersionType, timeout?: number): Promise<T>;
   public request<T>(
     query: string,
     variables?: QueryVariables,
-    version?: ApiVersionType,
-    timeout: number = 60000,
+    versionOrOptions?: ApiVersionType | SeamlessRequestOptions,
+    timeout: number = DEFAULT_TIMEOUT_MS,
   ): Promise<T> {
+    const options: SeamlessRequestOptions =
+      typeof versionOrOptions === 'object' && versionOrOptions !== null
+        ? versionOrOptions
+        : { versionOverride: versionOrOptions, timeoutMs: timeout };
+
     return new Promise<T>((resolve, reject) => {
+      if (options.idempotencyKey === '') {
+        reject(new Error('idempotencyKey must not be empty'));
+        return;
+      }
+
       const requestId = this.generateRequestId();
       const params = { query, variables };
-      const apiVersion = version || this.apiVersion;
+      const apiVersion = options.versionOverride || this.apiVersion;
+      const headers = mergeHeaders(
+        options.headers,
+        options.idempotencyKey ? { 'Idempotency-Key': options.idempotencyKey } : undefined,
+      );
+      const args = Object.keys(headers).length > 0 ? { params, apiVersion, headers } : { params, apiVersion };
 
-      window.parent.postMessage({ method: 'api', args: { params, apiVersion }, requestId }, '*');
+      window.parent.postMessage({ method: 'api', args, requestId }, '*');
 
       const timeoutId = setTimeout(() => {
         reject(new Error('Request timed out'));
-      }, timeout);
+      }, options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 
       const removeListener = this.addListener(requestId, (data) => {
         clearTimeout(timeoutId);
