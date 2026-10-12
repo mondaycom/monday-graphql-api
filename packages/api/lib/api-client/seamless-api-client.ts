@@ -84,6 +84,11 @@ export class SeamlessApiClient {
         : { versionOverride: versionOrOptions, timeoutMs: timeout };
 
     return new Promise<T>((resolve, reject) => {
+      if (options.idempotencyKey === '') {
+        reject(new Error('idempotencyKey must not be empty'));
+        return;
+      }
+
       const requestId = this.generateRequestId();
       const params = { query, variables };
       const apiVersion = options.versionOverride || this.apiVersion;

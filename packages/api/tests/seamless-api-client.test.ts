@@ -89,4 +89,25 @@ describe('SeamlessApiClient', () => {
 
     expect(lastMessage().args.headers).toEqual({ 'X-Custom': 'value', 'Idempotency-Key': 'from-option' });
   });
+
+  it('rejects an empty idempotencyKey without sending the request', async () => {
+    const client = new SeamlessApiClient();
+    const promise = client.request('mutation { create_item }', undefined, { idempotencyKey: '' });
+
+    await expect(promise).rejects.toThrow('idempotencyKey must not be empty');
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the 60s default when timeoutMs is omitted from the options object', async () => {
+    const client = new SeamlessApiClient();
+    const promise = client.request('query { me { id } }', undefined, { idempotencyKey: 'key-1' });
+    const onRejected = jest.fn();
+    promise.catch(onRejected);
+
+    await jest.advanceTimersByTimeAsync(59999);
+    expect(onRejected).not.toHaveBeenCalled();
+
+    await jest.advanceTimersByTimeAsync(1);
+    expect(onRejected).toHaveBeenCalledWith(expect.objectContaining({ message: 'Request timed out' }));
+  });
 });
