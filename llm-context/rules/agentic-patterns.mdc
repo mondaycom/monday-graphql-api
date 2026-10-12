@@ -1,0 +1,211 @@
+---
+description: Patterns for AI agents interacting with the monday.com API. Use when building agentic workflows, automation scripts, or LLM-driven tools that read/write monday.com data.
+globs:
+alwaysApply: false
+---
+# Agentic Patterns for Monday.com API
+
+## Pagination — Reading All Items from a Board
+
+Never assume all items fit in one response. Use cursor-based pagination:
+
+```typescript
+import { ApiClient, paginateItems } from '@mondaydotcomorg/api';
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN });
+
+// Stream items page by page (memory-efficient)
+for await (const page of paginateItems(client, "board_id_here")) {
+  for (const item of page) {
+    console.log(item.id, item.name, item.column_values);
+  }
+}
+```
+
+Or collect all at once (small boards only):
+
+```typescript
+import { getAllItems } from '@mondaydotcomorg/api';
+
+const items = await getAllItems(client, "board_id_here", { limit: 200 });
+```
+
+### Manual pagination pattern (when you need custom fields):
+
+```typescript
+let cursor: string | null = null;
+const allItems: any[] = [];
+
+// First page
+const first = await client.request(`
+  query ($boardId: [ID!]!) {
+    boards(ids: $boardId) {
+      items_page(limit: 100) {
+        cursor
+        items { id name column_values { id text value } }
+      }
+    }
+  }
+`, { boardId: ["your_board_id"] });
+
+allItems.push(...first.boards[0].items_page.items);
+cursor = first.boards[0].items_page.cursor;
+
+// Subsequent pages
+while (cursor) {
+  const next = await client.request(`
+    query ($cursor: String!) {
+      next_items_page(cursor: $cursor, limit: 100) {
+        cursor
+        items { id name column_values { id text value } }
+      }
+    }
+  `, { cursor });
+  allItems.push(...next.next_items_page.items);
+  cursor = next.next_items_page.cursor;
+}
+```
+
+## Searching Items by Column Values
+
+Use `items_page_by_column_values` to find items matching specific criteria:
+
+```typescript
+const result = await client.request(`
+  query ($boardId: ID!, $columns: [ItemsPageByColumnValuesQuery!]) {
+    items_page_by_column_values(board_id: $boardId, columns: $columns, limit: 50) {
+      cursor
+      items { id name column_values { id text value } }
+    }
+  }
+`, {
+  boardId: "your_board_id",
+  columns: [{ column_id: "status", column_values: ["Done", "Working on it"] }]
+});
+```
+
+## Bulk Updates — Updating Multiple Items
+
+When updating many items, batch your mutations and respect rate limits:
+
+```typescript
+import { withRetry, ColumnValues } from '@mondaydotcomorg/api';
+
+const itemsToUpdate = [
+  { id: "111", status: "Done" },
+  { id: "222", status: "Working on it" },
+];
+
+for (const item of itemsToUpdate) {
+  await withRetry(() =>
+    client.request(`
+      mutation ($boardId: ID!, $itemId: ID!, $value: JSON!) {
+        change_column_value(board_id: $boardId, item_id: $itemId, column_id: "status", value: $value) { id }
+      }
+    `, {
+      boardId: "your_board_id",
+      itemId: item.id,
+      value: ColumnValues.status(item.status),
+    })
+  );
+}
+```
+
+## Creating Items with Column Values
+
+```typescript
+const newItem = await client.request(`
+  mutation ($boardId: ID!, $itemName: String!, $columnValues: JSON!) {
+    create_item(board_id: $boardId, item_name: $itemName, column_values: $columnValues) {
+      id
+      name
+    }
+  }
+`, {
+  boardId: "your_board_id",
+  itemName: "New Task",
+  columnValues: JSON.stringify({
+    status: { label: "Working on it" },
+    date: { date: "2024-06-15" },
+    person: { personsAndTeams: [{ id: 12345, kind: "person" }] },
+  }),
+});
+```
+
+## Error Recovery with Retry
+
+Always wrap API calls with retry logic in agentic workflows:
+
+```typescript
+import { withRetry } from '@mondaydotcomorg/api';
+
+const result = await withRetry(
+  () => client.request(query, variables),
+  {
+    maxRetries: 3,
+    initialDelayMs: 1000,
+    retryOnRateLimit: true,
+    retryOnComplexity: true,
+  }
+);
+```
+
+## Monitoring Complexity Budget
+
+```typescript
+import { getComplexityBudget } from '@mondaydotcomorg/api';
+
+const budget = await getComplexityBudget(client);
+if (budget && budget.after < 500) {
+  // Approaching limit — wait for reset
+  await new Promise(r => setTimeout(r, budget.resetInSeconds * 1000));
+}
+```
+
+## Common Agent Workflow: Read → Decide → Act
+
+A typical agentic pattern for monday.com:
+
+```typescript
+import { ApiClient, paginateItems, withRetry, ColumnValues } from '@mondaydotcomorg/api';
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN });
+const BOARD_ID = "your_board_id";
+
+// 1. Read: gather current state
+const allItems = [];
+for await (const page of paginateItems(client, BOARD_ID)) {
+  allItems.push(...page);
+}
+
+// 2. Decide: filter items that need action
+const overdueItems = allItems.filter(item => {
+  const dateCol = item.column_values.find(cv => cv.id === "date");
+  return dateCol?.text && new Date(dateCol.text) < new Date();
+});
+
+// 3. Act: update each overdue item's status
+for (const item of overdueItems) {
+  await withRetry(() =>
+    client.request(`
+      mutation ($boardId: ID!, $itemId: ID!, $value: JSON!) {
+        change_column_value(board_id: $boardId, item_id: $itemId, column_id: "status", value: $value) { id }
+      }
+    `, {
+      boardId: BOARD_ID,
+      itemId: item.id,
+      value: ColumnValues.status("Stuck"),
+    })
+  );
+}
+```
+
+## Best Practices for Agents
+
+1. **Always paginate** — boards can have thousands of items
+2. **Use withRetry** — rate limits and complexity budgets are real
+3. **Request only needed fields** — reduces complexity cost
+4. **Use column IDs not titles** — query the board's columns first if unknown
+5. **Batch reads, sequential writes** — read all data first, then mutate
+6. **Check complexity before large operations** — use `getComplexityBudget()`
+7. **Prefer `change_multiple_column_values`** over multiple `change_column_value` calls for the same item
