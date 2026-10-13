@@ -175,7 +175,7 @@ Unlike `ApiClient`, `request()` doesn't return just the GraphQL data. It resolve
     data,        // the fields you queried
     extensions,
   },
-  headers,       // a Headers object, if monday.com forwarded any (see below)
+  headers,       // a Headers object with the response headers, if there are any (see below)
 }
 ```
 
@@ -193,7 +193,7 @@ await client.request(query, variables, {
 });
 ```
 
-monday.com only forwards a set of allowed request headers and drops the rest. As with `ApiClient`, `idempotencyKey` is sent as the `Idempotency-Key` header and wins over one passed in `headers`.
+As with `ApiClient`, `idempotencyKey` is sent as the `Idempotency-Key` header and wins over one passed in `headers`.
 
 ### Handling errors
 
@@ -215,9 +215,9 @@ try {
 `error.response` has:
 
 - `errors`: the GraphQL errors. The `message` of the error itself is always `'Graphql validation errors'`, so look at `errors[0].message` for the actual reason.
-- `data`: the fields that did resolve, when monday.com forwards them.
+- `data`: the fields that did resolve, if any.
 - `extensions`: extra response details, such as `request_id`.
-- `headers`: the forwarded response headers, if any.
+- `headers`: the response headers, if any.
 
 Failures that aren't GraphQL errors (for example a missing query) also reject with a `SeamlessApiClientError`, but with `response.errors` undefined. A timeout rejects with a plain `Error`.
 
@@ -239,17 +239,17 @@ res.data.errors; // the error of the field that failed
 - `ignore`: resolve with `data` and `extensions`, and drop `errors`.
 - `all`: resolve with `data`, `errors` and `extensions`.
 
-The policy only applies to replies that contain GraphQL errors. Timeouts and other failures always reject. If monday.com doesn't forward the partial data, `res.data.data` is `undefined`.
+The policy only applies to replies that contain GraphQL errors. Timeouts and other failures always reject. If no partial data came back, `res.data.data` is `undefined`.
 
 ### Response headers
 
-When monday.com forwards response headers, they are on `res.headers` and `error.response.headers` as a standard `Headers` object, so lookups are case-insensitive:
+Response headers, such as rate limit info, are on `res.headers` and `error.response.headers` as a standard `Headers` object, so lookups are case-insensitive:
 
 ```typescript
 res.headers?.get('RateLimit');
 ```
 
-Only `ratelimit`, `ratelimit-policy`, `api-version`, `x-request-id` and `retry-after` are forwarded. If none are, `headers` is `undefined`.
+`headers` is `undefined` when there are none.
 
 ## Using an AI assistant
 
