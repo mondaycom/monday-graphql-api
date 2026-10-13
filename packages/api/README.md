@@ -1,15 +1,11 @@
-# Monday GraphQL JS SDK
+# monday.com API SDK
 
-## Introduction
+A JavaScript/TypeScript client for [monday.com's GraphQL platform API](https://developer.monday.com/api-reference). It works in Node.js and in the browser, and uses [graphql-request](https://www.npmjs.com/package/graphql-request) under the hood.
 
-The monday API SDK provides a simple way to interact with monday.com's GraphQL platform API, making it easier than ever to get started with our API.
-The SDK abstracts away the complex GraphQL queries, providing simple operations for the most common endpoints such as fetching board data, or creating items.
+The package has two clients:
 
-The SDK is supported in both Node.js and browser environments, and is using the [graphql-request client](https://www.npmjs.com/package/graphql-request) under the hood.
-
-Want to make more complex queries or find out more about what our API has to offer, check out [monday.com's API documentation](https://developer.monday.com/api-reference).
-
-If your code operates within a browser-based app deployed on monday.com, you can utilize the **SeamlessApiClient** class which does not require specifying the user's token. For all other scenarios, use the **ApiClient** class.
+- **`ApiClient`**: for everything that has an API token, such as scripts, servers and integrations.
+- **`SeamlessApiClient`**: for the client side of an app deployed on monday.com. It needs no token, because it asks monday.com to make the call on behalf of the logged-in user.
 
 ## Installation
 
@@ -17,84 +13,129 @@ If your code operates within a browser-based app deployed on monday.com, you can
 npm install @mondaydotcomorg/api
 ```
 
-## Important
-
-All exported types correspond to the current version of the API that existed when the NPM package was released
-
-For the convenience of monday app developers, this CLI is included in the [@mondaydotcomorg/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli).
-If you want to use it on it’s own, you can install [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).
-(you can find more about app development here [monday-apps-sdk](https://developer.monday.com/apps/docs/introduction-to-the-sdk))
-
-## Usage
-
-### Using the api client
-
-The package exports the class `ApiClient` which is the main entry point to the SDK. You can use it to query monday's API freestyle, or use the operations provided by the SDK.
-
-```typescript
-import { ApiClient } from '@mondaydotcomorg/api';
-
-const client = new ApiClient({token: '<API-TOKEN>'});
-
-// Or use the operations provided by the SDK
-const me = await client.operations.getMeOp();
-
-// Example how to change a text column
-const changeTextColumn = await client.operations.changeColumnValueOp({
-    boardId: "your_board_id",
-    itemId: "your_item_id",
-    columnId: "text",
-    value: JSON.stringify("Hello, world!"),
-});
-
-// Example how to change a status column
-const changeStatusColumn = await client.operations.changeColumnValueOp({
-    boardId: "your_board_id",
-    itemId: "your_item_id",
-    columnId: "project_status", // replace with your column id
-    value: JSON.stringify({ label: "Done" }),
-});
-
-// Use the client to query monday's API freestyle WITHOUT TYPES -> Use @mondaydotcomorg/setup-api to setup typed project!
-const boards = await client.request<{boards: [{ name: string }]}>(`query { boards(ids: some_id) { name } }`);
-
-// You can also use the types provided by the sdk 
-const { boards } = await client.request<{
-  boards: [Board];
-}>(`query { boards(ids: some_id) { name } }`);
-
-// You can also define timeout for requests
-const { boards } = await client.request<{
-  boards: [Board];
-}>(`query { boards(ids: some_id) { name } }`, undefined, { timeoutMs: 20_000 });
-
-// You can also send custom headers with a single request
-const { boards } = await client.request<{
-  boards: [Board];
-}>(`query { boards(ids: some_id) { name } }`, undefined, { headers: { 'X-Custom-Header': 'value' } });
-
-// You can also make mutations safe to retry by passing an idempotency key (sent as the `Idempotency-Key` header).
-// Reuse the same key when retrying the same operation - see https://developer.monday.com/api-reference/docs/idempotency
-const { create_item } = await client.request<{
-  create_item: { id: string };
-}>(`mutation { create_item(board_id: some_id, item_name: "New item") { id } }`, undefined, { idempotencyKey: '<UNIQUE-KEY>' });
-```
-
-### File uploads
-
-The SDK supports file uploads. Yo must pass Node's `File` or `Blob` object in your variables, and the client will automatically handle the multipart request.
-
-> **Important:** The SDK uses Node's `fetch` method that recognizes built-in `File` and `Blob` to create multi-part request.
+## ApiClient
 
 ```typescript
 import { ApiClient } from '@mondaydotcomorg/api';
 
 const client = new ApiClient({ token: '<API-TOKEN>' });
 
-// Create a file to upload
+const { boards } = await client.request<{ boards: { name: string }[] }>(
+  `query { boards(ids: 123) { name } }`,
+);
+```
+
+`request()` resolves with the `data` of the GraphQL response, and rejects if the response has errors (see [Handling errors](#handling-errors)).
+
+The constructor also takes `apiVersion` (defaults to the version matching your package release), `endpoint`, and `requestConfig`, which is passed on to graphql-request.
+
+### Operations
+
+For common tasks you don't have to write GraphQL yourself. The client ships with ready-made operations:
+
+```typescript
+const me = await client.operations.getMeOp();
+
+// Change a text column
+await client.operations.changeColumnValueOp({
+  boardId: 'your_board_id',
+  itemId: 'your_item_id',
+  columnId: 'text',
+  value: JSON.stringify('Hello, world!'),
+});
+
+// Change a status column
+await client.operations.changeColumnValueOp({
+  boardId: 'your_board_id',
+  itemId: 'your_item_id',
+  columnId: 'project_status',
+  value: JSON.stringify({ label: 'Done' }),
+});
+```
+
+### Types
+
+The package exports the types of the whole API, for example `Board` and `User`:
+
+```typescript
+import { Board } from '@mondaydotcomorg/api';
+
+const { boards } = await client.request<{ boards: Board[] }>(
+  `query { boards(ids: 123) { name } }`,
+);
+```
+
+These types match the API version that was current when the package was released.
+
+A type like `Board` describes every field, not just the ones in your query, so your editor will suggest fields the response doesn't have:
+
+![All fields are suggested, whatever the query asks for](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/api/public/image.png)
+
+To get types that match each query exactly, use [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api). It generates them from your own queries. The same tool is bundled in [@mondaycom/apps-cli](https://www.npmjs.com/package/@mondaycom/apps-cli) for monday app developers (see the [monday apps SDK](https://developer.monday.com/apps/docs/introduction-to-the-sdk)).
+
+### Request options
+
+The third argument of `request()` sets options for that call only:
+
+```typescript
+await client.request(query, variables, {
+  versionOverride: '2025-10', // use another API version for this call
+  timeoutMs: 20_000, // up to 60 seconds
+  headers: { 'X-Custom-Header': 'value' },
+  idempotencyKey: '<UNIQUE-KEY>',
+});
+```
+
+An idempotency key makes a mutation safe to retry. It is sent as the `Idempotency-Key` header, so reuse the same key when you retry the same operation. See the [idempotency docs](https://developer.monday.com/api-reference/docs/idempotency).
+
+### Handling errors
+
+When the response contains GraphQL errors, `request()` throws a `ClientError`:
+
+```typescript
+import { ApiClient, ClientError } from '@mondaydotcomorg/api';
+
+try {
+  await client.request(query, variables);
+} catch (error) {
+  if (error instanceof ClientError) {
+    console.error(error.response.errors);
+  } else {
+    throw error;
+  }
+}
+```
+
+If you'd rather keep the partial data that did come back, set an `errorPolicy` on the client:
+
+```typescript
+const client = new ApiClient({ token: '<API-TOKEN>', requestConfig: { errorPolicy: 'all' } });
+```
+
+- `none` (default): throw on any GraphQL error.
+- `ignore`: ignore the errors and resolve with the data.
+- `all`: resolve with both data and errors. The errors are only visible through `rawRequest()`.
+
+### rawRequest
+
+`rawRequest()` returns the full response (`data`, `errors`, `extensions`, `headers` and `status`) instead of just the data:
+
+```typescript
+const res = await client.rawRequest<{ boards: Board[] }>(query, variables);
+
+console.log(res.data.boards);
+console.log(res.errors);
+```
+
+It takes the same options as `request()`.
+
+### File uploads
+
+Pass a `File` or `Blob` in the variables and the client sends a multipart request for you. This relies on the `File`, `Blob` and `fetch` that come with Node.js.
+
+```typescript
 const file = new File([Buffer.from('Hello World!')], 'test.txt', { type: 'text/plain' });
 
-// Upload the file to a column
 const result = await client.request(
   `mutation ($file: File!, $itemId: ID!, $columnId: String!) {
     add_file_to_column(file: $file, item_id: $itemId, column_id: $columnId) {
@@ -103,219 +144,113 @@ const result = await client.request(
       url
     }
   }`,
-  {
-    file,
-    itemId: 'your_item_id',
-    columnId: 'files', // your file column id
-  }
+  { file, itemId: 'your_item_id', columnId: 'files' },
 );
-
-console.log(result.add_file_to_column);
-```
-
-### Using the types
-
-The package exports all the types used by the SDK, so you can use them in your code.
-
-```typescript
-import { User } from '@mondaydotcomorg/api';
-
-const user: User = {
-    id: '123',
-    name: 'John Doe',
-    email: 'john.doe@someorg.com'
-}
-```
-
-### Configuration
-
-#### ErrorPolicy
-
-By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received. You can define errorPolicy in the GraphQLClient constructor.
-
-```typescript
-const client = new ApiClient({token: '<API-TOKEN>', requestConfig: { errorPolicy: 'all' }});
-```
-
-**None (default)**
-Allow no errors at all. If you receive a GraphQL error the client will throw.
-
-**Ignore**
-Ignore incoming errors and resolve like no errors occurred
-
-**All**
-Return both the errors and data, only works with the client's rawRequest call option.
-
-### Handling errors
-
-The errors are returned from the `ClientError` type.
-**The example below is leveraging types using [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).**
-
-```typescript
-import { ApiClient, ClientError } from "@mondaydotcomorg/api";
-import { GetBoardsQuery, GetBoardsQueryVariables } from "./generated/graphql";
-import { exampleQuery } from "./queries.graphql";
-
-async function getBoardDetails(): Promise<void> {
-  try {
-    const token = "<API_TOKEN>";
-    const client = new ApiClient({ token });
-    const queryVariables: GetBoardsQueryVariables = { ids: ["5901934630"] };
-    const queryData = await client.request<GetBoardsQuery>(
-      exampleQuery,
-      queryVariables
-    );
-
-    console.log(queryData.boards);
-  } catch (error) {
-    if (error instanceof ClientError) {
-      console.error(error.response.errors);
-    } else {
-      console.error(error);
-    }
-  }
-}
-
-getBoardDetails();
-```
-
-### Other request options
-
-If you prefer the 'old' style of response (data, errors, extensions) you can call the api using the rawRequest option
-**The example below is leveraging types using [@mondaydotcomorg/setup-api](https://www.npmjs.com/package/@mondaydotcomorg/setup-api).**
-
-```typescript
-import { ApiClient, ClientError } from "@mondaydotcomorg/api";
-import { GetBoardsQuery, GetBoardsQueryVariables } from "./generated/graphql";
-import { exampleQuery } from "./queries.graphql";
-
-async function getBoardDetails(): Promise<void> {
-  try {
-    const token = "<API_TOKEN>";
-    const client = new ApiClient({ token });
-    const queryVariables: GetBoardsQueryVariables = { ids: ["5901934630"] };
-    const queryData = await client.rawRequest<GetBoardsQuery>(
-      exampleQuery,
-      queryVariables
-    );
-
-    console.log(queryData.data.boards);
-  } catch (error) {
-    if (error instanceof ClientError) {
-      console.error(error.response.errors);
-    } else {
-      console.error(error);
-    }
-  }
-}
-
-getBoardDetails();
 ```
 
 ## SeamlessApiClient
 
-The SeamlessApiClient class is a tool designed for making seamless API requests to Monday.com, tailored for use within the client side of applications deployed on the platform.
-Basically, when you are making an api call from the client side of an app deployed on Monday.com, you don't need to specify the users token.
+Use it in the browser code of an app deployed on monday.com. It sends the request to the monday.com page around your app, which makes the call as the current user, so there is no token to manage. It only works inside an app view on monday.com.
 
 ```typescript
-import { Board, SeamlessApiClient, SeamlessApiClientError } from "@mondaydotcomorg/api";
+import { SeamlessApiClient } from '@mondaydotcomorg/api';
 
-// Option A - using pre defined types
-const seamlessApiClient = new SeamlessApiClient();
-const res = await seamlessApiClient.request<{ data: { data: { boards: [Board] } } }>(`query { boards(ids: some_id) { id name } }`);
+const client = new SeamlessApiClient();
+
+const res = await client.request<{ data: { data: { boards: { id: string; name: string }[] } } }>(
+  `query { boards(ids: 123) { id name } }`,
+);
 const boards = res.data.data.boards;
-
-// Option B - using your own types after integrating with @mondaydotcomorg/setup-api
-import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
-const variables: GetBoardsQueryVariables = { ids: ["some_id"] };
-
-export const getBoards = gql`
-  query GetBoards($ids: [ID!]) {
-    boards(ids: $ids) {
-      id
-      name
-    }
-  }
-`;
-
-try {
-  const res = await seamlessApiClient.request<{ data: { data: GetBoardsQuery } }>(getBoards, variables);
-  const boards = res.data.data.boards;
-} catch (error) {
-  if (error instanceof SeamlessApiClientError) {
-    console.log(error.response.errors);
-    console.log(error.response.extensions?.request_id);
-  }
-}
 ```
+
+The constructor takes an API version and client settings: `new SeamlessApiClient('2025-10', { errorPolicy: 'all' })`. Without a version it uses the one matching your package release.
 
 ### Response shape
 
-`request()` resolves the whole reply the monday.com host sends back, not just the GraphQL body:
+Unlike `ApiClient`, `request()` doesn't return just the GraphQL data. It resolves with the whole reply from monday.com, so the fields you asked for are at `res.data.data`:
 
 ```typescript
 {
-  method: 'api',
-  requestId: string,
-  data: { data, extensions }, // the GraphQL response: fields are at res.data.data.<field>
-  headers?: Headers, // response headers the host forwards, if any; read with headers.get('ratelimit')
+  data: {
+    data,        // the fields you queried
+    extensions,
+  },
+  headers,       // a Headers object with the response headers, if there are any (see below)
 }
 ```
 
-The type parameter `T` describes this whole reply.
+The type parameter of `request<T>()` describes this whole object.
 
-### Errors
-
-A failed call rejects with `SeamlessApiClientError` (`error.type` is also `'SeamlessApiClientError'`). Its `response` holds:
-
-- `errors`: the GraphQL errors
-- `data`: fields that resolved before the error, if the host forwards them
-- `extensions`: for example `extensions.request_id`, to quote when reporting a problem
-- `headers`: a `Headers` with the response headers the host forwards, if any. Lookups are case-insensitive. Only `ratelimit`, `ratelimit-policy`, `api-version`, `x-request-id` and `retry-after` are forwarded
-
-`error.message` is `'Graphql validation errors'` for every GraphQL error; the real reason is in `error.response.errors[0].message`.
-
-### errorPolicy
-
-Pass `errorPolicy` to resolve partial data instead of rejecting, as with `ApiClient`:
+### Request options
 
 ```typescript
-const seamlessApiClient = new SeamlessApiClient('2025-10', { errorPolicy: 'all' });
-const res = await seamlessApiClient.request('query { me { id } boards(ids: [1]) { id } }');
-res.data.data.me.id; // resolved field
-res.data.errors; // the failed field's error
-```
-
-You can also set it for a single call, which overrides the client setting: `request(query, variables, { errorPolicy: 'all' })`.
-
-- `none` (default): reject with `SeamlessApiClientError`.
-- `ignore`: resolve with `data` and `extensions`; `errors` are dropped.
-- `all`: resolve with `data`, `errors` and `extensions`.
-
-It applies only to replies that carry GraphQL `errors`. Other failures (for example a missing query or a timeout) always reject. A host that doesn't forward partial data resolves `ignore`/`all` with `res.data.data` undefined.
-
-### Per-request options
-
-The third argument can be an options object instead of a version string:
-
-```typescript
-await seamlessApiClient.request('<MUTATION>', variables, {
+await client.request(query, variables, {
   versionOverride: '2025-10',
-  timeoutMs: 30000,
+  timeoutMs: 30_000, // default 60 seconds
+  headers: { 'X-Custom-Header': 'value' },
   idempotencyKey: '<UNIQUE-KEY>',
+  errorPolicy: 'all',
 });
 ```
 
-`idempotencyKey` is sent as the `Idempotency-Key` header and takes precedence over an `Idempotency-Key` passed in `headers`. See [idempotency docs](https://developer.monday.com/api-reference/docs/idempotency). The monday.com host forwards only allowlisted `headers` and drops the rest. The positional form `request(query, variables, version, timeout)` keeps working.
+As with `ApiClient`, `idempotencyKey` is sent as the `Idempotency-Key` header and wins over one passed in `headers`.
 
-### Type support
+### Handling errors
 
-note that after usage, you'l get all the available fields, with no regard to the fields you asked for
+When the response contains GraphQL errors, `request()` rejects with a `SeamlessApiClientError`:
 
-![alt text](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/api/public/image.png)
+```typescript
+import { SeamlessApiClient, SeamlessApiClientError } from '@mondaydotcomorg/api';
 
-**But there's a solution, look [here!](https://www.npmjs.com/package/@mondaydotcomorg/setup-api)**
+try {
+  await client.request(query, variables);
+} catch (error) {
+  if (error instanceof SeamlessApiClientError) {
+    console.error(error.response.errors);
+    console.error(error.response.extensions?.request_id); // quote this when reporting a problem
+  }
+}
+```
 
-## LLM Context
+`error.response` has:
 
-IF you're using an AI assistant/LLM to help you code, use the rules in the `llm-context` package to make it more likely for your LLM to write good code - [LLM Context Docs](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/llm-context/README.md)
+- `errors`: the GraphQL errors. The `message` of the error itself is always `'Graphql validation errors'`, so look at `errors[0].message` for the actual reason.
+- `data`: the fields that did resolve, if any.
+- `extensions`: extra response details, such as `request_id`.
+- `headers`: the response headers, if any.
+
+Failures that aren't GraphQL errors (for example a missing query) also reject with a `SeamlessApiClientError`, but with `response.errors` undefined. A timeout rejects with a plain `Error`.
+
+### errorPolicy
+
+Like in `ApiClient`, you can resolve the partial data instead of rejecting. Set the policy on the client, or for one call with the `errorPolicy` request option, which wins over the client setting.
+
+```typescript
+const client = new SeamlessApiClient(undefined, { errorPolicy: 'all' });
+
+// `me` works, `next_items_page` fails because the cursor is invalid
+const res = await client.request('query { me { id } next_items_page(cursor: "invalid") { cursor } }');
+
+res.data.data.me.id; // the field that resolved
+res.data.errors; // the error of the field that failed
+```
+
+- `none` (default): reject with `SeamlessApiClientError`.
+- `ignore`: resolve with `data` and `extensions`, and drop `errors`.
+- `all`: resolve with `data`, `errors` and `extensions`.
+
+The policy only applies to replies that contain GraphQL errors. Timeouts and other failures always reject. If no partial data came back, `res.data.data` is `undefined`.
+
+### Response headers
+
+Response headers, such as rate limit info, are on `res.headers` and `error.response.headers` as a standard `Headers` object, so lookups are case-insensitive:
+
+```typescript
+res.headers?.get('RateLimit');
+```
+
+`headers` is `undefined` when there are none.
+
+## Using an AI assistant
+
+If an LLM helps you write code with this SDK, the rules in the `llm-context` package make it more likely to get it right. See the [LLM Context docs](https://github.com/mondaycom/monday-graphql-api/blob/main/packages/llm-context/README.md).
