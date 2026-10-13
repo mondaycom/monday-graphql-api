@@ -1,9 +1,11 @@
 import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from '../constants';
 import { SeamlessApiClientError } from '../errors/seamless-api-client-error';
+import { ErrorPolicy } from '../shared/error-policy';
 import { mergeHeaders } from '../shared/merge-headers';
 import { toHeaders } from '../shared/to-headers';
 
 export { SeamlessApiClientError };
+export type { ErrorPolicy };
 
 export interface SeamlessRequestOptions {
   /** API version for this request only. Overrides the version set on the client. */
@@ -21,10 +23,8 @@ export interface SeamlessRequestOptions {
    */
   idempotencyKey?: string;
   /** Error policy for this request only. Overrides the `errorPolicy` set on the client. */
-  errorPolicy?: SeamlessErrorPolicy;
+  errorPolicy?: ErrorPolicy;
 }
-
-export type SeamlessErrorPolicy = 'none' | 'ignore' | 'all';
 
 export interface SeamlessApiClientOptions {
   /**
@@ -36,7 +36,7 @@ export interface SeamlessApiClientOptions {
    *
    * Failures that have no GraphQL errors (for example a timeout) always fail, whatever you pick here.
    */
-  errorPolicy?: SeamlessErrorPolicy;
+  errorPolicy?: ErrorPolicy;
 }
 
 const DEFAULT_TIMEOUT_MS = 60000;
@@ -53,7 +53,7 @@ interface ListenerCallback {
  */
 export class SeamlessApiClient {
   public readonly apiVersion: ApiVersionType;
-  private readonly errorPolicy: SeamlessErrorPolicy;
+  private readonly errorPolicy: ErrorPolicy;
   private listeners: Record<string, Set<ListenerCallback>> = {};
 
   /**
@@ -134,7 +134,11 @@ export class SeamlessApiClient {
           if (hasGraphqlErrors && errorPolicy !== 'none') {
             const { errors, ...rest } = data.data;
             const { errorMessage, ...reply } = data;
-            resolve({ ...reply, data: errorPolicy === 'all' ? data.data : rest, headers: toHeaders(reply.headers) } as T);
+            resolve({
+              ...reply,
+              data: errorPolicy === 'all' ? data.data : rest,
+              headers: toHeaders(reply.headers),
+            } as T);
             return;
           }
           // Include errors, partial data, extensions and forwarded response headers in the error response
