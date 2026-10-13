@@ -219,7 +219,7 @@ try {
 - `extensions`: extra response details, such as `request_id`.
 - `headers`: the response headers, if any.
 
-Failures that aren't GraphQL errors (for example a missing query) also reject with a `SeamlessApiClientError`, but with `response.errors` undefined. A timeout rejects with a plain `Error`.
+Failures that don't carry GraphQL errors (for example a failed HTTP request) also reject with a `SeamlessApiClientError`, but with `response.errors` undefined. A timeout rejects with a plain `Error`.
 
 ### errorPolicy
 
