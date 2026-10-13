@@ -230,8 +230,8 @@ Like in `ApiClient`, you can resolve the partial data instead of rejecting. Set 
 ```typescript
 const client = new SeamlessApiClient(undefined, { errorPolicy: 'all' });
 
-// `me` works, `boards` fails
-const res = await client.request('query { me { id } boards(ids: [-1]) { id } }');
+// `me` works, `next_items_page` fails because the cursor is invalid
+const res = await client.request('query { me { id } next_items_page(cursor: "invalid") { cursor } }');
 
 res.data.data.me.id; // the field that resolved
 res.data.errors; // the error of the field that failed
