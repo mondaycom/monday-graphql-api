@@ -1,8 +1,8 @@
 export class SeamlessApiClientError extends Error {
-  response: { errors: any; data?: any; extensions?: any; headers?: Record<string, string> };
+  response: { errors: any; data?: any; extensions?: any; headers?: Headers };
   type: string;
 
-  constructor(message: string, errors: any, data?: any, extensions?: any, headers?: Record<string, string>) {
+  constructor(message: string, errors: any, data?: any, extensions?: any, headers?: Headers) {
     super(message);
     // Restores the prototype chain under the ES5 build so `instanceof SeamlessApiClientError` works.
     Object.setPrototypeOf(this, new.target.prototype);

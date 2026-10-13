@@ -7,7 +7,7 @@
 ```
 const client = new SeamlessApiClient('2025-10', { errorPolicy: 'all' });
 ```
-- **Response headers on errors**: `SeamlessApiClientError.response.headers` holds the response headers the monday.com host forwards (for example rate limit headers). Hosts that don't forward headers leave it undefined.
+- **Response headers**: `request()` replies and `SeamlessApiClientError.response.headers` carry the response headers the monday.com host forwards (for example rate limit headers) as a `Headers` object, so `headers.get('RateLimit')` works in any casing. Hosts that don't forward headers leave it undefined.
 
 ### Fixed
 - `error instanceof SeamlessApiClientError` is now true. The class sets its prototype explicitly, which the ES5 build needs; `error.name` is now `'SeamlessApiClientError'` instead of `'Error'`.

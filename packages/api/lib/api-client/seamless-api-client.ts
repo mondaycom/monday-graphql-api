@@ -1,6 +1,7 @@
 import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from '../constants';
 import { SeamlessApiClientError } from '../errors/seamless-api-client-error';
 import { mergeHeaders } from '../shared/merge-headers';
+import { toHeaders } from '../shared/to-headers';
 
 export { SeamlessApiClientError };
 
@@ -133,7 +134,7 @@ export class SeamlessApiClient {
           if (hasGraphqlErrors && errorPolicy !== 'none') {
             const { errors, ...rest } = data.data;
             const { errorMessage, ...reply } = data;
-            resolve({ ...reply, data: errorPolicy === 'all' ? data.data : rest } as T);
+            resolve({ ...reply, data: errorPolicy === 'all' ? data.data : rest, headers: toHeaders(reply.headers) } as T);
             return;
           }
           // Include errors, partial data, extensions and forwarded response headers in the error response
@@ -142,11 +143,11 @@ export class SeamlessApiClient {
             data.data?.errors,
             data.data?.data,
             data.data?.extensions,
-            data.headers,
+            toHeaders(data.headers),
           );
           reject(error);
         } else {
-          resolve(data as T);
+          resolve({ ...data, headers: toHeaders(data.headers) } as T);
         }
       });
     });

@@ -258,7 +258,7 @@ try {
   method: 'api',
   requestId: string,
   data: { data, extensions }, // the GraphQL response: fields are at res.data.data.<field>
-  headers?: Record<string, string>, // response headers the host forwards, if any
+  headers?: Headers, // response headers the host forwards, if any; read with headers.get('ratelimit')
 }
 ```
 
@@ -271,7 +271,7 @@ A failed call rejects with `SeamlessApiClientError` (`error.type` is also `'Seam
 - `errors`: the GraphQL errors
 - `data`: fields that resolved before the error, if the host forwards them
 - `extensions`: for example `extensions.request_id`, to quote when reporting a problem
-- `headers`: response headers the host forwards, if any
+- `headers`: a `Headers` with the response headers the host forwards, if any. Lookups are case-insensitive. Only `ratelimit`, `ratelimit-policy`, `api-version`, `x-request-id` and `retry-after` are forwarded
 
 `error.message` is `'Graphql validation errors'` for every GraphQL error; the real reason is in `error.response.errors[0].message`.
 

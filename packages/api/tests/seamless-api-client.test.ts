@@ -134,8 +134,9 @@ describe('SeamlessApiClient', () => {
         errors: [{ message: 'e' }],
         data: { me: { id: '1' } },
         extensions: { request_id: 'r' },
-        headers: { ratelimit: 'x' },
+        headers: expect.any(Headers),
       });
+      expect(error.response.headers.get('RateLimit')).toBe('x');
     });
 
     it('works with instanceof when constructed directly', () => {
@@ -153,7 +154,7 @@ describe('SeamlessApiClient', () => {
       const res = await promise;
       expect(res.data).toEqual({ data: { me: { id: '1' } }, extensions: { request_id: 'r' } });
       expect(res).not.toHaveProperty('errorMessage');
-      expect(res.headers).toEqual({ ratelimit: 'x' });
+      expect(res.headers.get('RateLimit')).toBe('x');
     });
 
     it('resolves partial data and errors with errorPolicy all', async () => {
@@ -202,7 +203,7 @@ describe('SeamlessApiClient', () => {
 
       const res = await promise;
       expect(res.data.data.me.id).toBe('1');
-      expect(res.headers).toEqual({ ratelimit: 'x' });
+      expect(res.headers.get('RateLimit')).toBe('x');
     });
   });
 });
