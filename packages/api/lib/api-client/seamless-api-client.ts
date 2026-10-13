@@ -21,6 +21,17 @@ export interface SeamlessRequestOptions {
   idempotencyKey?: string;
 }
 
+export type SeamlessErrorPolicy = 'none' | 'ignore' | 'all';
+
+export interface SeamlessApiClientOptions {
+  /**
+   * How to handle a reply that carries GraphQL `errors`, matching `ApiClient`'s `requestConfig.errorPolicy`:
+   * `none` (default) rejects with `SeamlessApiClientError`; `ignore` resolves with the partial `data` and drops
+   * `errors`; `all` resolves with both `data` and `errors`. Host failures with no GraphQL `errors` always reject.
+   */
+  errorPolicy?: SeamlessErrorPolicy;
+}
+
 const DEFAULT_TIMEOUT_MS = 60000;
 
 interface ListenerCallback {
@@ -35,14 +46,17 @@ interface ListenerCallback {
  */
 export class SeamlessApiClient {
   public readonly apiVersion: ApiVersionType;
+  private readonly errorPolicy: SeamlessErrorPolicy;
   private listeners: Record<string, Set<ListenerCallback>> = {};
 
   /**
    * @param {ApiVersionType} [apiVersion=DEFAULT_VERSION] - Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    *        Defaults to the version corresponding to the package version release (which will be the current),
+   * @param {SeamlessApiClientOptions} [options] - Optional client settings: `errorPolicy` (`none` by default).
    */
-  constructor(apiVersion: ApiVersionType = DEFAULT_VERSION) {
+  constructor(apiVersion: ApiVersionType = DEFAULT_VERSION, options: SeamlessApiClientOptions = {}) {
     this.apiVersion = apiVersion;
+    this.errorPolicy = options.errorPolicy ?? 'none';
     window.addEventListener('message', this.receiveMessage.bind(this), false);
   }
   /**
@@ -108,12 +122,20 @@ export class SeamlessApiClient {
         clearTimeout(timeoutId);
         removeListener();
         if (data.errorMessage) {
-          // Include errors, partial data, and extensions in the error response
+          const hasGraphqlErrors = Array.isArray(data.data?.errors) && data.data.errors.length > 0;
+          if (hasGraphqlErrors && this.errorPolicy !== 'none') {
+            const { errors, ...rest } = data.data;
+            const { errorMessage: _errorMessage, ...reply } = data;
+            resolve({ ...reply, data: this.errorPolicy === 'all' ? data.data : rest } as T);
+            return;
+          }
+          // Include errors, partial data, extensions and forwarded response headers in the error response
           const error = new SeamlessApiClientError(
             data.errorMessage,
             data.data?.errors,
             data.data?.data,
             data.data?.extensions,
+            data.headers,
           );
           reject(error);
         } else {

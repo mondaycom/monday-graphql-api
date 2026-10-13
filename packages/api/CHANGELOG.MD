@@ -1,5 +1,18 @@
 # Changelog
 
+## [14.3.0]
+
+### Added
+- **SeamlessApiClient `errorPolicy`**: `new SeamlessApiClient(apiVersion, { errorPolicy })` takes `none` (default, rejects as before), `ignore` (resolves with the partial `data`, drops `errors`) or `all` (resolves with `data` and `errors`), matching `ApiClient`'s `requestConfig.errorPolicy`. It applies only to replies that carry GraphQL `errors`; other host failures always reject.
+```
+const client = new SeamlessApiClient('2025-10', { errorPolicy: 'all' });
+```
+- **Response headers on errors**: `SeamlessApiClientError.response.headers` holds the response headers the monday.com host forwards (for example rate limit headers). Hosts that don't forward headers leave it undefined.
+
+### Fixed
+- `error instanceof SeamlessApiClientError` is now true. The class sets its prototype explicitly, which the ES5 build needs; `error.name` is now `'SeamlessApiClientError'` instead of `'Error'`.
+- README SeamlessApiClient examples: `request()` resolves the host's whole reply, so fields are at `res.data.data.<field>`.
+
 ## [14.2.0]
 
 ### Added
