@@ -218,17 +218,15 @@ The SeamlessApiClient class is a tool designed for making seamless API requests 
 Basically, when you are making an api call from the client side of an app deployed on Monday.com, you don't need to specify the users token.
 
 ```typescript
-import {
-  Board,
-} from "@mondaydotcomorg/api";
+import { Board, SeamlessApiClient, SeamlessApiClientError } from "@mondaydotcomorg/api";
 
 // Option A - using pre defined types
 const seamlessApiClient = new SeamlessApiClient();
-const { boards } = await client.request<{boards: [Board];}>(`query { boards(ids: some_id) { id name } }`);
+const res = await seamlessApiClient.request<{ data: { data: { boards: [Board] } } }>(`query { boards(ids: some_id) { id name } }`);
+const boards = res.data.data.boards;
 
 // Option B - using your own types after integrating with @mondaydotcomorg/setup-api
 import { GetBoardsQueryVariables, GetBoardsQuery } from "./generated/graphql";
-const seamlessApiClient = new SeamlessApiClient();
 const variables: GetBoardsQueryVariables = { ids: ["some_id"] };
 
 export const getBoards = gql`
@@ -241,13 +239,60 @@ export const getBoards = gql`
 `;
 
 try {
-  const data = await seamlessApiClient.request<GetBoardsQuery>(getBoards, variables);
-} catch (error) { 
-  // If the error is from SeamlessApiClient, it will be of type SeamlessApiClientError, which you can import from our package. Also, error.type will also 'SeamlessApiClientError'.
-  
-  console.log(error.response.errors)
+  const res = await seamlessApiClient.request<{ data: { data: GetBoardsQuery } }>(getBoards, variables);
+  const boards = res.data.data.boards;
+} catch (error) {
+  if (error instanceof SeamlessApiClientError) {
+    console.log(error.response.errors);
+    console.log(error.response.extensions?.request_id);
+  }
 }
 ```
+
+### Response shape
+
+`request()` resolves the whole reply the monday.com host sends back, not just the GraphQL body:
+
+```typescript
+{
+  method: 'api',
+  requestId: string,
+  data: { data, extensions }, // the GraphQL response: fields are at res.data.data.<field>
+  headers?: Headers, // response headers the host forwards, if any; read with headers.get('ratelimit')
+}
+```
+
+The type parameter `T` describes this whole reply.
+
+### Errors
+
+A failed call rejects with `SeamlessApiClientError` (`error.type` is also `'SeamlessApiClientError'`). Its `response` holds:
+
+- `errors`: the GraphQL errors
+- `data`: fields that resolved before the error, if the host forwards them
+- `extensions`: for example `extensions.request_id`, to quote when reporting a problem
+- `headers`: a `Headers` with the response headers the host forwards, if any. Lookups are case-insensitive. Only `ratelimit`, `ratelimit-policy`, `api-version`, `x-request-id` and `retry-after` are forwarded
+
+`error.message` is `'Graphql validation errors'` for every GraphQL error; the real reason is in `error.response.errors[0].message`.
+
+### errorPolicy
+
+Pass `errorPolicy` to resolve partial data instead of rejecting, as with `ApiClient`:
+
+```typescript
+const seamlessApiClient = new SeamlessApiClient('2025-10', { errorPolicy: 'all' });
+const res = await seamlessApiClient.request('query { me { id } boards(ids: [1]) { id } }');
+res.data.data.me.id; // resolved field
+res.data.errors; // the failed field's error
+```
+
+You can also set it for a single call, which overrides the client setting: `request(query, variables, { errorPolicy: 'all' })`.
+
+- `none` (default): reject with `SeamlessApiClientError`.
+- `ignore`: resolve with `data` and `extensions`; `errors` are dropped.
+- `all`: resolve with `data`, `errors` and `extensions`.
+
+It applies only to replies that carry GraphQL `errors`. Other failures (for example a missing query or a timeout) always reject. A host that doesn't forward partial data resolves `ignore`/`all` with `res.data.data` undefined.
 
 ### Per-request options
 

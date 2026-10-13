@@ -1,8 +1,11 @@
 import { ApiVersionType, DEFAULT_VERSION, QueryVariables } from '../constants';
 import { SeamlessApiClientError } from '../errors/seamless-api-client-error';
+import { ErrorPolicy } from '../shared/error-policy';
 import { mergeHeaders } from '../shared/merge-headers';
+import { toHeaders } from '../shared/to-headers';
 
 export { SeamlessApiClientError };
+export type { ErrorPolicy };
 
 export interface SeamlessRequestOptions {
   /** API version for this request only. Overrides the version set on the client. */
@@ -19,6 +22,21 @@ export interface SeamlessRequestOptions {
    * passed in `headers`.
    */
   idempotencyKey?: string;
+  /** Error policy for this request only. Overrides the `errorPolicy` set on the client. */
+  errorPolicy?: ErrorPolicy;
+}
+
+export interface SeamlessApiClientOptions {
+  /**
+   * What to do when the API replies with GraphQL errors. Works like `requestConfig.errorPolicy` in `ApiClient`.
+   *
+   * - `none` (default): the request fails with a `SeamlessApiClientError`.
+   * - `ignore`: the request succeeds with whatever data came back; the errors are dropped.
+   * - `all`: the request succeeds with the data and the errors.
+   *
+   * Failures that have no GraphQL errors (for example a timeout) always fail, whatever you pick here.
+   */
+  errorPolicy?: ErrorPolicy;
 }
 
 const DEFAULT_TIMEOUT_MS = 60000;
@@ -35,14 +53,17 @@ interface ListenerCallback {
  */
 export class SeamlessApiClient {
   public readonly apiVersion: ApiVersionType;
+  private readonly errorPolicy: ErrorPolicy;
   private listeners: Record<string, Set<ListenerCallback>> = {};
 
   /**
    * @param {ApiVersionType} [apiVersion=DEFAULT_VERSION] - Can be one of the predefined versions in `AvailableVersions` or a custom version string.
    *        Defaults to the version corresponding to the package version release (which will be the current),
+   * @param {SeamlessApiClientOptions} [options] - Optional client settings: `errorPolicy` (`none` by default).
    */
-  constructor(apiVersion: ApiVersionType = DEFAULT_VERSION) {
+  constructor(apiVersion: ApiVersionType = DEFAULT_VERSION, options: SeamlessApiClientOptions = {}) {
     this.apiVersion = apiVersion;
+    this.errorPolicy = options.errorPolicy ?? 'none';
     window.addEventListener('message', this.receiveMessage.bind(this), false);
   }
   /**
@@ -92,6 +113,7 @@ export class SeamlessApiClient {
       const requestId = this.generateRequestId();
       const params = { query, variables };
       const apiVersion = options.versionOverride || this.apiVersion;
+      const errorPolicy = options.errorPolicy ?? this.errorPolicy;
       const headers = mergeHeaders(
         options.headers,
         options.idempotencyKey ? { 'Idempotency-Key': options.idempotencyKey } : undefined,
@@ -108,16 +130,28 @@ export class SeamlessApiClient {
         clearTimeout(timeoutId);
         removeListener();
         if (data.errorMessage) {
-          // Include errors, partial data, and extensions in the error response
+          const hasGraphqlErrors = Array.isArray(data.data?.errors) && data.data.errors.length > 0;
+          if (hasGraphqlErrors && errorPolicy !== 'none') {
+            const { errors, ...rest } = data.data;
+            const { errorMessage, ...reply } = data;
+            resolve({
+              ...reply,
+              data: errorPolicy === 'all' ? data.data : rest,
+              headers: toHeaders(reply.headers),
+            } as T);
+            return;
+          }
+          // Include errors, partial data, extensions and forwarded response headers in the error response
           const error = new SeamlessApiClientError(
             data.errorMessage,
             data.data?.errors,
             data.data?.data,
             data.data?.extensions,
+            toHeaders(data.headers),
           );
           reject(error);
         } else {
-          resolve(data as T);
+          resolve({ ...data, headers: toHeaders(data.headers) } as T);
         }
       });
     });
