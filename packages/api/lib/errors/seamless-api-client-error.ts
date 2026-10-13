@@ -7,7 +7,8 @@ export class SeamlessApiClientError extends Error {
     // Restores the prototype chain under the ES5 build so `instanceof SeamlessApiClientError` works.
     Object.setPrototypeOf(this, new.target.prototype);
     this.response = { errors, data, extensions, headers };
-    this.name = this.constructor.name;
+    // A literal, because minified builds mangle `constructor.name`.
+    this.name = 'SeamlessApiClientError';
     this.type = 'SeamlessApiClientError';
   }
 }

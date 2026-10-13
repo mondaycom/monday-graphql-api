@@ -286,6 +286,8 @@ res.data.data.me.id; // resolved field
 res.data.errors; // the failed field's error
 ```
 
+You can also set it for a single call, which overrides the client setting: `request(query, variables, { errorPolicy: 'all' })`.
+
 - `none` (default): reject with `SeamlessApiClientError`.
 - `ignore`: resolve with `data` and `extensions`; `errors` are dropped.
 - `all`: resolve with `data`, `errors` and `extensions`.

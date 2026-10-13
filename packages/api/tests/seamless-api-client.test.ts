@@ -166,6 +166,20 @@ describe('SeamlessApiClient', () => {
       expect(res).not.toHaveProperty('errorMessage');
     });
 
+    it('lets a per-request errorPolicy override the client one', async () => {
+      const client = new SeamlessApiClient(undefined, { errorPolicy: 'ignore' });
+
+      const all = client.request<any>('query { me { id } }', undefined, { errorPolicy: 'all' });
+      respond(errorReply);
+      expect((await all).data).toEqual(errorReply.data);
+
+      const none = new SeamlessApiClient(undefined, { errorPolicy: 'all' }).request('query { me { id } }', undefined, {
+        errorPolicy: 'none',
+      });
+      respond(errorReply);
+      await expect(none).rejects.toBeInstanceOf(SeamlessApiClientError);
+    });
+
     it.each(['ignore', 'all'] as const)(
       'still rejects host errors with no GraphQL errors (errorPolicy %s)',
       async (errorPolicy) => {

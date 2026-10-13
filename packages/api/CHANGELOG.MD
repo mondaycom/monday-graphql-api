@@ -3,7 +3,7 @@
 ## [14.3.0]
 
 ### Added
-- **SeamlessApiClient `errorPolicy`**: `new SeamlessApiClient(apiVersion, { errorPolicy })` takes `none` (default, rejects as before), `ignore` (resolves with the partial `data`, drops `errors`) or `all` (resolves with `data` and `errors`), matching `ApiClient`'s `requestConfig.errorPolicy`. It applies only to replies that carry GraphQL `errors`; other host failures always reject.
+- **SeamlessApiClient `errorPolicy`**: `new SeamlessApiClient(apiVersion, { errorPolicy })` takes `none` (default, rejects as before), `ignore` (resolves with the partial `data`, drops `errors`) or `all` (resolves with `data` and `errors`), matching `ApiClient`'s `requestConfig.errorPolicy`. It can also be passed per request in the `request()` options, which overrides the client setting. It applies only to replies that carry GraphQL `errors`; other host failures always reject.
 ```
 const client = new SeamlessApiClient('2025-10', { errorPolicy: 'all' });
 ```

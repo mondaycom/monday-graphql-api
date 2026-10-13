@@ -19,15 +19,21 @@ export interface SeamlessRequestOptions {
    * passed in `headers`.
    */
   idempotencyKey?: string;
+  /** Error policy for this request only. Overrides the `errorPolicy` set on the client. */
+  errorPolicy?: SeamlessErrorPolicy;
 }
 
 export type SeamlessErrorPolicy = 'none' | 'ignore' | 'all';
 
 export interface SeamlessApiClientOptions {
   /**
-   * How to handle a reply that carries GraphQL `errors`, matching `ApiClient`'s `requestConfig.errorPolicy`:
-   * `none` (default) rejects with `SeamlessApiClientError`; `ignore` resolves with the partial `data` and drops
-   * `errors`; `all` resolves with both `data` and `errors`. Host failures with no GraphQL `errors` always reject.
+   * What to do when the API replies with GraphQL errors. Works like `requestConfig.errorPolicy` in `ApiClient`.
+   *
+   * - `none` (default): the request fails with a `SeamlessApiClientError`.
+   * - `ignore`: the request succeeds with whatever data came back; the errors are dropped.
+   * - `all`: the request succeeds with the data and the errors.
+   *
+   * Failures that have no GraphQL errors (for example a timeout) always fail, whatever you pick here.
    */
   errorPolicy?: SeamlessErrorPolicy;
 }
@@ -106,6 +112,7 @@ export class SeamlessApiClient {
       const requestId = this.generateRequestId();
       const params = { query, variables };
       const apiVersion = options.versionOverride || this.apiVersion;
+      const errorPolicy = options.errorPolicy ?? this.errorPolicy;
       const headers = mergeHeaders(
         options.headers,
         options.idempotencyKey ? { 'Idempotency-Key': options.idempotencyKey } : undefined,
@@ -123,10 +130,10 @@ export class SeamlessApiClient {
         removeListener();
         if (data.errorMessage) {
           const hasGraphqlErrors = Array.isArray(data.data?.errors) && data.data.errors.length > 0;
-          if (hasGraphqlErrors && this.errorPolicy !== 'none') {
+          if (hasGraphqlErrors && errorPolicy !== 'none') {
             const { errors, ...rest } = data.data;
-            const { errorMessage: _errorMessage, ...reply } = data;
-            resolve({ ...reply, data: this.errorPolicy === 'all' ? data.data : rest } as T);
+            const { errorMessage, ...reply } = data;
+            resolve({ ...reply, data: errorPolicy === 'all' ? data.data : rest } as T);
             return;
           }
           // Include errors, partial data, extensions and forwarded response headers in the error response
