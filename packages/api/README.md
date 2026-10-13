@@ -195,8 +195,6 @@ await client.request(query, variables, {
 
 monday.com only forwards a set of allowed request headers and drops the rest. As with `ApiClient`, `idempotencyKey` is sent as the `Idempotency-Key` header and wins over one passed in `headers`.
 
-The older positional form, `request(query, variables, version, timeout)`, still works but is deprecated.
-
 ### Handling errors
 
 When the response contains GraphQL errors, `request()` rejects with a `SeamlessApiClientError`:
