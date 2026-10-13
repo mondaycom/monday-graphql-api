@@ -1,5 +1,10 @@
 # Changelog
 
+## [14.3.1]
+
+### Changed
+- Rewrote the README. No code changes.
+
 ## [14.3.0]
 
 ### Added
